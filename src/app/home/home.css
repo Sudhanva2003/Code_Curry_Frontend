@@ -1,0 +1,29 @@
+.home-container {
+  padding: 20px;
+}
+
+.restaurant-list {
+  display: flex;
+  flex-wrap: wrap;      /* wrap cards to next line if screen is small */
+  gap: 20px;            /* space between cards */
+  justify-content: center; /* center all cards horizontally */
+}
+
+.restaurant-card {
+  flex: 0 1 200px;      /* width of each card, adjusts for responsiveness */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;   /* center content */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.restaurant-card:hover {
+  transform: scale(1.05); /* subtle hover effect */
+}
+
+.restaurant-card h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}

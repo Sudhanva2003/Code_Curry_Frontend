@@ -1,0 +1,15 @@
+<div class="home-container">
+  <h2>User Home</h2>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error">{{ error }}</div>
+
+  <div class="restaurant-list" *ngIf="!loading && !error">
+    <div class="restaurant-card" *ngFor="let r of restaurants">
+      <h3>{{ r.name }}</h3>
+      <p><strong>ID:</strong> {{ r.restId }}</p>
+      <p><strong>Rating:</strong> {{ r.rating }}</p>
+      <p><strong>Status:</strong> {{ r.isOpen ? 'Open' : 'Closed' }}</p>
+    </div>
+  </div>
+</div>

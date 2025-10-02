@@ -1,0 +1,12 @@
+.app-footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 60px;
+  position: fixed;    /* stick to bottom */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f8f8f8;
+  border-top: 1px solid #ccc;
+}

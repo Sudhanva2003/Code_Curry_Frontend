@@ -1,0 +1,17 @@
+.app-header {
+  display: flex;
+  justify-content: center;  /* center horizontally */
+  align-items: center;
+  height: 60px;
+  background-color: #f8f8f8;
+  position: relative;
+}
+
+.profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
