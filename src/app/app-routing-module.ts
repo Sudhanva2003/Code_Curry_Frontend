@@ -23,16 +23,16 @@ const routes: Routes = [
   { path: 'register-restaurant', component: RegisterRestaurant },
 
   {
-    path: 'user',
-    component: UserView,   // parent component
-    children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: Home },
-      { path: 'cart', component: Cart },
-      { path: 'orders', component: Orders },
-      { path: 'user-settings', component: UserSettings }
-    ]
-  },
+  path: 'user',
+  component: UserView,
+  children: [
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: 'home', component: Home },
+    { path: 'cart', component: Cart },
+    { path: 'orders', component: Orders },
+    { path: 'user-settings', component: UserSettings }
+  ]
+},
 
   {
     path: 'restaurant',

@@ -1,1 +1,23 @@
-<p>settings works!</p>
+<div *ngIf="restaurant" class="profile-container">
+  <div class="profile-header">
+    <!-- <img [src]="restaurant.logoUrl || 'assets/restaurant-logo.png'" alt="Restaurant Logo" class="profile-photo" /> -->
+    <div class="profile-info">
+      <h2>{{ restaurant.name }}</h2>
+      <p>{{ restaurant.email }}</p>
+      <p><strong>Role:</strong> {{ role }}</p>
+    </div>
+  </div>
+
+  <div class="profile-details">
+    <h3>Contact Information</h3>
+    <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
+    <p><strong>Address:</strong> {{ restaurant.address }}</p>
+
+    <h3>About</h3>
+    <p>{{ restaurant.description }}</p>
+  </div>
+</div>
+
+<div *ngIf="!restaurant">
+  <p>Loading restaurant profile...</p>
+</div>

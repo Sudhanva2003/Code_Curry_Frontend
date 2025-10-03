@@ -1,5 +1,6 @@
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common'; 
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
@@ -47,6 +48,7 @@ import { provideHttpClient } from '@angular/common/http';
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    CommonModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
