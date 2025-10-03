@@ -1,15 +1,27 @@
 <div class="home-container">
-  <h2>User Home</h2>
-
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="error">{{ error }}</div>
 
-  <div class="restaurant-list" *ngIf="!loading && !error">
-    <div class="restaurant-card" *ngFor="let r of restaurants">
+  <!-- Restaurant list -->
+  <div *ngIf="!loading && !error && !selectedRestaurant" class="restaurant-list">
+    <div class="restaurant-card" *ngFor="let r of restaurants" (click)="selectRestaurant(r)">
       <h3>{{ r.name }}</h3>
-      <p><strong>ID:</strong> {{ r.restId }}</p>
-      <p><strong>Rating:</strong> {{ r.rating }}</p>
-      <p><strong>Status:</strong> {{ r.isOpen ? 'Open' : 'Closed' }}</p>
+      <p><strong>Rating:</strong> {{ r.rating }} Star</p>
+      <p><strong>Distance:</strong> 2Km Away</p>
+    </div>
+  </div>
+
+  <!-- Menu view -->
+  <div *ngIf="!loading && selectedRestaurant">
+    <button (click)="backToRestaurants()">⬅ Back</button>
+    <h2 class="restaurant-title">{{ selectedRestaurant.name }}</h2>
+
+    <div class="menu-list">
+      <div class="menu-card" *ngFor="let m of menu">
+        <h3>{{ m.name }}</h3>
+        <p><em>{{ m.category }}</em></p>
+        <p><strong>₹{{ m.price }}</strong> </p>
+      </div>
     </div>
   </div>
 </div>

@@ -14,6 +14,7 @@ import { UserSettings } from './user-settings/user-settings';
 import { Cart } from './cart/cart';
 import { Home } from './home/home';
 import { Orders } from './orders/orders';
+import { RestaurantMenu } from './restaurant-menu/restaurant-menu';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -30,7 +31,9 @@ const routes: Routes = [
       { path: 'home', component: Home },
       { path: 'cart', component: Cart },
       { path: 'orders', component: Orders },
-      { path: 'user-settings', component: UserSettings }
+      { path: 'user-settings', component: UserSettings },
+      {path: 'restaurant/:id',component: RestaurantMenu }
+
     ]
   },
 

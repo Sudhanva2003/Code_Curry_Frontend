@@ -21,6 +21,7 @@ import { Cart } from './cart/cart';
 import { Orders } from './orders/orders';
 import { UserSettings } from './user-settings/user-settings';
 import { provideHttpClient } from '@angular/common/http';
+import { RestaurantMenu } from './restaurant-menu/restaurant-menu';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { provideHttpClient } from '@angular/common/http';
     Home,
     Cart,
     Orders,
-    UserSettings
+    UserSettings,
+    RestaurantMenu
   ],
   imports: [
     BrowserModule,
