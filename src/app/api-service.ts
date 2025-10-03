@@ -18,4 +18,9 @@ export class ApiService {
   post(endpoint: string, body: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/${endpoint}`, body);
   }
+  put(endpoint: string, body: any): Observable<any> {
+  return this.http.put(`${this.baseUrl}/${endpoint}`, body);
+}
+
+
 }

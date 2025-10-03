@@ -1,36 +1,57 @@
 .register-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 80vh;
-  gap: 10px;
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 25px; /* This is fine — equal padding on all sides */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fdfdfd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  gap: 10px;
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
+.form-field {
+  margin-bottom: 20px;
 }
 
 input {
-  padding: 8px;
-  font-size: 14px;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+    box-sizing: border-box;
 }
 
 button {
-  padding: 10px;
+  width: 100%;
+  padding: 14px;
   font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+    box-sizing: border-box;
+}
+
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
 }
 
 .error {
   color: red;
-  font-size: 12px;
+  font-size: 13px;
+  margin-top: 5px;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+

@@ -1,6 +1,6 @@
-<div *ngIf="user" class="profile-container">
+<!-- <div *ngIf="user" class="profile-container">
   <div class="profile-header">
-    <!-- <img [src]="user.photoUrl || 'assets/user-logo.png'" alt="Profile Photo" class="profile-photo" /> -->
+    <img [src]="user.photoUrl || 'assets/user-logo.png'" alt="Profile Photo" class="profile-photo" />
     <div class="profile-info">
       <h2>{{ user.name }}</h2>
       <p>{{ user.email }}</p>
@@ -15,6 +15,81 @@
 
     <h3>About</h3>
     <p>{{ user.bio }}</p>
+  </div>
+</div>
+
+<div *ngIf="!user">
+  <p>Loading profile...</p>
+</div> -->
+
+<div *ngIf="user" class="profile-container">
+  <div class="profile-header">
+    <div class="profile-info">
+      <h2>{{ user.fullName }}</h2>
+      <p><strong>Phone:</strong> {{ user.phone }}</p>
+      <p><strong>Address:</strong> {{ user.address }}</p>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="profile-actions">
+    <!-- Edit Section -->
+    <div class="action-row">
+      <span>You want to edit:</span>
+      <button (click)="onEdit()">Edit User</button>
+    </div>
+
+    <!-- Edit Form -->
+    <div *ngIf="showEditForm" class="edit-form">
+      <h3>Edit User</h3>
+      <form #userForm="ngForm" (ngSubmit)="onSave(userForm)">
+        <label>Name:</label>
+        <input
+          type="text"
+          [(ngModel)]="user.fullName"
+          name="fullName"
+          required
+          pattern="^[A-Za-z ]+$"
+          #fullName="ngModel"
+        />
+        <div *ngIf="fullName.invalid && fullName.touched" class="error">
+          Name must contain only letters and spaces.
+        </div>
+
+        <label>Phone:</label>
+        <input
+          type="text"
+          [(ngModel)]="user.phone"
+          name="phone"
+          required
+          pattern="^[0-9]{10}$"
+          #phone="ngModel"
+        />
+        <div *ngIf="phone.invalid && phone.touched" class="error">
+          Phone must be exactly 10 digits.
+        </div>
+
+        <label>Address:</label>
+        <input
+          type="text"
+          [(ngModel)]="user.address"
+          name="address"
+          required
+          #address="ngModel"
+        />
+        <div *ngIf="address.invalid && address.touched" class="error">
+          Address is required.
+        </div>
+
+        <button type="submit" [disabled]="userForm.invalid">Save Changes</button>
+      </form>
+    </div>
+
+    <!-- Delete Section -->
+    <div class="action-row">
+      <span>Are you sure you want to delete?</span>
+      <button (click)="onDelete()">Delete User</button>
+    </div>
   </div>
 </div>
 

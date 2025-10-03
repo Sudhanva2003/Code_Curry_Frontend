@@ -1,6 +1,6 @@
-<div *ngIf="restaurant" class="profile-container">
+<!-- <div *ngIf="restaurant" class="profile-container">
   <div class="profile-header">
-    <!-- <img [src]="restaurant.logoUrl || 'assets/restaurant-logo.png'" alt="Restaurant Logo" class="profile-photo" /> -->
+    <img [src]="restaurant.logoUrl || 'assets/restaurant-logo.png'" alt="Restaurant Logo" class="profile-photo" />
     <div class="profile-info">
       <h2>{{ restaurant.name }}</h2>
       <p>{{ restaurant.email }}</p>
@@ -15,6 +15,59 @@
 
     <h3>About</h3>
     <p>{{ restaurant.description }}</p>
+  </div>
+</div>
+
+<div *ngIf="!restaurant">
+  <p>Loading restaurant profile...</p>
+</div> -->
+
+<div *ngIf="restaurant" class="profile-container">
+  <div class="profile-header">
+    <div class="profile-info">
+      <h2>{{ restaurant.name }}</h2>
+      <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
+      <p><strong>Address:</strong> {{ restaurant.address }}</p>
+      <p><strong>Open Now:</strong> {{ restaurant.isOpen ? 'Yes' : 'No' }}</p>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="profile-actions">
+    <!-- Edit Section -->
+    <div class="action-row">
+      <span>You want to edit:</span>
+      <button (click)="onEdit()">Edit Restaurant</button>
+    </div>
+
+    <!-- Edit Form -->
+    <div *ngIf="showEditForm" class="edit-form">
+      <h3>Edit Restaurant</h3>
+      <form #restaurantForm="ngForm" (ngSubmit)="onSave(restaurantForm)">
+        <label>Name:</label>
+        <input type="text" [(ngModel)]="restaurant.name" name="name" required />
+
+        <label>Phone:</label>
+        <input type="text" [(ngModel)]="restaurant.phone" name="phone" required pattern="^[0-9]{10}$" />
+
+        <label>Address:</label>
+        <input type="text" [(ngModel)]="restaurant.address" name="address" required />
+
+        <label>Is Open:</label>
+        <select [(ngModel)]="restaurant.isOpen" name="isOpen" required>
+          <option [value]="true">Yes</option>
+          <option [value]="false">No</option>
+        </select>
+
+        <button type="submit" [disabled]="restaurantForm.invalid">Save Changes</button>
+      </form>
+    </div>
+
+    <!-- Delete Section -->
+    <div class="action-row">
+      <span>Are you sure you want to delete?</span>
+      <button (click)="onDelete()">Delete Restaurant</button>
+    </div>
   </div>
 </div>
 
