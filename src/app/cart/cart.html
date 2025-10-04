@@ -1,1 +1,32 @@
-<p>cart works!</p>
+<div class="cart-container" *ngIf="cartItems.length > 0; else emptyCart">
+  <div class="cart-item" *ngFor="let item of cartItems">
+    <div>
+      <h3>{{ item.name }}</h3>
+      <p>₹{{ item.price }} × {{ item.quantity }} = ₹{{ item.price * item.quantity }}</p>
+    </div>
+    <div class="counter">
+      <button (click)="decrementItem(item)">-</button>
+      <span>{{ item.quantity }}</span>
+      <button (click)="incrementItem(item)">+</button>
+    </div>
+  </div>
+
+  <!-- Total + Place order -->
+  <div class="cart-footer">
+    <strong>Total: ₹{{ totalAmount }}</strong>
+    <button (click)="openPaymentPopup()">Place Order</button>
+  </div>
+</div>
+
+<ng-template #emptyCart>
+  <p>Your cart is empty.</p>
+</ng-template>
+
+<!-- Payment Popup -->
+<div class="popup" *ngIf="showPayPopup">
+  <div class="popup-content">
+    <h3>Pay ₹{{ totalAmount }} ?</h3>
+    <button (click)="confirmPay()">Pay</button>
+    <button (click)="cancelPay()">Cancel</button>
+  </div>
+</div>

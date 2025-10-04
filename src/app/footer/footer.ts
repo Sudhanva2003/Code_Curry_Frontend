@@ -7,13 +7,5 @@ import { AuthGuard } from '../auth.guard';
   templateUrl: './footer.html',
   styleUrl: './footer.css'
 })
-export class Footer implements OnInit {
-  role: 'user' | 'restaurant' | null = null;
-
-  constructor(private auth: AuthGuard) {}
-
-  ngOnInit() {
-    const user = this.auth.getUser();
-    this.role = user ? user.role : null;
-  }
+export class Footer{ 
 }

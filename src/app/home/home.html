@@ -20,8 +20,21 @@
       <div class="menu-card" *ngFor="let m of menu">
         <h3>{{ m.name }}</h3>
         <p><em>{{ m.category }}</em></p>
-        <p><strong>₹{{ m.price }}</strong> </p>
+        <p><strong>₹{{ m.price }}</strong></p>
+
+        <!-- Counter -->
+        <div class="counter">
+          <button (click)="decrementItem(m)" [disabled]="m.quantity === 0">-</button>
+          <span>{{ m.quantity || 0 }}</span>
+          <button (click)="incrementItem(m)">+</button>
+        </div>
       </div>
     </div>
+  </div>
+
+  <!-- Floating cart bar -->
+  <div class="view-cart-bar" *ngIf="cartItems.length > 0">
+    <div>{{ totalQuantity }} item(s) added to cart</div>
+    <button (click)="goToCart()">View Cart</button>
   </div>
 </div>

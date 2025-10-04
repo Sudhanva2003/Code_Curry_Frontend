@@ -1,0 +1,59 @@
+.orders-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 10px;
+}
+
+.section-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.section-subtitle {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: left;
+}
+
+.empty-msg {
+  text-align: center;
+  font-style: italic;
+  color: gray;
+  margin: 10px 0;
+}
+
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.order-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.order-card h4 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.order-items {
+  margin-top: 10px;
+  border-top: 1px dashed #ccc;
+  padding-top: 10px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  font-size: 14px;
+}

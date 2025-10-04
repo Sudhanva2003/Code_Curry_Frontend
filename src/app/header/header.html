@@ -1,4 +1,31 @@
 <header class="app-header">
-  <h1>Code&amp;Curry</h1>
-  <img src="https://freesvg.org/img/abstract-user-flat-3.png" alt="profile" class="profile-img">
+  <div class="header-top">
+    <h1 class="title">Code&amp;Curry</h1>
+
+    <div class="profile-container" (click)="toggleProfileBox()">
+      <img src="https://freesvg.org/img/abstract-user-flat-3.png" alt="profile" class="profile-img">
+      
+      <!-- Profile dropdown -->
+      <div class="profile-box" *ngIf="showProfileBox">
+        <p><strong>Name:</strong> {{ user?.name }}</p>
+        <p><strong>Email:</strong> {{ user?.email }}</p>
+        <p><strong>Role:</strong> {{ user?.role }}</p>
+        <button (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="nav-links" *ngIf="role === 'restaurant'">
+    <a routerLink="open-orders" routerLinkActive="active">Open Orders</a>
+    <a routerLink="menu" routerLinkActive="active">Menu</a>
+    <a routerLink="order-history" routerLinkActive="active">Order History</a>
+    <a routerLink="settings" routerLinkActive="active">Settings</a>
+  </nav>
+
+  <nav class="nav-links" *ngIf="role === 'user'">
+    <a routerLink="home" routerLinkActive="active">Home</a>
+    <a routerLink="cart" routerLinkActive="active">Cart</a>
+    <a routerLink="orders" routerLinkActive="active">Orders</a>
+    <a routerLink="user-settings" routerLinkActive="active">User Settings</a>
+  </nav>
 </header>

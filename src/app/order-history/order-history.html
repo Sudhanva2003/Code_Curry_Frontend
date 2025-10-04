@@ -1,1 +1,25 @@
-<p>order-history works!</p>
+<div class="order-history-container">
+  <h2 class="section-title">Past Orders</h2>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="!loading && pastOrders.length === 0" class="empty-msg">
+    No past orders
+  </div>
+
+  <div class="order-list" *ngIf="!loading && pastOrders.length > 0">
+    <div class="order-card" *ngFor="let order of pastOrders">
+      <h4>Order #{{ order.orderId }}</h4>
+      <p><strong>Date:</strong> {{ order.orderDate | date:'medium' }}</p>
+      <p><strong>Status:</strong> {{ order.status }}</p>
+      <p><strong>Total:</strong> ₹{{ order.totalAmount }}</p>
+
+      <div class="order-items">
+        <div class="item" *ngFor="let item of order.items">
+          <span>{{ item.name }} (x{{ item.quantity }})</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

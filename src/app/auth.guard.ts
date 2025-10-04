@@ -60,8 +60,9 @@
 import { Injectable } from "@angular/core";
 
 export interface UserData {
-  id: number;
+  userId: number;
   name: string;
+  email: string;
   role: 'user' | 'restaurant';
 }
 
@@ -93,7 +94,7 @@ export class AuthGuard {
 
   // Get id only
   getId(): number | null {
-    return this.getUser()?.id ?? null;
+    return this.getUser()?.userId ?? null;
   }
 
   // Clear on logout

@@ -14,8 +14,14 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/${endpoint}`);
   }
 
-  // Generic POST (later)
+  // Generic POST
   post(endpoint: string, body: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/${endpoint}`, body);
   }
+
+
+  put(endpoint: string, body: any = {}): Observable<any> {
+  return this.http.put(`${this.baseUrl}/${endpoint}`, body, { responseType: 'text' });
+}
+
 }
