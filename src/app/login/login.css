@@ -1,20 +1,142 @@
-/* Center form in the viewport */
-.login-container {
+/* Page background */
+/* .login-page {
+  background: linear-gradient(135deg, #ffecd2, #fcb69f); 
+  height: 100vh;
   display: flex;
-  justify-content: center;  /* horizontal center */
-  align-items: center;      /* vertical center */
-  height: 100vh;            /* full viewport height */
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  text-align: center;
+} */
+
+.login-page {
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fcb69f); /* soft love-inspired gradient */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
   text-align: center;
 }
 
+/* App name */
+.app-name {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #b22222; /* deep red */
+  text-shadow: 0 0 8px rgba(255, 100, 50, 0.6);
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+}
+
+.app-name span {
+  color: #ff6f00; /* shiny orange ampersand */
+}
+
+/* Tagline */
+.tagline {
+  font-size: 1rem;
+  color: #5a2e2e;
+  margin-bottom: 40px;
+}
+
+/* Login box */
+.login-container {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  width: 320px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.login-container h2 {
+  margin-bottom: 20px;
+  color: #b22222;
+}
+
+/* Inputs */
 form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 300px;
+  gap: 12px;
 }
 
-button {
+input {
   padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #ff6f00;
+  box-shadow: 0 0 5px rgba(255, 111, 0, 0.3);
+}
+
+/* Button */
+button {
+  margin-top: 10px;
+  background: linear-gradient(90deg, #ff6f00, #ff8c42);
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #e65c00, #ff944d);
+}
+
+/* Register text */
+.register-text {
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.register-text a {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.register-text a:hover {
+  color: #0056b3;
+}
+
+.tagline {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+/* shiny red gradient text for "Food App" */
+.highlight {
+  background: linear-gradient(90deg, #bc6151, #e51747);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  animation: shine 3s linear infinite;
+}
+
+/* subtle shimmering animation */
+@keyframes shine {
+  0% { background-position: 0%; }
+  100% { background-position: 200%; }
 }

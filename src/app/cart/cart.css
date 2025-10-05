@@ -1,5 +1,7 @@
 .cart-container {
   padding: 20px;
+  max-width: 700px;
+  margin: auto;
 }
 
 .cart-item {
@@ -10,14 +12,18 @@
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 15px;
+  background: #fafafa;
 }
 
 .cart-footer {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  font-weight: bold;
+  font-size: 1.1em;
 }
 
+/* Popup overlay */
 .popup {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -28,14 +34,63 @@
   z-index: 10000;
 }
 
+/* Popup content box */
 .popup-content {
   background: white;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 25px 35px;
+  border-radius: 12px;
+  text-align: left;
+  width: 400px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Bill section inside popup */
+.bill-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.bill-row strong {
+  font-weight: 600;
+}
+
+.bill-title {
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
+/* Buttons */
 .popup-content button {
   margin: 10px;
-  padding: 10px 20px;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+/* Pay button - shiny green */
+.popup-content button:first-of-type {
+  background: linear-gradient(135deg, #28a745, #4cd964);
+  color: white;
+  box-shadow: 0 2px 6px rgba(40,167,69,0.4);
+}
+.popup-content button:first-of-type:hover {
+  background: linear-gradient(135deg, #218838, #37c957);
+}
+
+/* Cancel button - dim red */
+.popup-content button:last-of-type {
+  background: #e57373;
+  color: white;
+  box-shadow: 0 2px 6px rgba(229,115,115,0.4);
+}
+.popup-content button:last-of-type:hover {
+  background: #d32f2f;
 }

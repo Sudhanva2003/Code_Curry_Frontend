@@ -54,6 +54,31 @@ export class Cart implements OnInit {
     this.showPayPopup = false;
   }
 
+  // ---- Additional calculated getters ----
+  get itemCount(): number {
+    return this.cartItems.reduce((sum, i) => sum + i.quantity, 0);
+  }
+
+  get handlingCharges(): number {
+    return this.itemCount * 5;
+  }
+
+  get deliveryCharges(): number {
+    return 50;
+  }
+
+  get cgst(): number {
+    return this.totalAmount * 0.09;
+  }
+
+  get sgst(): number {
+    return this.totalAmount * 0.09;
+  }
+
+  get finalTotal(): number {
+    return this.totalAmount + this.handlingCharges + this.deliveryCharges + this.cgst + this.sgst;
+  }
+
   confirmPay() {
     const user = this.auth.getUser();
     if (!user) {

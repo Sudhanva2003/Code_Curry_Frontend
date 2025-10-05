@@ -1,13 +1,20 @@
-<div class="login-container">
-  <h2>Login</h2>
-  <form [formGroup]="loginForm" (ngSubmit)="submit()">
-    <input formControlName="email" placeholder="Email"/>
-    <input type="password" formControlName="password" placeholder="Password"/>
-    <!-- <select formControlName="role">
-      <option value="user">User</option>
-      <option value="restaurant">Restaurant</option>
-    </select> -->
-    <button type="submit">Login</button>
-  </form>
-  <p>Don't have an account? <a (click)="goRegister()">Register</a></p>
+<div class="login-page">
+  <h1 class="app-name">Code<span>&</span>Curry</h1>
+ <p class="tagline">
+  Your go to <span class="highlight">Food App</span> <br/>made by developers with love ❤️
+</p>
+
+
+  <div class="login-container">
+    <h2>Login</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+      <input formControlName="email" placeholder="Email" />
+      <input type="password" formControlName="password" placeholder="Password" />
+      <button type="submit">Login</button>
+    </form>
+    <p class="register-text">
+      Don't have an account?
+      <a (click)="goRegister()">Register</a>
+    </p>
+  </div>
 </div>
