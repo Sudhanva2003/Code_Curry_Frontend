@@ -5,19 +5,26 @@
   <!-- Restaurant list -->
   <div *ngIf="!loading && !error && !selectedRestaurant" class="restaurant-list">
     <div class="restaurant-card" *ngFor="let r of restaurants" (click)="selectRestaurant(r)">
+      <div class="restaurant-image">
+        <img [src]="r.restImageUrl" alt="{{ r.name }}">
+      </div>
       <h3>{{ r.name }}</h3>
-      <p><strong>Rating:</strong> {{ r.rating }} Star</p>
+     <p><strong>Rating:</strong> {{ r.rating }} ★</p>
+
       <p><strong>Distance:</strong> 2Km Away</p>
     </div>
   </div>
 
   <!-- Menu view -->
   <div *ngIf="!loading && selectedRestaurant">
-    <button (click)="backToRestaurants()">⬅ Back</button>
+    <button class="back-btn" (click)="backToRestaurants()">⬅ Back</button>
     <h2 class="restaurant-title">{{ selectedRestaurant.name }}</h2>
 
     <div class="menu-list">
       <div class="menu-card" *ngFor="let m of menu">
+        <div class="menu-image">
+          <img [src]="m.foodImageUrl" alt="{{ m.name }}">
+        </div>
         <h3>{{ m.name }}</h3>
         <p><em>{{ m.category }}</em></p>
         <p><strong>₹{{ m.price }}</strong></p>
@@ -25,7 +32,7 @@
         <!-- Counter -->
         <div class="counter">
           <button (click)="decrementItem(m)" [disabled]="m.quantity === 0">-</button>
-          <span>   {{  m.quantity || 0  }}    </span>
+          <span>{{ m.quantity || 0 }}</span>
           <button (click)="incrementItem(m)">+</button>
         </div>
       </div>
@@ -33,8 +40,8 @@
   </div>
 
   <!-- Floating cart bar -->
-
-<div class="view-cart-bar" *ngIf="cartItems.length > 0">
-  <div class="cart-info">{{ totalQuantity }} item(s) added to cart</div>
-  <button class="view-cart-btn" (click)="goToCart()">View Cart</button>
+  <div class="view-cart-bar" *ngIf="cartItems.length > 0">
+    <div class="cart-info">{{ totalQuantity }} item(s) added to cart</div>
+    <button class="view-cart-btn" (click)="goToCart()">View Cart</button>
+  </div>
 </div>

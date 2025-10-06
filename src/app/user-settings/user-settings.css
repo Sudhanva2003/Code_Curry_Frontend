@@ -1,93 +1,201 @@
-.user-card {
-  padding: 20px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  margin-bottom: 20px;
+/* Container for user profile */
+.user-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 0 16px;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* User info card */
+.user-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+  transition: all 0.2s ease;
+}
+
+.user-card:hover {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* User header */
+.user-card h2 {
+  margin: 0 0 12px 0;
+  font-size: 22px;
+  color: #222;
+}
+
+.user-card p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Action buttons container */
 .actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   margin-top: 20px;
 }
 
+/* Individual action row */
 .action-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  justify-content: space-between;
+  gap: 12px;
 }
 
+/* Buttons */
+button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Primary action */
+.btn-primary {
+  background-color: #1976d2;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #1565c0;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+/* Secondary action */
+.btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background-color: #d5d5d5;
+}
+
+/* Form modal */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .modal-content {
   background: #fff;
-  padding: 20px;
-  width: 90%;
+  padding: 24px;
+  width: 100%;
   max-width: 400px;
-  border-radius: 10px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
   position: relative;
-  overflow-y: auto;
   max-height: 90vh;
+  overflow-y: auto;
 }
 
 .close {
   position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 20px;
+  top: 12px;
+  right: 16px;
+  font-size: 22px;
   font-weight: bold;
   color: #666;
   cursor: pointer;
+  transition: color 0.2s;
 }
 
+.close:hover {
+  color: #333;
+}
+
+/* Form inside modal */
 form label {
   display: block;
-  margin-top: 12px;
+  margin-top: 14px;
   font-size: 14px;
   font-weight: 500;
+  color: #333;
 }
 
-form input {
+form input,
+form textarea {
   width: 100%;
-  padding: 8px;
-  margin-top: 4px;
+  padding: 10px 12px;
+  margin-top: 6px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 13px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
-form button {
-  margin-top: 18px;
-  padding: 8px 14px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 13px;
-  cursor: pointer;
+form input:focus,
+form textarea:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
 }
 
-form button:hover {
-  background-color: #0056b3;
+form textarea {
+  resize: vertical;
+  min-height: 80px;
 }
 
-input.ng-invalid.ng-touched {
-  border-color: red;
+/* Error styles */
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border-color: #d32f2f;
 }
 
 .error {
-  color: red;
+  color: #d32f2f;
   font-size: 13px;
   margin-top: 4px;
+}
+
+/* Form buttons inside modal */
+form button {
+  margin-top: 18px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+form button.btn-primary {
+  background-color: #1976d2;
+  color: white;
+}
+
+form button.btn-primary:hover {
+  background-color: #1565c0;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+form button.btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+form button.btn-secondary:hover {
+  background-color: #d5d5d5;
 }

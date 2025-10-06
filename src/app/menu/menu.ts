@@ -1,133 +1,3 @@
-// import { Component, OnInit } from '@angular/core';
-// import { HttpClient } from '@angular/common/http';
-// import { AuthGuard } from '../auth.guard';
-// import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-// @Component({
-//   selector: 'app-menu',
-//   templateUrl: './menu.html',
-//   styleUrls: ['./menu.css'],
-//   standalone: false
-// })
-// export class Menu implements OnInit {
-//   menuItems: any[] = [];
-//   loading = true;
-//   error = '';
-//   restId: number | null = null;
-
-//   // Popup state
-//   showEditPopup = false;
-//   showDeletePopup = false;
-//   formSubmitted = false;
-
-//   // Editing form
-//   editForm: FormGroup;
-//   currentItem: any = null;
-
-//   constructor(private auth: AuthGuard, private http: HttpClient, private fb: FormBuilder) {
-//     this.editForm = this.fb.group({
-//       name: ['', Validators.required],
-//       category: ['', Validators.required],
-//       price: [0, [Validators.required, Validators.min(0)]],
-//       description: ['', Validators.required],
-//       isAvailable: [true]
-//     });
-//   }
-
-//   ngOnInit(): void {
-//     this.restId = this.auth.getRestId();
-//     if (this.restId === null) {
-//       this.error = 'Restaurant not detected. Please login as a restaurant first.';
-//       this.loading = false;
-//       return;
-//     }
-//     this.loadMenu();
-//   }
-
-//   loadMenu(): void {
-//     this.loading = true;
-//     this.error = '';
-//     this.http.get(`https://localhost:7265/api/Restaurant/Menu/${this.restId}`).subscribe({
-//       next: (data: any) => {
-//         this.menuItems = data || [];
-//         this.loading = false;
-//       },
-//       error: (err) => {
-//         console.error('Failed to load menu', err);
-//         this.error = 'Failed to load menu';
-//         this.loading = false;
-//       }
-//     });
-//   }
-
-//   onEdit(item: any): void {
-//     this.currentItem = { ...item };
-//     this.editForm.setValue({
-//       name: item.name,
-//       category: item.category,
-//       price: item.price,
-//       description: item.description,
-//       isAvailable: item.isAvailable
-//     });
-//     this.showEditPopup = true;
-//     this.formSubmitted = false;
-//   }
-
-//   onSave(): void {
-//     this.formSubmitted = true;
-//     if (this.editForm.invalid || !this.currentItem) {
-//       alert('Please fill all required fields correctly.');
-//       return;
-//     }
-
-//     const foodId = this.currentItem.foodId;
-//     const updatedItem = this.editForm.value;
-
-//     this.http.put(`https://localhost:7265/api/Foods/UpdateFood/${foodId}`, updatedItem).subscribe({
-//       next: () => {
-//         alert('Food item updated successfully');
-//         const index = this.menuItems.findIndex(m => m.foodId === foodId);
-//         if (index !== -1) {
-//           this.menuItems[index] = { ...this.menuItems[index], ...updatedItem };
-//         }
-//         this.closePopup();
-//       },
-//       error: (err) => {
-//         console.error('Failed to update food', err);
-//         alert('Update failed: ' + JSON.stringify(err.error?.errors || err.message));
-//       }
-//     });
-//   }
-
-//   onDelete(item: any): void {
-//     if (confirm('Are you sure you want to delete this food item?')) {
-//       const foodId = item.foodId;
-//       this.http.delete(`https://localhost:7265/api/Foods/DeleteFood/${foodId}`).subscribe({
-//         next: () => {
-//           alert('Food item deleted');
-//           this.menuItems = this.menuItems.filter(m => m.foodId !== foodId);
-//         },
-//         error: (err) => {
-//           console.error('Failed to delete food', err);
-//           alert('Delete failed');
-//         }
-//       });
-//     }
-//   }
-
-//   closePopup(): void {
-//     this.showEditPopup = false;
-//     this.currentItem = null;
-//     this.editForm.reset();
-//     this.formSubmitted = false;
-//   }
-
-//   formatPrice(p: any): string {
-//     const n = Number(p);
-//     return isNaN(n) ? String(p) : `₹ ${n.toFixed(2)}`;
-//   }
-// }
-
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthGuard } from '../auth.guard';
@@ -144,6 +14,8 @@ export class Menu implements OnInit {
   loading = true;
   error = '';
   restId: number | null = null;
+
+  defaultFoodUrl = 'https://example.com/default-food.jpg'; // fallback image
 
   // Popup state
   showEditPopup = false;
@@ -162,7 +34,8 @@ export class Menu implements OnInit {
       category: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
       description: ['', Validators.required],
-      isAvailable: [true]
+      isAvailable: [true],
+      foodImageUrl: ['']
     });
 
     this.addForm = this.fb.group({
@@ -170,7 +43,8 @@ export class Menu implements OnInit {
       category: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
       description: ['', Validators.required],
-      isAvailable: [true]
+      isAvailable: [true],
+      foodImageUrl: ['']
     });
   }
 
@@ -189,7 +63,10 @@ export class Menu implements OnInit {
     this.error = '';
     this.http.get(`https://localhost:7265/api/Restaurant/Menu/${this.restId}`).subscribe({
       next: (data: any) => {
-        this.menuItems = data || [];
+        this.menuItems = data.map((item: any) => ({
+          ...item,
+          foodImageUrl: item.foodImageUrl || this.defaultFoodUrl
+        })) || [];
         this.loading = false;
       },
       error: (err) => {
@@ -200,6 +77,15 @@ export class Menu implements OnInit {
     });
   }
 
+  isValidUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   // ---------- ADD ----------
   openAddPopup(): void {
     this.addForm.reset({
@@ -207,7 +93,8 @@ export class Menu implements OnInit {
       category: '',
       price: 0,
       description: '',
-      isAvailable: true
+      isAvailable: true,
+      foodImageUrl: ''
     });
     this.showAddPopup = true;
     this.formSubmitted = false;
@@ -220,16 +107,18 @@ export class Menu implements OnInit {
       return;
     }
 
+    const foodUrl = this.addForm.value.foodImageUrl;
     const newFood = {
       restId: this.restId,
-      ...this.addForm.value
+      ...this.addForm.value,
+      foodImageUrl: foodUrl && this.isValidUrl(foodUrl) ? foodUrl : this.defaultFoodUrl
     };
 
     this.http.post(`https://localhost:7265/api/Foods/AddFood`, newFood).subscribe({
       next: (res: any) => {
-        alert('Food item added successfully');
         this.menuItems.push(res);
         this.closePopup();
+        alert('Food item added successfully');
       },
       error: (err) => {
         console.error('Failed to add food', err);
@@ -246,7 +135,8 @@ export class Menu implements OnInit {
       category: item.category,
       price: item.price,
       description: item.description,
-      isAvailable: item.isAvailable
+      isAvailable: item.isAvailable,
+      foodImageUrl: item.foodImageUrl || ''
     });
     this.showEditPopup = true;
     this.formSubmitted = false;
@@ -260,16 +150,22 @@ export class Menu implements OnInit {
     }
 
     const foodId = this.currentItem.foodId;
-    const updatedItem = this.editForm.value;
+    const formValue = this.editForm.value;
+    const updatedItem = {
+      ...formValue,
+      foodImageUrl: formValue.foodImageUrl && this.isValidUrl(formValue.foodImageUrl)
+        ? formValue.foodImageUrl
+        : this.defaultFoodUrl
+    };
 
     this.http.put(`https://localhost:7265/api/Foods/UpdateFood/${foodId}`, updatedItem).subscribe({
       next: () => {
-        alert('Food item updated successfully');
         const index = this.menuItems.findIndex(m => m.foodId === foodId);
         if (index !== -1) {
           this.menuItems[index] = { ...this.menuItems[index], ...updatedItem };
         }
         this.closePopup();
+        alert('Food item updated successfully');
       },
       error: (err) => {
         console.error('Failed to update food', err);
@@ -284,8 +180,8 @@ export class Menu implements OnInit {
       const foodId = item.foodId;
       this.http.delete(`https://localhost:7265/api/Foods/DeleteFood/${foodId}`).subscribe({
         next: () => {
-          alert('Food item deleted');
           this.menuItems = this.menuItems.filter(m => m.foodId !== foodId);
+          alert('Food item deleted');
         },
         error: (err) => {
           console.error('Failed to delete food', err);

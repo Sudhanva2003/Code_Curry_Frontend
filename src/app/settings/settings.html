@@ -1,4 +1,9 @@
 <div *ngIf="restaurant" class="restaurant-card">
+  <!-- Restaurant Image -->
+  <div class="restaurant-image-container">
+    <img [src]="restaurant.restImageUrl || defaultImage" alt="Restaurant Image" />
+  </div>
+
   <h2>{{ restaurant.name }}</h2>
   <p><strong>Address:</strong> {{ restaurant.address }}</p>
   <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
@@ -6,12 +11,12 @@
 
   <div class="actions">
     <div class="action-row">
-      <span>Do you want to edit this restaurant?</span>
+      <span>Edit this restaurant?</span>
       <button (click)="onEdit()">Edit</button>
     </div>
 
     <div class="action-row">
-      <span>Are you sure you want to delete this restaurant?</span>
+      <span>Delete this restaurant?</span>
       <button (click)="onDelete()">Delete</button>
     </div>
   </div>
@@ -41,6 +46,9 @@
         <option [value]="true">Yes</option>
         <option [value]="false">No</option>
       </select>
+
+      <label>Restaurant Image (optional):</label>
+      <input type="text" [(ngModel)]="editedRestaurant.restImageUrl" name="restImageUrl" placeholder="Enter image URL (optional)" />
 
       <button type="submit">Save Changes</button>
     </form>

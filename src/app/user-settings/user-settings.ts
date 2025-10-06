@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';  
 
 @Component({
   selector: 'app-user-settings',
@@ -14,7 +15,7 @@ export class UserSettings implements OnInit {
   showEditPopup = false;
   formSubmitted = false;
 
-  constructor(private auth: AuthGuard, private http: HttpClient) {}
+  constructor(private auth: AuthGuard, private http: HttpClient,private router: Router) {}
 
   ngOnInit(): void {
     const user = this.auth.getUser();
@@ -70,6 +71,8 @@ const userId = user?.userId;
         next: () => {
           alert('User deleted');
           this.user = null;
+          this.router.navigate(['/login']);
+          
         },
         error: (err) => {
           console.error('Failed to delete user', err);

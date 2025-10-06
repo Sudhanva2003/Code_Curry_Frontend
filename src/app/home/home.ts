@@ -37,7 +37,11 @@ export class Home implements OnInit {
     this.loading = true;
     this.api.get('Restaurant/Home').subscribe({
       next: (data) => {
-        this.restaurants = data;
+        // Add default image if missing
+        this.restaurants = data.map((r: any) => ({
+          ...r,
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant'
+        }));
         this.loading = false;
       },
       error: (err) => {
@@ -53,11 +57,12 @@ export class Home implements OnInit {
     this.loading = true;
     this.api.get(`Restaurant/Menu/${r.restId}`).subscribe({
       next: (data) => {
-        // Add quantity and restId to each menu item
+        // Add quantity, restId, and default food image
         this.menu = data.map((m: any) => ({
           ...m,
           quantity: 0,
-          restId: r.restId
+          restId: r.restId,
+          foodImageUrl: m.foodImageUrl || 'https://via.placeholder.com/200x150?text=Food'
         }));
         this.loading = false;
       },
@@ -90,7 +95,13 @@ export class Home implements OnInit {
     let idx = this.cartItems.findIndex(ci => ci.foodId === item.foodId && ci.restId === item.restId);
     if (item.quantity > 0) {
       if (idx === -1) {
-        this.cartItems.push({ foodId: item.foodId, quantity: item.quantity, restId: item.restId, name: item.name, price: item.price });
+        this.cartItems.push({ 
+          foodId: item.foodId, 
+          quantity: item.quantity, 
+          restId: item.restId, 
+          name: item.name, 
+          price: item.price 
+        });
       } else {
         this.cartItems[idx].quantity = item.quantity;
       }
@@ -110,7 +121,6 @@ export class Home implements OnInit {
     this.router.navigate(['user/cart']);
   }
 
-  // ✅ Place order API call
   placeOrder() {
     const user = this.auth.getUser();
     if (!user) {

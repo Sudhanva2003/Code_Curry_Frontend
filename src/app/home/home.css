@@ -2,58 +2,124 @@
   padding: 20px;
 }
 
-.restaurant-list {
+.restaurant-list, .menu-list {
   display: flex;
-  flex-wrap: wrap;      /* wrap cards to next line if screen is small */
-  gap: 20px;            /* space between cards */
-  justify-content: center; /* center all cards horizontally */
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
+/* Restaurant Card */
 .restaurant-card {
-  flex: 0 1 200px;      /* width of each card, adjusts for responsiveness */
+  flex: 0 1 220px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 15px;
-  text-align: center;   /* center content */
+  padding: 10px;
+  text-align: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   transition: transform 0.2s;
+  cursor: pointer;
 }
 
 .restaurant-card:hover {
-  transform: scale(1.05); /* subtle hover effect */
+  transform: scale(1.05);
 }
 
 .restaurant-card h3 {
   font-size: 1.5em;
-  margin-bottom: 10px;
+  margin: 8px 0;
 }
 
-.menu-list {
-  display: flex;
-  flex-wrap: wrap;      /* wrap cards to next line if screen is small */
-  gap: 20px;            /* space between cards */
-  justify-content: center; /* center all cards horizontally */
+.restaurant-image {
+  width: 100%;
+  height: 140px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
+.restaurant-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Menu Card */
 .menu-card {
-  flex: 0 1 200px;      /* width of each card, adjusts for responsiveness */
+  flex: 0 1 200px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 15px;
-  text-align: center;   /* center content */
+  padding: 10px;
+  text-align: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   transition: transform 0.2s;
 }
 
 .menu-card:hover {
-  transform: scale(1.05); /* subtle hover effect */
+  transform: scale(1.05);
 }
 
 .menu-card h3 {
-  font-size: 1.5em;
-  margin-bottom: 10px;
+  font-size: 1.3em;
+  margin: 8px 0;
 }
 
+.menu-image {
+  width: 100%;
+  height: 150px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.menu-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Counter */
+.counter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.counter button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #888;
+  background: #f2f2f2;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.counter button:disabled {
+  background: #e0e0e0;
+  cursor: not-allowed;
+}
+
+/* Back Button */
+.back-btn {
+  margin-bottom: 10px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #1565c0;
+}
+
+/* Floating cart bar */
 .view-cart-bar {
   position: fixed;
   bottom: 20px;
@@ -78,7 +144,7 @@
 }
 
 .view-cart-btn {
-  background: #e63946; /* elegant red */
+  background: #e63946;
   color: white;
   border: none;
   padding: 10px 22px;
@@ -89,6 +155,70 @@
 }
 
 .view-cart-btn:hover {
-  background: #c82333; /* darker red on hover */
+  background: #c82333;
   transform: scale(1.05);
+}
+
+.home-container {
+  padding: 20px;
+  max-height: 100vh;        /* prevent content from overflowing the viewport */
+  overflow-y: auto;         /* enable vertical scrolling if content is tall */
+  box-sizing: border-box;
+}
+
+/* Make sure restaurant and menu lists can scroll independently if needed */
+.restaurant-list,
+.menu-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Images inside cards */
+.restaurant-image img,
+.menu-image img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+/* Back button */
+.back-btn {
+  background-color: #1976d2;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background-color: #1565c0;
+}
+
+/* Floating cart bar */
+.view-cart-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 25px;
+  min-width: 320px;
+  z-index: 9999;
+}
+
+/* Ensure content doesn't hide behind floating cart */
+.home-container {
+  padding-bottom: 100px; /* enough space to scroll above the cart */
 }
