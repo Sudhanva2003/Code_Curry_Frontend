@@ -23,5 +23,10 @@ export class ApiService {
   put(endpoint: string, body: any = {}): Observable<any> {
   return this.http.put(`${this.baseUrl}/${endpoint}`, body, { responseType: 'text' });
 }
+  // Generic DELETE
+  delete(endpoint: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${endpoint}`);
+  }
+
 
 }

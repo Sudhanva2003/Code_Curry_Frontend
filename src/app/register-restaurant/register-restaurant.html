@@ -1,12 +1,48 @@
 <div class="register-container">
   <h2>Register Restaurant</h2>
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <input formControlName="name" placeholder="Restaurant Name"/>
-    <input formControlName="address" placeholder="Address"/>
-    <input formControlName="email" placeholder="Email"/>
-    <input formControlName="phone" placeholder="Phone"/>
-    <input formControlName="rating" placeholder="Rating (1-5)"/>
-    <input formControlName="password" type="password" placeholder="Password"/>
-    <button type="submit">Register</button>
+    <div class="form-field">
+      <input formControlName="name" placeholder="Restaurant Name" />
+      <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="error">
+        Name is required.
+      </div>
+    </div>
+
+    <div class="form-field">
+      <input formControlName="address" placeholder="Address" />
+      <div *ngIf="form.get('address')?.invalid && form.get('address')?.touched" class="error">
+        Address is required.
+      </div>
+    </div>
+
+    <div class="form-field">
+      <input formControlName="email" placeholder="Email" />
+      <div *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="error">
+        Enter a valid email.
+      </div>
+    </div>
+
+    <div class="form-field">
+      <input formControlName="phone" placeholder="Phone" />
+      <div *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched" class="error">
+        Phone is required.
+      </div>
+    </div>
+
+    <div class="form-field">
+      <input formControlName="rating" placeholder="Rating (1-5)" />
+      <div *ngIf="form.get('rating')?.invalid && form.get('rating')?.touched" class="error">
+        Rating must be between 1 and 5.
+      </div>
+    </div>
+
+    <div class="form-field">
+      <input formControlName="password" type="password" placeholder="Password" />
+      <div *ngIf="form.get('password')?.invalid && form.get('password')?.touched" class="error">
+        Password must be at least 6 characters.
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="form.invalid">Register</button>
   </form>
 </div>

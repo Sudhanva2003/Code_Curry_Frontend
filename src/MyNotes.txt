@@ -1,0 +1,184 @@
+1)index.html
+
+(this is the root file of the whole application, so when u say single page application,
+everything in angular is loaded onto index.html, if u say inspect->source, u will see only this page
+and every change just appends or modifes the html structure in this file)
+<body>
+
+<app-root>
+(as of now we have structured for this app to have only 1 parent component, if there were more all would come here)
+
+2)main.ts
+
+import platformbrowser(sets up the browser environment for angular to run)
+
+import appmodule
+
+platformbrowser().bootstrapmodule(appmodule,{
+
+so ur calling the appmodule here
+
+3)appmodule.ts(will be removed if u move to standalone project)----------------------------------------------------------
+
+import {classname} from fileurl
+
+@ngmodule{
+    imports[ all class names ],
+
+    declarations[ what are the modules u are using]
+
+    providers[ provides you with services which u can use as dependency injection ],
+
+    bootstrap[which components are present in the index.html, here only app]
+
+}
+
+(a library has multiple modules, when u say import reactivemodule from @angular/class
+
+it means u are importing a module from library @angular/,
+this module is nothing but a class, if u click view source definition of that library
+it will show a large file which has a class called reactivemodule)
+
+4)--------------------------------------------------------------------------------------------------------------------
+app.ts
+import {component} from @angular/
+@component{
+
+    selector:'app-root'//what u will select this component as in the html files
+    templateurl:'app.html'
+    standalone:false //this will be removed if u move to a standalone project
+}
+export class App{
+//this classname is whats imported in other components.
+}
+
+5)app routing module.ts-----------------------------------------------------------------------------------------------------
+this is the file which mathces the routes with which component to display for that routes
+
+import {NgModule,Routes,routermodule}
+import {all classes}
+
+const routes:Routes=[
+    // {path,component}
+    {path:'login',component:login},
+    {path:'',redirectTo:login,pathmatch:full}
+    //redirects when its empty
+    {path:**, redirectTo:login},
+    //something wrong u entered defualt login
+    {path:'home',component:home},
+
+    //now we want to create views, such that 
+    //when user is logged in as user, the route should be user/orders for orders componen
+    
+    //{path,component,children[]}
+
+    {path:'user',
+    component:user,
+    children[
+        {path:'childcomponent',component:childcompname},
+        
+    ]
+    }
+]
+@ngmodule{
+    imports:[RouterModule.forroute(Routes)]//you are feeding our routes to our routermodule for it to work
+    exports:[RouterModule]
+}
+export class AppRoutingModule();
+
+6)Authguard.ts--------------------------------------------------------------------------------------------------------------
+this file provides the foundation for the user state management(login/logout+data persistence)
+throughout the app.
+
+import {injectable} form @angular/
+
+//this is used to perform dependency injection
+//it tells angular you can make this class and inject it into other classes
+//without injectable angular, will not know that it can 
+//1)create this class, 2)manage its lifecycle
+
+export interface userdata{
+    userid:number,
+    name:string,
+    role:'user'|'Restaurant' //boolean
+}
+//so this typescript enforces the rules so if u assign a property which doenst mathce
+//it will give compile time error.
+
+@injectable({providedin:'root'})
+//this is a very powerful line, 
+//so @injectable marks this class as a service and it can be injected
+//this provided in root, makes this a common instance throughout the app
+//you dont have to create this instance in another file, just use this 
+//to use you can just import Authguard
+//and also since its defined in root you dont need to add it in the providers of other module
+
+export class Authguard{
+    private User:userdata|null=null
+
+//so its of type userdata which we defined
+//and its initialized as null
+    setUser(user:userData){
+        this.user=user;
+        localstorage.setitem('user',json.stringify(user))
+    }
+    //so you already have the user variable
+    //we are saying this.user to say we assigned the value
+    //now in localstorage we store as key value pair
+    //so we say 'user' which is the key string
+    //and value is stringified(json->string) of the user object
+
+    getUser():userData|null{
+        if(!this.user){
+            const stored=localstorage.getitem('user');
+            if(stored)this.user=json.parse(user);
+            //making it back to json from string
+        }
+         return this.user
+    }
+    //here we are seeeing we are defining the returning type its either userData or null
+    //then we are checking if user is there in memory(this.user is the memory)
+
+    //IMPORTANT: why this approach? because when u refresh the page, all the stuff in memory is lost
+    getRole(): 'user' | 'restaurant' | null {
+  return this.getUser()?.role ?? null;
+}   //the question mark is to ensure if null wont proceed ahead.
+
+     getId(): userId|null{
+        return this.getUser()?.userid??null;
+     }
+
+     logout(){
+        this.user=null;
+        localstorage.removeitem(user);
+     }
+
+}
+
+7)login.ts----------------------------------------------------------------------------------------------
+import {formbuilder,formgroup,}
+export class login{
+    loginForm:formgroup
+}
+//our loginform variable is of type formgroup
+constructor(
+  private fb: FormBuilder,
+  private router: Router,
+  private auth: AuthGuard,
+  private http: HttpClient
+  //so we are doing dependency injection for 4 different angular services.
+) {
+  this.loginForm = this.fb.group({
+    email: ['', Validators.required],
+    password: ['', Validators.required]
+    //here we are creating a reactive form with these 2 fields
+  });
+}
+//now fb is a private fb and it has a variable of type group
+   submit(){
+    cosnt {email,paswsword}=this.loginform.value;
+    this.http.post<any>(http/api/users/login,{email,password})
+    .subscribe({
+        .next
+    })
+   }

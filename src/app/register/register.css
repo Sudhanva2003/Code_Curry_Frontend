@@ -1,0 +1,51 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffe5b4; /* Soft orange background */
+}
+
+.register-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 30px;
+  border-radius: 12px;
+  background-color: #ffffff; /* White box */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 30px;
+  font-size: 28px;
+  color: #ff6f00; /* Vibrant orange */
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.restaurant-btn {
+  background-color: #28a745; /* Green */
+}
+
+.restaurant-btn:hover {
+  background-color: #218838;
+}
+
+.user-btn {
+  background-color: #007bff; /* Blue */
+}
+
+.user-btn:hover {
+  background-color: #0069d9;
+}
