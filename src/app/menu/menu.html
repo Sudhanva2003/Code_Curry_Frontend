@@ -1,1 +1,102 @@
-<p>menu works!</p>
+<div class="menu-page">
+  <h1>Restaurant Menu</h1>
+  <div *ngIf="loading" class="center">Loading menu...</div>
+  <div *ngIf="error" class="center error">{{ error }}</div>
+  <div *ngIf="!loading && !error && menuItems.length === 0" class="center">
+    No menu items found.
+  </div>
+  <!-- horizontal card list -->
+  <div class="card-list" *ngIf="menuItems.length > 0">
+    <div class="card" *ngFor="let item of menuItems">
+      <div class="card-left">
+        <h3>{{ item.name }}</h3>
+        <p class="meta">{{ item.category }}</p>
+        <p class="desc">{{ item.description }}</p>
+      </div>
+      <div class="card-right">
+        <div class="price">{{ formatPrice(item.price) }}</div>
+        <div class="avail" [ngClass]="{'off': !item.isAvailable}">
+          {{ item.isAvailable ? 'Available' : 'Not available' }}
+        </div>
+        <div class="actions">
+          <button class="btn edit" type="button" (click)="openEdit(item)">Edit</button>
+          <button class="btn del" type="button" (click)="openDelete(item)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- EDIT MODAL - Placed at root level -->
+<div *ngIf="showEditModal" class="menu-modal-backdrop">
+  <div class="menu-modal-container">
+    <div class="menu-modal-header">
+      <h2>Edit Food Item</h2>
+      <button type="button" class="menu-modal-close" (click)="cancelEdit()">&times;</button>
+    </div>
+    
+    <form [formGroup]="editForm" (ngSubmit)="saveEdit()" class="menu-modal-form">
+      <div class="menu-form-group">
+        <label>Name *</label>
+        <input type="text" formControlName="name" placeholder="Enter food name" />
+        <span class="menu-error" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+          Name is required
+        </span>
+      </div>
+      
+      <div class="menu-form-row">
+        <div class="menu-form-group">
+          <label>Category *</label>
+          <input type="text" formControlName="category" placeholder="e.g., Main Course" />
+          <span class="menu-error" *ngIf="editForm.get('category')?.invalid && editForm.get('category')?.touched">
+            Category is required
+          </span>
+        </div>
+        <div class="menu-form-group">
+          <label>Price *</label>
+          <input type="number" formControlName="price" step="0.01" placeholder="0.00" />
+          <span class="menu-error" *ngIf="editForm.get('price')?.invalid && editForm.get('price')?.touched">
+            Valid price required
+          </span>
+        </div>
+      </div>
+      
+      <div class="menu-form-group">
+        <label>Description *</label>
+        <textarea formControlName="description" placeholder="Describe the dish..." rows="3"></textarea>
+        <span class="menu-error" *ngIf="editForm.get('description')?.invalid && editForm.get('description')?.touched">
+          Description is required
+        </span>
+      </div>
+      
+      <div class="menu-form-group">
+        <label class="menu-checkbox">
+          <input type="checkbox" formControlName="isAvailable" />
+          <span>Available for order</span>
+        </label>
+      </div>
+      <div class="menu-modal-actions">
+        <button type="button" class="menu-btn-secondary" (click)="cancelEdit()">Cancel</button>
+        <button type="submit" class="menu-btn-primary" [disabled]="editForm.invalid">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- DELETE MODAL - Placed at root level -->
+<div *ngIf="showDeleteModal" class="menu-modal-backdrop">
+  <div class="menu-modal-container menu-modal-small">
+    <div class="menu-modal-header">
+      <h3>Confirm Delete</h3>
+      <button type="button" class="menu-modal-close" (click)="cancelDelete()">&times;</button>
+    </div>
+    
+    <div class="menu-modal-body">
+      <p>Are you sure you want to delete <strong>{{ itemToDelete?.name }}</strong>?</p>
+      <p class="menu-modal-warning">This action cannot be undone.</p>
+    </div>
+    
+    <div class="menu-modal-actions">
+      <button type="button" class="menu-btn-secondary" (click)="cancelDelete()">No, Cancel</button>
+      <button type="button" class="menu-btn-danger" (click)="confirmDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>

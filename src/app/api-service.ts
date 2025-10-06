@@ -1,3 +1,4 @@
+// src/app/api-service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -11,17 +12,21 @@ export class ApiService {
 
   // Generic GET
   get(endpoint: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${endpoint}`);
+    return this.http.get<any>(`${this.baseUrl}/${endpoint}`);
   }
 
   // Generic POST
   post(endpoint: string, body: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/${endpoint}`, body);
+    return this.http.post<any>(`${this.baseUrl}/${endpoint}`, body);
   }
 
-
+  // Generic PUT
   put(endpoint: string, body: any = {}): Observable<any> {
-  return this.http.put(`${this.baseUrl}/${endpoint}`, body, { responseType: 'text' });
-}
+    return this.http.put<any>(`${this.baseUrl}/${endpoint}`, body);
+  }
 
+  // Generic DELETE
+  delete(endpoint: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${endpoint}`);
+  }
 }

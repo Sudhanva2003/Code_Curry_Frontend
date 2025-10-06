@@ -23,7 +23,7 @@ export class OpenOrders implements OnInit {
     this.loading = true;
     const restId = this.auth.getId(); // restaurant ID
     if (restId) {
-      this.api.get(`Restaurant/ViewRestaurantOpenOrders/${restId}`).subscribe({
+      this.api.get(`Restaurants/ViewRestaurantOpenOrders/${restId}`).subscribe({
         next: (res: any) => {
           console.log("API Response:", res);
           this.orders = res || [];

@@ -1,0 +1,371 @@
+/* Layout */
+.menu-page {
+  padding: 28px 36px;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.menu-page h1 {
+  margin-bottom: 18px;
+  font-size: 28px;
+}
+
+/* Center messages */
+.center {
+  text-align: center;
+  margin: 20px 0;
+}
+.error {
+  color: #b00020;
+}
+
+/* Horizontal card list */
+.card-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+/* Each card */
+.card {
+  min-width: 320px;
+  max-width: 380px;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  padding: 14px;
+  border: 1px solid #eee;
+}
+
+/* Left area: info */
+.card-left {
+  flex: 1 1 auto;
+}
+.card-left h3 {
+  margin: 0 0 6px 0;
+}
+.card-left .meta {
+  margin: 0;
+  color: #666;
+  font-size: 13px;
+}
+.card-left .desc {
+  margin-top: 8px;
+  color: #444;
+  font-size: 14px;
+}
+
+/* Right area: actions */
+.card-right {
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.price {
+  font-weight: 700;
+  font-size: 16px;
+}
+.avail {
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #e6fff2;
+  color: #086b2a;
+}
+.avail.off {
+  background: #fff0f0;
+  color: #8b0e0e;
+}
+
+/* Buttons */
+.actions { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 6px; 
+  width: 100%; 
+}
+.btn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  cursor: pointer;
+  width: 100%;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.btn.edit { 
+  background: #fffbe6; 
+  border-color: #f0d36a; 
+}
+.btn.edit:hover {
+  background: #fff8cc;
+}
+.btn.del { 
+  background: #fff0f0; 
+  border-color: #e0a1a1; 
+}
+.btn.del:hover {
+  background: #ffe0e0;
+}
+
+/* =============================================
+   MODAL STYLES - COMPLETELY ISOLATED
+   ============================================= */
+
+/* Backdrop - covers entire viewport */
+.menu-modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
+  animation: menuFadeIn 0.2s ease !important;
+}
+
+@keyframes menuFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal container */
+.menu-modal-container {
+  position: relative !important;
+  background: white !important;
+  border-radius: 12px !important;
+  width: 600px !important;
+  max-width: 100% !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4) !important;
+  animation: menuSlideUp 0.3s ease !important;
+  z-index: 1000000 !important;
+}
+
+@keyframes menuSlideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.menu-modal-small {
+  width: 450px !important;
+}
+
+/* Modal header */
+.menu-modal-header {
+  padding: 24px 24px 16px 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.menu-modal-header h2,
+.menu-modal-header h3 {
+  margin: 0 !important;
+  font-size: 22px !important;
+  color: #222 !important;
+  font-weight: 600 !important;
+}
+
+.menu-modal-close {
+  background: none !important;
+  border: none !important;
+  font-size: 32px !important;
+  color: #999 !important;
+  cursor: pointer !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 4px !important;
+  transition: all 0.2s !important;
+}
+
+.menu-modal-close:hover {
+  background: #f5f5f5 !important;
+  color: #333 !important;
+}
+
+/* Modal body */
+.menu-modal-body {
+  padding: 24px !important;
+  text-align: center !important;
+}
+
+.menu-modal-body p {
+  margin: 0 0 12px 0 !important;
+  font-size: 15px !important;
+  color: #333 !important;
+  line-height: 1.6 !important;
+}
+
+.menu-modal-warning {
+  color: #999 !important;
+  font-size: 13px !important;
+}
+
+/* Form */
+.menu-modal-form {
+  padding: 24px !important;
+}
+
+.menu-form-group {
+  margin-bottom: 20px !important;
+}
+
+.menu-form-group label {
+  display: block !important;
+  margin-bottom: 6px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+.menu-form-group input[type="text"],
+.menu-form-group input[type="number"],
+.menu-form-group textarea {
+  width: 100% !important;
+  padding: 10px 12px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  font-family: inherit !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.2s !important;
+}
+
+.menu-form-group input:focus,
+.menu-form-group textarea:focus {
+  outline: none !important;
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+.menu-form-group textarea {
+  resize: vertical !important;
+  min-height: 80px !important;
+}
+
+.menu-form-row {
+  display: flex !important;
+  gap: 16px !important;
+}
+
+.menu-form-row .menu-form-group {
+  flex: 1 !important;
+}
+
+/* Checkbox */
+.menu-checkbox {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+}
+
+.menu-checkbox input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+}
+
+.menu-checkbox span {
+  font-size: 14px !important;
+  color: #333 !important;
+}
+
+/* Error text */
+.menu-error {
+  display: block !important;
+  color: #d32f2f !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+}
+
+/* Modal actions */
+.menu-modal-actions {
+  padding: 16px 24px 24px 24px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  border-top: 1px solid #f0f0f0 !important;
+}
+
+.menu-modal-actions button {
+  padding: 10px 24px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  border: none !important;
+  transition: all 0.2s !important;
+}
+
+.menu-btn-secondary {
+  background: #e0e0e0 !important;
+  color: #333 !important;
+}
+
+.menu-btn-secondary:hover {
+  background: #d0d0d0 !important;
+}
+
+.menu-btn-primary {
+  background: #1976d2 !important;
+  color: white !important;
+}
+
+.menu-btn-primary:hover {
+  background: #1565c0 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3) !important;
+}
+
+.menu-btn-primary:disabled {
+  background: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.menu-btn-danger {
+  background: #e74c3c !important;
+  color: white !important;
+}
+
+.menu-btn-danger:hover {
+  background: #c0392b !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3) !important;
+}
