@@ -15,7 +15,7 @@ export class Menu implements OnInit {
   error = '';
   restId: number | null = null;
 
-  defaultFoodUrl = 'https://example.com/default-food.jpg'; // fallback image
+  defaultFoodUrl = 'https://static.vecteezy.com/system/resources/previews/004/204/922/non_2x/food-logo-template-design-icon-illustration-vector.jpg'; // fallback image
 
   // Popup state
   showEditPopup = false;
