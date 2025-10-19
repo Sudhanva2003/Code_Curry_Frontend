@@ -28,6 +28,8 @@ export class Menu implements OnInit {
   addForm: FormGroup;
   currentItem: any = null;
 
+  searchTerm:string='';
+
   constructor(private auth: AuthGuard, private http: HttpClient, private fb: FormBuilder) {
     this.editForm = this.fb.group({
       name: ['', Validators.required],
@@ -72,6 +74,32 @@ export class Menu implements OnInit {
       error: (err) => {
         console.error('Failed to load menu', err);
         this.error = 'Failed to load menu';
+        this.loading = false;
+      }
+    });
+  }
+  searchFoods(): void {
+    const term = this.searchTerm.trim();
+    if (!term) {
+      this.loadMenu(); // Reload all if empty
+      return;
+    }
+
+    this.loading = true;
+    this.http.get(`https://localhost:7265/api/Foods/Search?name=${term}`).subscribe({
+      next: (data: any) => {
+        // Optional: filter only foods belonging to this restaurant
+        this.menuItems = data
+          .filter((f: any) => f.restId === this.restId)
+          .map((item: any) => ({
+            ...item,
+            foodImageUrl: item.foodImageUrl || this.defaultFoodUrl
+          }));
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Search failed', err);
+        this.error = 'Search failed';
         this.loading = false;
       }
     });

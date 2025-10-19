@@ -3,6 +3,17 @@
     <h1>Restaurant Menu</h1>
     <button class="add-btn" (click)="openAddPopup()">+ Add Food</button>
   </div>
+  <!-- 🔍 Search Bar -->
+<div class="search-container">
+  <input
+    type="text"
+    [(ngModel)]="searchTerm"
+    (input)="searchFoods()"
+    placeholder="Search by food name"
+    class="search-bar"
+  />
+</div>
+
 
   <div *ngIf="loading" class="center">Loading menu...</div>
   <div *ngIf="error" class="center error">{{ error }}</div>

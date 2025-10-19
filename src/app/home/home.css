@@ -222,3 +222,62 @@
 .home-container {
   padding-bottom: 100px; /* enough space to scroll above the cart */
 }
+
+.search-container {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.search-bar {
+  width: 60%;
+  max-width: 400px;
+  padding: 10px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+.search-bar:focus {
+  border-color: #ff6600;
+}
+/* Wrap filters and sort dropdowns neatly on right side */
+.controls-wrapper {
+  display: flex;
+  justify-content: flex-end; /* Push content to right corner */
+  align-items: center;
+  gap: 10px;
+  margin: 10px 20px 0 0; /* top-right spacing */
+}
+
+/* Optional: style dropdowns for cleaner look */
+.sort-dropdown,
+.filter-dropdown {
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Common class for both restaurant and menu controls */
+.controls-right {
+  display: flex;
+  justify-content: flex-end; /* Push everything to right */
+  align-items: center;
+  gap: 10px; /* space between items */
+  margin: 10px 30px 10px 0; /* some right margin */
+}
+
+/* Optional nice styling for dropdowns */
+.dropdown {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+label {
+  font-weight: 500;
+  color: #333;
+}
+

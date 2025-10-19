@@ -1,6 +1,32 @@
 <div class="home-container">
+  <!-- Loading & Error -->
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="error">{{ error }}</div>
+
+  <!-- 🔍 Search Bar (Restaurant view only) -->
+  <div class="search-container" *ngIf="!selectedRestaurant">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="searchRestaurantsAndFoods()"
+      placeholder="Search for food, restaurants or cuisines"
+      class="search-bar"
+    />
+  </div>
+
+  <!-- Restaurant sort (Restaurant view only) -->
+<div class="restaurant-controls" *ngIf="!selectedRestaurant">
+  <div class="controls-right">
+    <label for="restaurantSort">Sort by:</label>
+    <select id="restaurantSort"
+            [(ngModel)]="restaurantSort"
+            (change)="applyRestaurantSort()"
+            class="dropdown">
+      <option value="rating">Rating</option>
+      <option value="distance">Distance</option>
+    </select>
+  </div>
+</div>
 
   <!-- Restaurant list -->
   <div *ngIf="!loading && !error && !selectedRestaurant" class="restaurant-list">
@@ -9,11 +35,36 @@
         <img [src]="r.restImageUrl" alt="{{ r.name }}">
       </div>
       <h3>{{ r.name }}</h3>
-     <p><strong>Rating:</strong> {{ r.rating }} ★</p>
-
+      <p><strong>Rating:</strong> {{ r.rating }} ★</p>
       <p><strong>Distance:</strong> 2Km Away</p>
     </div>
   </div>
+
+  <!-- Food filter & sort (Food view only) -->
+  <div class="menu-controls" *ngIf="selectedRestaurant">
+  <div class="controls-right">
+    <label for="filter">Filter:</label>
+    <select id="filter"
+            [(ngModel)]="filterType"
+            (change)="applyFilter()"
+            class="dropdown">
+      <option value="none">None</option>
+      <option value="veg">Veg</option>
+      <option value="non veg">Non-Veg</option>
+      <option value="vegan">Vegan</option>
+    </select>
+
+    <label for="sort">Sort by:</label>
+    <select id="sort"
+            [(ngModel)]="foodSort"
+            (change)="applySort()"
+            class="dropdown">
+      <option value="none">None</option>
+      <option value="price">Price</option>
+    </select>
+  </div>
+</div>
+
 
   <!-- Menu view -->
   <div *ngIf="!loading && selectedRestaurant">
@@ -21,7 +72,7 @@
     <h2 class="restaurant-title">{{ selectedRestaurant.name }}</h2>
 
     <div class="menu-list">
-      <div class="menu-card" *ngFor="let m of menu">
+      <div class="menu-card" *ngFor="let m of filteredMenu">
         <div class="menu-image">
           <img [src]="m.foodImageUrl" alt="{{ m.name }}">
         </div>

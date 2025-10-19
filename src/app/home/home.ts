@@ -12,12 +12,18 @@ import { AuthGuard } from '../auth.guard';
 export class Home implements OnInit {
   restaurants: any[] = [];
   menu: any[] = [];
+  filteredMenu: any[] = [];
   selectedRestaurant: any = null;
   loading = true;
   error = '';
 
   cartItems: any[] = [];
   totalQuantity: number = 0;
+
+  searchTerm: string = '';
+  filterType: string = 'none';
+  foodSort: string = 'none';
+  restaurantSort: string = 'rating';
 
   constructor(
     private api: ApiService,
@@ -27,17 +33,16 @@ export class Home implements OnInit {
 
   ngOnInit() {
     this.fetchRestaurants();
-    // Load cart from localStorage if any
     const stored = localStorage.getItem('cart');
     this.cartItems = stored ? JSON.parse(stored) : [];
     this.updateTotal();
   }
 
+  // ------------------- Fetch Restaurants -------------------
   fetchRestaurants() {
     this.loading = true;
-    this.api.get('Restaurant/Home').subscribe({
-      next: (data) => {
-        // Add default image if missing
+    this.api.get(`Filter/Restaurants?sort=${this.restaurantSort}`).subscribe({
+      next: (data: any) => {
         this.restaurants = data.map((r: any) => ({
           ...r,
           restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant'
@@ -52,18 +57,81 @@ export class Home implements OnInit {
     });
   }
 
+  applyRestaurantSort() {
+    this.fetchRestaurants(); // re-fetch sorted restaurants
+  }
+
+  // ------------------- Search -------------------
+  searchRestaurantsAndFoods() {
+    if (!this.searchTerm.trim()) {
+      this.fetchRestaurants();
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+
+    const restaurantSearch = this.api.get(`Restaurant/Search?name=${this.searchTerm}`);
+    const foodSearch = this.api.get(`Foods/Search?name=${this.searchTerm}`);
+
+    Promise.all([restaurantSearch.toPromise(), foodSearch.toPromise()])
+      .then(([restaurants, foods]: any) => {
+        const formattedRestaurants = restaurants.map((r: any) => ({
+          ...r,
+          type: 'restaurant',
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant'
+        }));
+
+        const formattedFoods = foods.map((f: any) => ({
+          ...f,
+          type: 'food',
+          restImageUrl: f.foodImageUrl || 'https://via.placeholder.com/200x150?text=Food'
+        }));
+
+        this.restaurants = [...formattedRestaurants, ...formattedFoods];
+        this.loading = false;
+      })
+      .catch((err) => {
+        console.error(err);
+        this.error = 'Search failed';
+        this.loading = false;
+      });
+  }
+
+  // ------------------- Food Filter + Sort -------------------
+  applyFilter() {
+    if (!this.menu) return;
+
+    // Filter
+    let result = this.filterType === 'none' 
+      ? [...this.menu] 
+      : this.menu.filter(f => f.category?.toLowerCase() === this.filterType.toLowerCase());
+
+    // Sort
+    if (this.foodSort === 'price') {
+      result.sort((a, b) => a.price - b.price);
+    }
+
+    this.filteredMenu = result;
+  }
+
+  applySort() {
+    this.applyFilter(); // re-apply with sort
+  }
+
+  // ------------------- Restaurant Selection -------------------
   selectRestaurant(r: any) {
     this.selectedRestaurant = r;
     this.loading = true;
-    this.api.get(`Restaurant/Menu/${r.restId}`).subscribe({
-      next: (data) => {
-        // Add quantity, restId, and default food image
+    this.api.get(`Filter/Foods?restId=${r.restId}&category=${this.filterType}&sort=${this.foodSort}`).subscribe({
+      next: (data: any) => {
         this.menu = data.map((m: any) => ({
           ...m,
           quantity: 0,
           restId: r.restId,
           foodImageUrl: m.foodImageUrl || 'https://via.placeholder.com/200x150?text=Food'
         }));
+        this.filteredMenu = [...this.menu];
         this.loading = false;
       },
       error: (err) => {
@@ -77,8 +145,10 @@ export class Home implements OnInit {
   backToRestaurants() {
     this.selectedRestaurant = null;
     this.menu = [];
+    this.filteredMenu = [];
   }
 
+  // ------------------- Cart -------------------
   incrementItem(item: any) {
     item.quantity++;
     this.updateCart(item);
@@ -92,7 +162,7 @@ export class Home implements OnInit {
   }
 
   updateCart(item: any) {
-    let idx = this.cartItems.findIndex(ci => ci.foodId === item.foodId && ci.restId === item.restId);
+    const idx = this.cartItems.findIndex(ci => ci.foodId === item.foodId && ci.restId === item.restId);
     if (item.quantity > 0) {
       if (idx === -1) {
         this.cartItems.push({ 
@@ -108,7 +178,6 @@ export class Home implements OnInit {
     } else {
       if (idx !== -1) this.cartItems.splice(idx, 1);
     }
-
     this.updateTotal();
     localStorage.setItem('cart', JSON.stringify(this.cartItems));
   }
@@ -135,11 +204,10 @@ export class Home implements OnInit {
         quantity: i.quantity
       }))
     };
-    
+
     this.api.post('Orders/placeOrder', payload).subscribe({
-      next: (res) => {
+      next: () => {
         alert('Order placed successfully!');
-        // Clear cart after order
         this.cartItems = [];
         this.totalQuantity = 0;
         localStorage.removeItem('cart');

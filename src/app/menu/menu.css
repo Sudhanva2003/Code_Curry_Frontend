@@ -303,3 +303,21 @@
 .menu-btn-secondary:hover {
   background: #e0e0e0;
 }
+
+.search-container {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.search-bar {
+  width: 60%;
+  max-width: 400px;
+  padding: 10px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.search-bar:focus {
+  border-color: #ff6600;
+}
