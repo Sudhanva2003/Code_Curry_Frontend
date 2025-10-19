@@ -4,12 +4,19 @@
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="error">{{ error }}</div>
 
-  <div *ngIf="!loading && pastOrders.length === 0" class="empty-msg">
-    No past orders
+  <div class="month-selector">
+    <label for="monthSelect"><strong>Select Month:</strong></label>
+    <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="changeMonth(selectedMonth)">
+      <option *ngFor="let month of months" [value]="month">{{ month }}</option>
+    </select>
   </div>
 
-  <div class="order-list" *ngIf="!loading && pastOrders.length > 0">
-    <div class="order-card" *ngFor="let order of pastOrders">
+  <div *ngIf="!loading && filteredPastOrders.length === 0" class="empty-msg">
+    No past orders for {{ selectedMonth }}
+  </div>
+
+  <div class="order-list" *ngIf="!loading && filteredPastOrders.length > 0">
+    <div class="order-card" *ngFor="let order of filteredPastOrders">
       <h4>Order #{{ order.orderId }}</h4>
       <p><strong>Date:</strong> {{ order.orderDate | date:'medium' }}</p>
       <p><strong>Status:</strong> {{ order.status }}</p>
@@ -17,9 +24,16 @@
 
       <div class="order-items">
         <div class="item" *ngFor="let item of order.items">
-          <span>{{ item.name }} (x{{ item.quantity }})</span>
+          <span>{{ item.foodName }} (x{{ item.quantity }})</span>
+          <span>₹{{ item.price }}</span>
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="pagination" *ngIf="filteredPastOrders.length > 0">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage >= totalPages">Next &gt;</button>
   </div>
 </div>

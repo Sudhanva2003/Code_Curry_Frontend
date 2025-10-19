@@ -46,3 +46,40 @@
   border-top: 1px solid #eee;
   padding: 5px 0;
 }
+
+.month-selector {
+  margin: 20px 0;
+}
+
+.month-selector button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  background-color: #eee;
+  border: none;
+  cursor: pointer;
+}
+
+.month-selector button:hover {
+  background-color: #ddd;
+}
+
+.order-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.order-items .item {
+  margin-left: 10px;
+}
+
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination button {
+  margin: 0 10px;
+  padding: 6px 12px;
+}
