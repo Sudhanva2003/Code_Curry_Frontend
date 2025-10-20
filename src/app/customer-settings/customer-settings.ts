@@ -4,12 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';  
 
 @Component({
-  selector: 'app-user-settings',
-  templateUrl: './user-settings.html',
-  styleUrls: ['./user-settings.css'],
+  selector: 'app-customer-settings',
+  templateUrl: './customer-settings.html',
+  styleUrls: ['./customer-settings.css'],
   standalone: false
 })
-export class UserSettings implements OnInit {
+export class CustomerSettings implements OnInit {
   user: any = null;
   editedUser: any = null;
   showEditPopup = false;
@@ -22,7 +22,7 @@ export class UserSettings implements OnInit {
 const userId = user?.userId;
 // Replace with actual method
     if (userId !== null) {
-      this.http.get(`https://localhost:7265/api/Users/ViewUser/${userId}`).subscribe({
+      this.http.get(`https://localhost:7265/api/Customer/ViewUser/${userId}`).subscribe({
         next: (data: any) => {
           this.user = { ...data, userId };
         },
@@ -48,7 +48,7 @@ const userId = user?.userId;
     this.formSubmitted = true;
 
     if (form.valid && this.user?.userId) {
-      this.http.put(`https://localhost:7265/api/Users/EditUserDetails/${this.user.userId}`, this.editedUser).subscribe({
+      this.http.put(`https://localhost:7265/api/Customer/EditUserDetails/${this.user.userId}`, this.editedUser).subscribe({
         next: () => {
           alert('User updated successfully');
           this.user = { ...this.user, ...this.editedUser };
@@ -67,7 +67,7 @@ const userId = user?.userId;
 
   onDelete(): void {
     if (this.user?.userId && confirm('Are you sure you want to delete this user?')) {
-      this.http.delete(`https://localhost:7265/api/Users/DeleteUser/${this.user.userId}`).subscribe({
+      this.http.delete(`https://localhost:7265/api/Customer/DeleteUser/${this.user.userId}`).subscribe({
         next: () => {
           alert('User deleted');
           this.user = null;

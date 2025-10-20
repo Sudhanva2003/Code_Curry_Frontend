@@ -1,0 +1,71 @@
+<div *ngIf="deliveryDetail" class="delivery-container">
+  <!-- Restaurant Section -->
+  <div class="section">
+    <div class="section-header">
+      <h2>{{ deliveryDetail.restaurantName }}</h2>
+      <p class="address">{{ deliveryDetail.restaurantAddress }}</p>
+    </div>
+
+    <div class="items-section">
+      <h3>Items to Pick Up:</h3>
+      <ul>
+        <li *ngFor="let item of deliveryDetail.items">
+          {{ item.name }} — <span class="qty">x{{ item.quantity }}</span>
+        </li>
+      </ul>
+
+      <button class="tick-btn" (click)="onPickupConfirm()" [disabled]="isPickedUp">
+        ✓
+      </button>
+    </div>
+  </div>
+
+  <!-- Pickup Confirmation Popup -->
+  <div class="modal" *ngIf="showPickupPopup">
+    <div class="modal-content">
+      <h3>Did you pick all items?</h3>
+      <ul>
+        <li *ngFor="let item of deliveryDetail.items">
+          {{ item.name }} — x{{ item.quantity }}
+        </li>
+      </ul>
+      <div class="popup-actions">
+        <button class="confirm-btn" (click)="confirmPickup()">Yes, picked all</button>
+        <button class="cancel-btn" (click)="cancelPickup()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer Section -->
+  <div class="section">
+    <div class="section-header">
+      <h2>{{ deliveryDetail.customerName }}</h2>
+      <p class="address">{{ deliveryDetail.customerAddress }}</p>
+    </div>
+
+    <div class="delivery-action">
+      <button
+        class="deliver-btn"
+        [disabled]="!isPickedUp"
+        (click)="onDeliveryConfirm()"
+      >
+        Delivery Complete
+      </button>
+    </div>
+  </div>
+
+  <!-- Delivery Confirmation Popup -->
+  <div class="modal" *ngIf="showDeliveryPopup">
+    <div class="modal-content">
+      <h3>Did you deliver the order?</h3>
+      <div class="popup-actions">
+        <button class="confirm-btn" (click)="confirmDelivery()">Yes, Delivered</button>
+        <button class="cancel-btn" (click)="cancelDelivery()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!deliveryDetail">
+  <p>Loading delivery details...</p>
+</div>

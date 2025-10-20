@@ -1,0 +1,129 @@
+.delivery-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+}
+
+.section {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.address {
+  font-size: 14px;
+  color: #666;
+}
+
+.items-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.items-section li {
+  padding: 6px 0;
+  font-size: 15px;
+}
+
+.qty {
+  font-weight: bold;
+}
+
+.tick-btn {
+  float: right;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.tick-btn:hover {
+  transform: scale(1.1);
+}
+
+.tick-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.deliver-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.deliver-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.deliver-btn:hover:not(:disabled) {
+  background-color: #b02a37;
+}
+
+/* Popup modal styling */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 350px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.confirm-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #ccc;
+  color: black;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}

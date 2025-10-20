@@ -118,7 +118,7 @@ export class Home implements OnInit {
   }
 
   goToCart() {
-    this.router.navigate(['user/cart']);
+    this.router.navigate(['customer/cart']);
   }
 
   placeOrder() {
@@ -143,7 +143,7 @@ export class Home implements OnInit {
         this.cartItems = [];
         this.totalQuantity = 0;
         localStorage.removeItem('cart');
-        this.router.navigate(['user/orders']);
+        this.router.navigate(['customer/orders']);
       },
       error: (err) => {
         console.error(err);

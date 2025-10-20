@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,25 +20,44 @@ export class Login {
     private http: HttpClient
   ) {
     this.loginForm = this.fb.group({
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
 
   submit() {
+    if (this.loginForm.invalid) {
+      alert('Please enter valid credentials');
+      return;
+    }
+
     const { email, password } = this.loginForm.value;
 
-    this.http.post<any>('https://localhost:7265/api/users/login', { email, password })
+    this.http.post<any>('https://localhost:7265/api/Customer/login', { email, password })
       .subscribe({
         next: (res) => {
-          // res should be { id, name, role }
+          // Expected response: { id, name, role }
           this.auth.setUser(res);
 
-          // Navigate based on role
-          if (res.role === 'restaurant') {
-            this.router.navigate(['/restaurant']);
-          } else {
-            this.router.navigate(['/user']);
+          switch (res.role?.toLowerCase()) {
+            case 'restaurant':
+              this.router.navigate(['/restaurant']);
+              break;
+
+            case 'customer':
+              this.router.navigate(['/customer']);
+              break;
+
+            case 'deliverer':
+              this.router.navigate(['/deliverer']);
+              break;
+
+            case 'admin':
+              this.router.navigate(['/admin']);
+              break;
+
+            default:
+              alert('Unknown user role');
           }
         },
         error: () => {

@@ -49,3 +49,11 @@ button {
 .user-btn:hover {
   background-color: #0069d9;
 }
+
+.deliverer-btn{
+  background-color: #ff6f00;
+}
+
+.deliverer-btn:hover{
+  background-color:#8d582e;
+}

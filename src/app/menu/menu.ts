@@ -15,7 +15,7 @@ export class Menu implements OnInit {
   error = '';
   restId: number | null = null;
 
-  defaultFoodUrl = 'https://static.vecteezy.com/system/resources/previews/004/204/922/non_2x/food-logo-template-design-icon-illustration-vector.jpg'; // fallback image
+  defaultFoodUrl = 'https://static.vecteezy.com/system/resources/previews/004/204/922/non_2x/food-logo-template-design-icon-illustration-vector.jpg';
 
   // Popup state
   showEditPopup = false;
@@ -34,7 +34,7 @@ export class Menu implements OnInit {
       category: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
       description: ['', Validators.required],
-      isAvailable: [true],
+      foodStatus: ['Available'],
       foodImageUrl: ['']
     });
 
@@ -43,7 +43,7 @@ export class Menu implements OnInit {
       category: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
       description: ['', Validators.required],
-      isAvailable: [true],
+      foodStatus: ['Available'],
       foodImageUrl: ['']
     });
   }
@@ -93,7 +93,7 @@ export class Menu implements OnInit {
       category: '',
       price: 0,
       description: '',
-      isAvailable: true,
+      foodStatus: 'Available',
       foodImageUrl: ''
     });
     this.showAddPopup = true;
@@ -135,7 +135,7 @@ export class Menu implements OnInit {
       category: item.category,
       price: item.price,
       description: item.description,
-      isAvailable: item.isAvailable,
+      foodStatus: item.foodStatus,
       foodImageUrl: item.foodImageUrl || ''
     });
     this.showEditPopup = true;

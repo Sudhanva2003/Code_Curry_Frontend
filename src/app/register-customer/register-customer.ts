@@ -5,12 +5,12 @@ import { AuthGuard } from '../auth.guard';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'register-user',
+  selector: 'register-customer',
   standalone: false,
-  templateUrl: 'register-user.html',
-  styleUrls: ['./register-user.css']
+  templateUrl: 'register-customer.html',
+  styleUrls: ['./register-customer.css']
 })
-export class RegisterUser {
+export class RegisterCustomer {
   form: FormGroup;
 
   constructor(
@@ -24,7 +24,8 @@ export class RegisterUser {
       address: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      role: ['customer', Validators.required] // default is customer
     });
   }
 
@@ -40,26 +41,26 @@ export class RegisterUser {
       phone: this.form.value.phone,
       address: this.form.value.address,
       password: this.form.value.password,
-      role: 'user' // backend defaults to user, kept for clarity
+      role: this.form.value.role // can be 'customer', 'deliverer', or 'admin'
     };
 
-    // Step 1: Register the user
-    this.http.post('https://localhost:7265/api/Users/register', userData).subscribe({
+    this.http.post('https://localhost:7265/api/Customer/register', userData).subscribe({
       next: () => {
-        // Step 2: Auto-login using the same flow as login.ts
-        this.http.post<any>('https://localhost:7265/api/users/login', {
+        this.http.post<any>('https://localhost:7265/api/Customer/login', {
           email: userData.email,
           password: userData.password
         }).subscribe({
           next: (res) => {
-            // Save user details via AuthGuard
             this.auth.setUser(res);
 
-            // Redirect based on role
-            if (res.role === 'user') {
-              this.router.navigate(['/user']);
-            } else {
+            if (res.role === 'customer') {
+              this.router.navigate(['/customer']);
+            } else if (res.role === 'restaurant') {
               this.router.navigate(['/restaurant']);
+            } else if (res.role === 'deliverer') {
+              this.router.navigate(['/deliverer']);
+            } else if (res.role === 'admin') {
+              this.router.navigate(['/admin']);
             }
           },
           error: () => {

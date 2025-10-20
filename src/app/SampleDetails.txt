@@ -1,0 +1,55 @@
+5 example FSSAI numbers (14 characters — usually numeric)
+
+12345678901234
+
+01234567890123
+
+98765432100011
+
+11112222333344
+
+55667788990012
+
+Note: many FSSAI numbers are numeric 14-digit values; some implementations allow alphanumeric but numeric is typical.
+
+5 example GSTINs (15 characters: 2-digit state + 10-char PAN + entity + Z + checksum)
+
+27ABCDE1234F1Z5
+
+29AAECS5678H1Z2
+
+07AABCU1234M1Z3
+
+33AAACB4321K1Z8
+
+19AAGCC9876L1Z9
+
+These follow the GSTIN structure (state code + PAN + entity digit + Z + checksum). They are examples only.
+
+5 example Driving License numbers (commonly seen formats)
+
+KA01201900
+
+DL04201800
+
+MH12201700
+
+TN20201602
+
+UP32201503
+
+Driving license formats vary by state/authority. These examples use the common pattern: StateCode RTOCode YYYY Serial (spaces added for readability). Your validation can accept several variants (with/without spaces, dashes).
+
+5 example Vehicle registration numbers starting with KA (Karnataka)
+
+KA01AB1234
+
+KA03AH9922
+
+KA51MD0456
+
+KA05HX7788
+
+KA41ZY0001
+
+Common format: KA-<RTO>-<Series>-<Number> (also appears as KA01AB1234 without dashes). Adjust your form/regex to accept both.

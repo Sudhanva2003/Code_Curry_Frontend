@@ -8,7 +8,6 @@
   <div *ngIf="error" class="center error">{{ error }}</div>
   <div *ngIf="!loading && !error && menuItems.length === 0" class="center">No menu items found.</div>
 
-  <!-- horizontal card list -->
   <div class="card-list" *ngIf="menuItems.length > 0">
     <div class="card" *ngFor="let item of menuItems">
       <div class="card-left">
@@ -22,8 +21,8 @@
 
       <div class="card-right">
         <div class="price">{{ formatPrice(item.price) }}</div>
-        <div class="avail" [ngClass]="{'off': !item.isAvailable}">
-          {{ item.isAvailable ? 'Available' : 'Not available' }}
+        <div class="avail" [ngClass]="{'off': item.foodStatus !== 'Available'}">
+          {{ item.foodStatus === 'Available' ? 'Available' : 'Not available' }}
         </div>
         <div class="actions">
           <button class="btn edit" type="button" (click)="onEdit(item)">Edit</button>
@@ -48,19 +47,18 @@
         <input type="text" formControlName="name" placeholder="Enter food name" />
       </div>
 
-      <div class="menu-form-row">
-        <div class="menu-form-group">
-          <label>Category *</label>
-          <input type="text" formControlName="category" placeholder="veg/non veg/vegan" />
-        </div>
-        <div class="menu-form-group">
-          <label>Price *</label>
-          <input type="number" formControlName="price" step="0.01" placeholder="0.00" />
-        </div>
+      <div class="menu-form-group">
+        <label>Category *</label>
+        <input type="text" formControlName="category" placeholder="veg/non veg/vegan" />
       </div>
 
       <div class="menu-form-group">
-        <label>Description *</label>
+        <label>Price *</label>
+        <input type="number" formControlName="price" step="0.01" placeholder="0.00" />
+      </div>
+
+      <div class="menu-form-group">
+        <label>Description</label>
         <textarea formControlName="description" placeholder="Describe the dish..." rows="3"></textarea>
       </div>
 
@@ -71,7 +69,7 @@
 
       <div class="menu-form-group">
         <label class="menu-checkbox">
-          <input type="checkbox" formControlName="isAvailable" />
+          <input type="checkbox" [checked]="editForm.value.foodStatus === 'Available'" (change)="editForm.patchValue({foodStatus: $event.target.checked ? 'Available' : 'Not available'})" />
           <span>Available for order</span>
         </label>
       </div>
@@ -98,19 +96,18 @@
         <input type="text" formControlName="name" placeholder="Enter food name" />
       </div>
 
-      <div class="menu-form-row">
-        <div class="menu-form-group">
-          <label>Category *</label>
-          <input type="text" formControlName="category" placeholder="veg/non veg/vegan" />
-        </div>
-        <div class="menu-form-group">
-          <label>Price *</label>
-          <input type="number" formControlName="price" step="0.01" placeholder="0.00" />
-        </div>
+      <div class="menu-form-group">
+        <label>Category *</label>
+        <input type="text" formControlName="category" placeholder="veg/non veg/vegan" />
       </div>
 
       <div class="menu-form-group">
-        <label>Description *</label>
+        <label>Price *</label>
+        <input type="number" formControlName="price" step="0.01" placeholder="0.00" />
+      </div>
+
+      <div class="menu-form-group">
+        <label>Description</label>
         <textarea formControlName="description" placeholder="Describe the dish..." rows="3"></textarea>
       </div>
 
@@ -121,7 +118,7 @@
 
       <div class="menu-form-group">
         <label class="menu-checkbox">
-          <input type="checkbox" formControlName="isAvailable" />
+          <input type="checkbox" [checked]="addForm.value.foodStatus === 'Available'" (change)="addForm.patchValue({foodStatus: $event.target.checked ? 'Available' : 'Not available'})" />
           <span>Available for order</span>
         </label>
       </div>

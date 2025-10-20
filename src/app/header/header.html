@@ -5,7 +5,6 @@
     <div class="profile-container" (click)="toggleProfileBox()">
       <img src="https://freesvg.org/img/abstract-user-flat-3.png" alt="profile" class="profile-img">
       
-      <!-- Profile dropdown -->
       <div class="profile-box" *ngIf="showProfileBox">
         <p><strong>Name:</strong> {{ user?.name }}</p>
         <p><strong>Email:</strong> {{ user?.email }}</p>
@@ -22,10 +21,17 @@
     <a routerLink="settings" routerLinkActive="active">Settings</a>
   </nav>
 
-  <nav class="nav-links" *ngIf="role === 'user'">
+  <nav class="nav-links" *ngIf="role === 'customer'">
     <a routerLink="home" routerLinkActive="active">Home</a>
     <a routerLink="cart" routerLinkActive="active">Cart</a>
     <a routerLink="orders" routerLinkActive="active">Orders</a>
-    <a routerLink="user-settings" routerLinkActive="active">User Settings</a>
+    <a routerLink="customer-settings" routerLinkActive="active">User Settings</a>
+  </nav>
+
+  <nav class="nav-links" *ngIf="role === 'deliverer'">
+    <a routerLink="live-orders" routerLinkActive="active">Live Orders</a>
+    <a routerLink="delivery" routerLinkActive="active">Delivery</a>
+    <a routerLink="delivered-orders" routerLinkActive="active">Delivered Orders</a>
+    <a routerLink="deliverer-settings" routerLinkActive="active">Deliverer Settings</a>
   </nav>
 </header>

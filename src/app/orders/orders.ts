@@ -21,7 +21,7 @@ export class Orders implements OnInit {
     const userId = this.auth.getUser()?.userId;
     if (userId) {
       console.log("hi");
-      this.api.get(`Users/ViewUserOrders/${userId}`).subscribe({
+      this.api.get(`Customer/ViewUserOrders/${userId}`).subscribe({
         next: (res: any) => {
           console.log("API Response:", res); // should log JSON correctly
           this.openOrders = res.openOrders || [];

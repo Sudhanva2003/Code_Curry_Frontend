@@ -11,5 +11,6 @@ export class Register{
   constructor(private router: Router) {}
 
   goRestaurant() { this.router.navigate(['/register-restaurant']); }
-  goUser() { this.router.navigate(['/register-user']); }
+  goUser() { this.router.navigate(['/register-customer']); }
+  goDeliverer() {this.router.navigate(['/register-deliverer']);}
 }
