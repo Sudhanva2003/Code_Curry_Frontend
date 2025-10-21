@@ -110,7 +110,7 @@ export class Orders implements OnInit {
   ngOnInit() {
     const userId = this.auth.getUser()?.userId;
     if (userId) {
-      this.api.get(`Users/ViewUserOrders/${userId}`).subscribe({
+      this.api.get(`Customer/ViewUserOrders/${userId}`).subscribe({
         next: (res: any) => {
           this.openOrders = res.openOrders || [];
           this.pastOrders = res.pastOrders || [];

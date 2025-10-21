@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegisterUser } from './register-user';
+import { DelivererSettings } from './deliverer-settings';
 
-describe('RegisterUser', () => {
-  let component: RegisterUser;
-  let fixture: ComponentFixture<RegisterUser>;
+describe('DelivererSettings', () => {
+  let component: DelivererSettings;
+  let fixture: ComponentFixture<DelivererSettings>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RegisterUser]
+      declarations: [DelivererSettings]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RegisterUser);
+    fixture = TestBed.createComponent(DelivererSettings);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

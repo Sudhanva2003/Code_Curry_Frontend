@@ -101,7 +101,7 @@ export class Cart implements OnInit {
         this.cartItems = [];
         this.totalAmount = 0;
         localStorage.removeItem('cart');
-        this.router.navigate(['/user/orders']);
+        this.router.navigate(['/customer/orders']);
       },
       error: (err) => {
         console.error(err);

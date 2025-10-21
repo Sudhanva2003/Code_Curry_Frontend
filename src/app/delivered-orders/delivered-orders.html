@@ -1,0 +1,29 @@
+<div class="order-history-container">
+  <h2 class="section-title">Delivered Orders</h2>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="!loading && deliveredOrders.length === 0" class="empty-msg">
+    No delivered orders
+  </div>
+
+  <div class="order-list" *ngIf="!loading && deliveredOrders.length > 0">
+    <div class="order-card" *ngFor="let order of deliveredOrders">
+      <h4>Order #{{ order.orderId }}</h4>
+
+      <div class="order-items">
+        <div class="item">
+          <span><strong>Restaurant Address:</strong></span>
+          <span>{{ order.restaurantAddress }}</span>
+        </div>
+        <div class="item">
+          <span><strong>Customer Address:</strong></span>
+          <span>{{ order.customerAddress }}</span>
+        </div>
+      </div>
+
+      <p class="delivery-fee"><strong>Delivery Fee:</strong> ₹50</p>
+    </div>
+  </div>
+</div>

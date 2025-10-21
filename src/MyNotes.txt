@@ -5,6 +5,10 @@ everything in angular is loaded onto index.html, if u say inspect->source, u wil
 and every change just appends or modifes the html structure in this file)
 <body>
 
+<base href='/'>
+this sets the base route, so when u use router module it adds the route after this /
+so localhost:4200/ is the prefix
+
 <app-root>
 (as of now we have structured for this app to have only 1 parent component, if there were more all would come here)
 
@@ -38,6 +42,20 @@ import {classname} from fileurl
 it means u are importing a module from library @angular/,
 this module is nothing but a class, if u click view source definition of that library
 it will show a large file which has a class called reactivemodule)
+
+(now coming to providers, these are either services you create or they are services we import,
+we create services by saying @injectable(providedin:root), but when u say this u are making that service
+instantiated globally(1 instance), so this wont come in providers)
+
+(difference between modules and providers you can see like 
+import formgroup. this is a module
+export class Menu{
+    form: formgroup; // here we are making use of module, and saying form is of type module
+
+    contructor(private http:httpclient);//here we are making use of service
+    this.http.get     //here we are using the service, saying this.http
+}
+)
 
 4)--------------------------------------------------------------------------------------------------------------------
 app.ts
@@ -183,10 +201,16 @@ constructor(
     })
    }
 
+8.component, its also a class. but with a component decorator.
 
+@component{
+    selector:'app-menu' //you can say <app-menu></app-menu> inside another component to render this.
+    template:`a.html`,
+    styleurls:[`styles.css`],
+    standalone:false,
+    
+}
 
-https://as1.ftcdn.net/v2/jpg/04/63/32/28/1000_F_463322875_iV4lHgnlo851WOdfPHzEE0xrFYKRvSZb.jpg
-
-https://th.bing.com/th/id/OSK.ebfd52bb0357f824932647ab0e28018d?w=200&h=126&c=7&rs=1&qlt=80&o=6&cdv=1&cb=12&dpr=1.3&pid=16.1
-
-https://bing.com/th?id=OSK.ebfd52bb0357f824932647ab0e28018d
+export class Menu implements Oninit{
+    
+}

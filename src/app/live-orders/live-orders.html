@@ -1,0 +1,34 @@
+<div class="open-orders-container">
+  <h2 class="section-title">Live Orders</h2>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="!loading && orders.length === 0" class="empty-msg">
+    No live orders
+  </div>
+
+  <div class="order-list" *ngIf="!loading && orders.length > 0">
+    <div class="order-card" *ngFor="let order of orders">
+      <h4>Order #{{ order.orderId }}</h4>
+      <p><strong>Status:</strong> {{ order.status }}</p>
+
+      <div class="order-items">
+        <div class="item">
+          <span><strong>Restaurant Address:</strong></span>
+          <span>{{ order.restaurantAddress }}</span>
+        </div>
+        <div class="item">
+          <span><strong>Customer Address:</strong></span>
+          <span>{{ order.customerAddress }}</span>
+        </div>
+      </div>
+
+      <p class="delivery-fee"><strong>Delivery Fee:</strong> ₹50</p>
+
+      <div class="order-actions">
+        <button (click)="assignDelivery(order.orderId)">Assign Delivery</button>
+      </div>
+    </div>
+  </div>
+</div>

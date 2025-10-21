@@ -1,11 +1,10 @@
 <div class="register-container">
-  <h2>Register Restaurant</h2>
+  <h2>Register Deliverer</h2>
   <form [formGroup]="form" (ngSubmit)="submit()">
-
     <div class="form-field">
-      <input type="text" formControlName="name" placeholder="Restaurant Name" />
-      <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="error">
-        Name is required.
+      <input type="text" formControlName="fullName" placeholder="Full Name" />
+      <div *ngIf="form.get('fullName')?.invalid && form.get('fullName')?.touched" class="error">
+        Full Name is required.
       </div>
     </div>
 
@@ -30,24 +29,18 @@
       </div>
     </div>
 
-    
-
     <div class="form-field">
-      <input type="text" formControlName="fssaiNumber" placeholder="FSSAI Number(alphanumeric 14 characters)" />
-      <div *ngIf="form.get('fssaiNumber')?.invalid && form.get('fssaiNumber')?.touched" class="error">
-        FSSAI Number must be 14 alphanumeric characters.
+      <input type="text" formControlName="licenseNumber" placeholder="License Number(alphanumeric 6 to 15 characters)" />
+      <div *ngIf="form.get('licenseNumber')?.invalid && form.get('licenseNumber')?.touched" class="error">
+        License Number must be alphanumeric, 6-15 characters.
       </div>
     </div>
 
     <div class="form-field">
-      <input type="text" formControlName="gstNumber" placeholder="GST Number(alphanumeric 15 characters)" />
-      <div *ngIf="form.get('gstNumber')?.invalid && form.get('gstNumber')?.touched" class="error">
-        GST Number must be 15 alphanumeric characters.
+      <input type="text" formControlName="vehicleNumber" placeholder="Vehicle Number(alphanumeric 6 to 12 characters)" />
+      <div *ngIf="form.get('vehicleNumber')?.invalid && form.get('vehicleNumber')?.touched" class="error">
+        Vehicle Number must be alphanumeric, 6-12 characters.
       </div>
-    </div>
-
-    <div class="form-field">
-      <input type="text" formControlName="cuisine" placeholder="Cuisine (optional)" />
     </div>
 
     <div class="form-field">

@@ -5,10 +5,10 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { Login } from './login/login';
 import { Register } from './register/register';
-import { RegisterUser } from './register-user/register-user';
+import { RegisterCustomer } from './register-customer/register-customer';
 import { RegisterRestaurant } from './register-restaurant/register-restaurant';
 import { RestaurantView } from './restaurant-view/restaurant-view';
-import { UserView } from './user-view/user-view';
+import { CustomerView } from './customer-view/customer-view';
 import { Header } from './header/header';
 import { Footer } from './footer/footer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,19 +19,25 @@ import { Settings } from './settings/settings';
 import { Home } from './home/home';
 import { Cart } from './cart/cart';
 import { Orders } from './orders/orders';
-import { UserSettings } from './user-settings/user-settings';
+import { CustomerSettings } from './customer-settings/customer-settings';
 import { provideHttpClient } from '@angular/common/http';
 import { RestaurantMenu } from './restaurant-menu/restaurant-menu';
+import { RegisterDeliverer } from './register-deliverer/register-deliverer';
+import { LiveOrders } from './live-orders/live-orders';
+import { DelivererView } from './deliverer-view/deliverer-view';
+import { DeliveredOrders } from './delivered-orders/delivered-orders';
+import { DelivererSettings } from './deliverer-settings/deliverer-settings';
+import { Delivery } from './delivery/delivery';
 
 @NgModule({
   declarations: [
     App,
     Login,
     Register,
-    RegisterUser,
+    RegisterCustomer,
     RegisterRestaurant,
     RestaurantView,
-    UserView,
+    CustomerView,
     Header,
     Footer,
     OpenOrders,
@@ -41,8 +47,14 @@ import { RestaurantMenu } from './restaurant-menu/restaurant-menu';
     Home,
     Cart,
     Orders,
-    UserSettings,
-    RestaurantMenu
+    CustomerSettings,
+    RestaurantMenu,
+    RegisterDeliverer,
+    LiveOrders,
+    DelivererView,
+    DeliveredOrders,
+    DelivererSettings,
+    Delivery
   ],
   imports: [
     BrowserModule,
