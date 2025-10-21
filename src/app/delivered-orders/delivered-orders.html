@@ -1,29 +1,45 @@
 <div class="order-history-container">
   <h2 class="section-title">Delivered Orders</h2>
 
+  <div class="filter-bar">
+    <label for="month">Month:</label>
+    <select id="month" [(ngModel)]="selectedMonth" (change)="changeMonth(selectedMonth)">
+      <option *ngFor="let month of ['January','February','March','April','May','June','July','August','September','October','November','December']" [value]="month">
+        {{ month }}
+      </option>
+    </select>
+  </div>
+
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="error">{{ error }}</div>
 
-  <div *ngIf="!loading && deliveredOrders.length === 0" class="empty-msg">
-    No delivered orders
-  </div>
+  <div class="content-wrapper">
+    <div *ngIf="!loading && filteredOrders && filteredOrders.length === 0" class="empty-msg">
+      No delivered orders for {{ selectedMonth }}
+    </div>
 
-  <div class="order-list" *ngIf="!loading && deliveredOrders.length > 0">
-    <div class="order-card" *ngFor="let order of deliveredOrders">
-      <h4>Order #{{ order.orderId }}</h4>
-
-      <div class="order-items">
-        <div class="item">
-          <span><strong>Restaurant Address:</strong></span>
-          <span>{{ order.restaurantAddress }}</span>
+    <div class="order-list" *ngIf="!loading && filteredOrders && filteredOrders.length > 0">
+      <div class="order-card" *ngFor="let order of paginatedOrders">
+        <h4>Order #{{ order.orderId }}</h4>
+        <div class="order-items">
+          <div class="item">
+            <span><strong>Restaurant Address:</strong></span>
+            <span>{{ order.restaurantAddress }}</span>
+          </div>
+          <div class="item">
+            <span><strong>Customer Address:</strong></span>
+            <span>{{ order.customerAddress }}</span>
+          </div>
         </div>
-        <div class="item">
-          <span><strong>Customer Address:</strong></span>
-          <span>{{ order.customerAddress }}</span>
-        </div>
+        <p class="delivery-fee"><strong>Delivery Fee:</strong> ₹50</p>
       </div>
+    </div>
 
-      <p class="delivery-fee"><strong>Delivery Fee:</strong> ₹50</p>
+    <!-- ✅ Pagination always at bottom -->
+    <div class="pagination-controls" *ngIf="filteredOrders && filteredOrders.length > 0">
+      <button (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
+      <span>Page {{ currentPage }}</span>
+      <button (click)="nextPage()" [disabled]="(currentPage * pageSize) >= filteredOrders.length">Next &gt;</button>
     </div>
   </div>
 </div>
