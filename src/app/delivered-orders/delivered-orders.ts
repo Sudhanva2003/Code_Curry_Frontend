@@ -43,7 +43,7 @@ export class DeliveredOrders implements OnInit {
   applyFilters() {
     const monthIndex = new Date(`${this.selectedMonth} 1, 2025`).getMonth();
     this.filteredOrders = this.deliveredOrders.filter(order => {
-      const date = new Date(order.deliveryDate);
+      const date = new Date(order.orderDate);
       return date.getMonth() === monthIndex;
     });
     this.currentPage = 1;
