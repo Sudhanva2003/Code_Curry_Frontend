@@ -15,18 +15,18 @@
   </div>
 
   <!-- Restaurant sort (Restaurant view only) -->
-<div class="restaurant-controls" *ngIf="!selectedRestaurant">
-  <div class="controls-right">
-    <label for="restaurantSort">Sort by:</label>
-    <select id="restaurantSort"
-            [(ngModel)]="restaurantSort"
-            (change)="applyRestaurantSort()"
-            class="dropdown">
-      <option value="rating">Rating</option>
-      <option value="distance">Distance</option>
-    </select>
+  <div class="restaurant-controls" *ngIf="!selectedRestaurant">
+    <div class="controls-right">
+      <label for="restaurantSort">Sort by:</label>
+      <select id="restaurantSort"
+              [(ngModel)]="restaurantSort"
+              (change)="applyRestaurantSort()"
+              class="dropdown">
+        <option value="rating">Rating</option>
+        <option value="distance">Distance</option>
+      </select>
+    </div>
   </div>
-</div>
 
   <!-- Restaurant list -->
   <div *ngIf="!loading && !error && !selectedRestaurant" class="restaurant-list">
@@ -42,29 +42,39 @@
 
   <!-- Food filter & sort (Food view only) -->
   <div class="menu-controls" *ngIf="selectedRestaurant">
-  <div class="controls-right">
-    <label for="filter">Filter:</label>
-    <select id="filter"
-            [(ngModel)]="filterType"
-            (change)="applyFilter()"
-            class="dropdown">
-      <option value="none">None</option>
-      <option value="veg">Veg</option>
-      <option value="non veg">Non-Veg</option>
-      <option value="vegan">Vegan</option>
-    </select>
+    <div class="controls-right">
+      <label for="filter">Filter:</label>
+      <select id="filter"
+              [(ngModel)]="filterType"
+              (change)="applyFilter()"
+              class="dropdown">
+        <option value="none">None</option>
+        <option value="veg">Veg</option>
+        <option value="non veg">Non-Veg</option>
+        <option value="vegan">Vegan</option>
+      </select>
 
-    <label for="sort">Sort by:</label>
-    <select id="sort"
-            [(ngModel)]="foodSort"
-            (change)="applySort()"
-            class="dropdown">
-      <option value="none">None</option>
-      <option value="price">Price</option>
-    </select>
+      <label for="sort">Sort by:</label>
+      <select id="sort"
+              [(ngModel)]="foodSort"
+              (change)="applySort()"
+              class="dropdown">
+        <option value="none">None</option>
+        <option value="price">Price</option>
+      </select>
+    </div>
   </div>
-</div>
 
+  <!-- 🔍 Food Search Bar (inside restaurant view) -->
+  <div class="search-container" *ngIf="selectedRestaurant">
+    <input
+      type="text"
+      [(ngModel)]="foodSearchTerm"
+      (input)="searchFoodsInRestaurant()"
+      placeholder="Search food in {{ selectedRestaurant.name }}"
+      class="search-bar"
+    />
+  </div>
 
   <!-- Menu view -->
   <div *ngIf="!loading && selectedRestaurant">
