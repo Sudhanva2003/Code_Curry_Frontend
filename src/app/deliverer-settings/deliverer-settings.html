@@ -5,7 +5,6 @@
   <p><strong>Address:</strong> {{ deliverer.address }}</p>
   <p><strong>License Number:</strong> {{ deliverer.licenseNumber }}</p>
   <p><strong>Vehicle Number:</strong> {{ deliverer.vehicleNumber }}</p>
-  <p><strong>Status:</strong> {{ deliverer.userStatus }}</p>
   <p><strong>Rating:</strong> {{ deliverer.rating|| 'Not Rated' }}</p>
 
   <div class="actions">
@@ -39,10 +38,6 @@
       <label>Address:</label>
       <input type="text" [(ngModel)]="editedDeliverer.address" name="address" required #address="ngModel" />
       <div *ngIf="(address.touched || formSubmitted) && address.invalid" class="error">Address is required.</div>
-
-      <!-- License number shown but not editable -->
-      <label>License Number:</label>
-      <input type="text" [value]="deliverer.licenseNumber" readonly class="readonly-field" />
 
       <button type="submit">Save Changes</button>
     </form>

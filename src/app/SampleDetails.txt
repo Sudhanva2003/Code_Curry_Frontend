@@ -53,3 +53,7 @@ KA05HX7788
 KA41ZY0001
 
 Common format: KA-<RTO>-<Series>-<Number> (also appears as KA01AB1234 without dashes). Adjust your form/regex to accept both.
+
+
+
+date format not current date:
