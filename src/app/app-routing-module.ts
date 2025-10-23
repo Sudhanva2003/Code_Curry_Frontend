@@ -21,6 +21,7 @@ import { LiveOrders } from './live-orders/live-orders';
 import { Delivery } from './delivery/delivery';
 import { DeliveredOrders } from './delivered-orders/delivered-orders';
 import { DelivererSettings } from './deliverer-settings/deliverer-settings';
+import { RoleGuard } from './role.guard';  // Import the RoleGuard
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -32,6 +33,8 @@ const routes: Routes = [
   {
     path: 'customer',
     component: CustomerView,
+    canActivate: [RoleGuard],
+    data: { role: 'customer' },  // Protect with 'customer' role
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: Home },
@@ -44,6 +47,8 @@ const routes: Routes = [
   {
     path: 'restaurant',
     component: RestaurantView,
+    canActivate: [RoleGuard],
+    data: { role: 'restaurant' },  // Protect with 'restaurant' role
     children: [
       { path: '', redirectTo: 'open-orders', pathMatch: 'full' },
       { path: 'open-orders', component: OpenOrders },
@@ -55,6 +60,8 @@ const routes: Routes = [
   {
     path: 'deliverer',
     component: DelivererView,
+    canActivate: [RoleGuard],
+    data: { role: 'deliverer' },  // Protect with 'deliverer' role
     children: [
       { path: '', redirectTo: 'live-orders', pathMatch: 'full' },
       { path: 'live-orders', component: LiveOrders },
