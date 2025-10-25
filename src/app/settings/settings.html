@@ -1,16 +1,22 @@
 <div *ngIf="restaurant" class="restaurant-card">
-  <!-- Restaurant Image -->
   <div class="restaurant-image-container">
     <img [src]="restaurant.restImageUrl || defaultImage" alt="Restaurant Image" />
   </div>
 
   <h2>{{ restaurant.name }}</h2>
-  <p><strong>Cuisine:</strong>{{restaurant.cuisine}}</p>
+  <p><strong>Cuisine:</strong> {{ restaurant.cuisine || 'N/A' }}</p>
   <p><strong>Address:</strong> {{ restaurant.address }}</p>
   <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
-   <p><strong>Restaurant Status:</strong> {{ restaurant.RestStatus === 'Open' ? 'Open' : 'Closed' }}</p>
+  <p><strong>Restaurant Status:</strong> {{ restaurant.restStatus }}</p>
 
   <div class="actions">
+    <div class="action-row">
+      <span>Toggle Restaurant Status:</span>
+      <button (click)="toggleRestaurantStatus()">
+        {{ restaurant.restStatus === 'Open' ? 'Close Restaurant' : 'Open Restaurant' }}
+      </button>
+    </div>
+
     <div class="action-row">
       <span>Edit this restaurant?</span>
       <button (click)="onEdit()">Edit</button>
@@ -23,7 +29,6 @@
   </div>
 </div>
 
-<!-- Popup Modal -->
 <div class="modal" *ngIf="showEditPopup">
   <div class="modal-content">
     <span class="close" (click)="closePopup()">&times;</span>
@@ -42,15 +47,8 @@
       <input type="text" [(ngModel)]="editedRestaurant.address" name="address" required #address="ngModel" />
       <div *ngIf="(address.touched || formSubmitted) && address.invalid" class="error">Address is required.</div>
 
-      <!-- New Cuisine Input -->
       <label>Cuisine:</label>
       <input type="text" [(ngModel)]="editedRestaurant.cuisine" name="cuisine" placeholder="Enter cuisine type" />
-
-     <label>Restaurant Status:</label>
-      <select [(ngModel)]="editedRestaurant.RestStatus" name="RestStatus" required>
-        <option [value]="'Open'">Open</option>
-        <option [value]="'Closed'">Closed</option>
-      </select>
 
       <label>Restaurant Image (optional):</label>
       <input type="text" [(ngModel)]="editedRestaurant.restImageUrl" name="restImageUrl" placeholder="Enter image URL (optional)" />

@@ -1,4 +1,3 @@
-/* Restaurant Card */
 .restaurant-card {
   max-width: 500px;
   margin: 20px auto;
@@ -25,7 +24,6 @@
   border-radius: 10px;
 }
 
-/* Actions */
 .actions {
   margin-top: 16px;
 }
@@ -52,7 +50,6 @@ button:hover {
   background-color: #0056b3;
 }
 
-/* Modal */
 .modal {
   position: fixed;
   top: 0;
@@ -93,7 +90,6 @@ button:hover {
   color: #000;
 }
 
-/* Form Styling */
 form label {
   display: block;
   margin-top: 12px;
@@ -133,7 +129,6 @@ form button:hover {
   background-color: #0056b3;
 }
 
-/* Error Messages */
 .error {
   color: red;
   font-size: 13px;

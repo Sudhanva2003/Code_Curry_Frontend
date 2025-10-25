@@ -11,14 +11,16 @@
 
 /* Restaurant Card */
 .restaurant-card {
+  position: relative;
   flex: 0 1 220px;
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
+  transition: transform 0.2s, opacity 0.3s ease;
   cursor: pointer;
+  background-color: #fff;
 }
 
 .restaurant-card:hover {
@@ -36,6 +38,7 @@
   margin-bottom: 8px;
   overflow: hidden;
   border-radius: 8px;
+  position: relative;
 }
 
 .restaurant-image img {
@@ -43,6 +46,36 @@
   height: 100%;
   object-fit: cover;
   border-radius: 8px;
+}
+
+/* 🏴 Closed Restaurant Style */
+.closed-restaurant {
+  background-color: #333;
+  color: #ddd;
+  opacity: 0.8;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+.closed-restaurant img {
+  filter: grayscale(100%) brightness(50%);
+}
+
+/* "CLOSED" badge overlay */
+.closed-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #111;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.9;
 }
 
 /* Menu Card */
@@ -71,6 +104,7 @@
   margin-bottom: 8px;
   overflow: hidden;
   border-radius: 8px;
+  position: relative;
 }
 
 .menu-image img {
@@ -159,70 +193,7 @@
   transform: scale(1.05);
 }
 
-.home-container {
-  padding: 20px;
-  max-height: 100vh;        /* prevent content from overflowing the viewport */
-  overflow-y: auto;         /* enable vertical scrolling if content is tall */
-  box-sizing: border-box;
-}
-
-/* Make sure restaurant and menu lists can scroll independently if needed */
-.restaurant-list,
-.menu-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-/* Images inside cards */
-.restaurant-image img,
-.menu-image img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-/* Back button */
-.back-btn {
-  background-color: #1976d2;
-  color: white;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  cursor: pointer;
-}
-
-.back-btn:hover {
-  background-color: #1565c0;
-}
-
-/* Floating cart bar */
-.view-cart-bar {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  border: 2px solid #ddd;
-  border-radius: 50px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 25px;
-  min-width: 320px;
-  z-index: 9999;
-}
-
-/* Ensure content doesn't hide behind floating cart */
-.home-container {
-  padding-bottom: 100px; /* enough space to scroll above the cart */
-}
-
+/* Search Bar */
 .search-container {
   text-align: center;
   margin: 15px 0;
@@ -236,38 +207,20 @@
   border: 1px solid #ccc;
   outline: none;
 }
+
 .search-bar:focus {
   border-color: #ff6600;
 }
-/* Wrap filters and sort dropdowns neatly on right side */
-.controls-wrapper {
-  display: flex;
-  justify-content: flex-end; /* Push content to right corner */
-  align-items: center;
-  gap: 10px;
-  margin: 10px 20px 0 0; /* top-right spacing */
-}
 
-/* Optional: style dropdowns for cleaner look */
-.sort-dropdown,
-.filter-dropdown {
-  padding: 5px 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background-color: white;
-  cursor: pointer;
-}
-
-/* Common class for both restaurant and menu controls */
+/* Dropdown controls */
 .controls-right {
   display: flex;
-  justify-content: flex-end; /* Push everything to right */
+  justify-content: flex-end;
   align-items: center;
-  gap: 10px; /* space between items */
-  margin: 10px 30px 10px 0; /* some right margin */
+  gap: 10px;
+  margin: 10px 30px 10px 0;
 }
 
-/* Optional nice styling for dropdowns */
 .dropdown {
   padding: 6px 10px;
   border-radius: 6px;
@@ -281,3 +234,50 @@ label {
   color: #333;
 }
 
+/* ✅ Unavailable Food Styles */
+.unavailable-food {
+  background-color: #2a2a2a;
+  color: #999;
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+.unavailable-food:hover {
+  transform: none;
+}
+
+.unavailable-food img {
+  filter: grayscale(100%) brightness(40%);
+}
+
+.unavailable-food h3,
+.unavailable-food p {
+  color: #999;
+}
+
+.unavailable-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #444;
+  color: #ccc;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+
+.unavailable-text {
+  margin-top: 8px;
+  padding: 6px;
+  background: #3a3a3a;
+  color: #999;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
