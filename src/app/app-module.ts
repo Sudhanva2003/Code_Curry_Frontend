@@ -28,6 +28,10 @@ import { DelivererView } from './deliverer-view/deliverer-view';
 import { DeliveredOrders } from './delivered-orders/delivered-orders';
 import { DelivererSettings } from './deliverer-settings/deliverer-settings';
 import { Delivery } from './delivery/delivery';
+import { AdminView } from './admin-view/admin-view';
+import { OpenTickets } from './open-tickets/open-tickets';
+import { MyTickets } from './my-tickets/my-tickets';
+import { ResolvedTickets } from './resolved-tickets/resolved-tickets';
 
 @NgModule({
   declarations: [
@@ -54,7 +58,11 @@ import { Delivery } from './delivery/delivery';
     DelivererView,
     DeliveredOrders,
     DelivererSettings,
-    Delivery
+    Delivery,
+    AdminView,
+    OpenTickets,
+    MyTickets,
+    ResolvedTickets
   ],
   imports: [
     BrowserModule,

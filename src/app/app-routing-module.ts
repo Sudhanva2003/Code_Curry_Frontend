@@ -22,6 +22,10 @@ import { Delivery } from './delivery/delivery';
 import { DeliveredOrders } from './delivered-orders/delivered-orders';
 import { DelivererSettings } from './deliverer-settings/deliverer-settings';
 import { RoleGuard } from './role.guard';  // Import the RoleGuard
+import { AdminView } from './admin-view/admin-view';
+import { OpenTickets } from './open-tickets/open-tickets';
+import { MyTickets } from './my-tickets/my-tickets';
+import { ResolvedTickets } from './resolved-tickets/resolved-tickets';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -68,6 +72,18 @@ const routes: Routes = [
       { path: 'delivery', component: Delivery },
       { path: 'delivered-orders', component: DeliveredOrders },
       { path: 'deliverer-settings', component: DelivererSettings }
+    ]
+  },
+  {
+    path: 'admin',
+    component: AdminView,
+    canActivate: [RoleGuard],
+    data: { role: 'admin' },  // Protect with 'deliverer' role
+    children: [
+      { path: '', redirectTo: 'open-tickets', pathMatch: 'full' },
+      { path: 'open-tickets', component: OpenTickets },
+      { path: 'my-tickets', component: MyTickets },
+      { path: 'resolved-tickets', component: ResolvedTickets },
     ]
   },
   { path: '**', redirectTo: 'login' }

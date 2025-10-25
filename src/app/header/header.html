@@ -34,4 +34,11 @@
     <a routerLink="delivered-orders" routerLinkActive="active">Delivered Orders</a>
     <a routerLink="deliverer-settings" routerLinkActive="active">Deliverer Settings</a>
   </nav>
+
+  <nav class="nav-links" *ngIf="role === 'admin'">
+    <a routerLink="live-orders" routerLinkActive="active">Open Tickets</a>
+    <a routerLink="my-tickets" routerLinkActive="active">My Tickets</a>
+    <a routerLink="resolved-tickets" routerLinkActive="active">Resolved Tickets</a>
+ 
+  </nav>
 </header>
