@@ -21,6 +21,7 @@ export class Home implements OnInit {
   totalQuantity: number = 0;
 
   searchTerm: string = '';
+  foodSearchTerm: string = '';
   filterType: string = 'none';
   foodSort: string = 'none';
   restaurantSort: string = 'rating';
@@ -43,15 +44,11 @@ export class Home implements OnInit {
     this.loading = true;
     this.api.get(`Filter/Restaurants?sort=${this.restaurantSort}`).subscribe({
       next: (data: any) => {
-        this.restaurants = data.map((r: any) => {
-          return {
-            ...r,
-            restaurantStatus: r.restStatus || r.RestStatus || 'Open',
-            restImageUrl:
-              r.restImageUrl ||
-              'https://via.placeholder.com/200x150?text=Restaurant'
-          };
-        });
+        this.restaurants = data.map((r: any) => ({
+          ...r,
+          restaurantStatus: r.restStatus || r.RestStatus || 'Open',
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant'
+        }));
         this.loading = false;
       },
       error: (err) => {
@@ -67,47 +64,81 @@ export class Home implements OnInit {
     this.fetchRestaurants();
   }
 
-  // ------------------- Search -------------------
   searchRestaurantsAndFoods() {
-    if (!this.searchTerm.trim()) {
-      this.fetchRestaurants();
-      return;
-    }
-
-    this.loading = true;
-    this.error = '';
-
-    const restaurantSearch = this.api.get(`Restaurant/Search?name=${this.searchTerm}`);
-    const foodSearch = this.api.get(`Foods/Search?name=${this.searchTerm}`);
-
-    Promise.all([restaurantSearch.toPromise(), foodSearch.toPromise()])
-      .then(([restaurants, foods]: any) => {
-        const formattedRestaurants = restaurants.map((r: any) => ({
-          ...r,
-          type: 'restaurant',
-          restaurantStatus: r.restStatus || r.RestStatus || 'Open',
-          restImageUrl:
-            r.restImageUrl ||
-            'https://via.placeholder.com/200x150?text=Restaurant'
-        }));
-
-        const formattedFoods = foods.map((f: any) => ({
-          ...f,
-          type: 'food',
-          restImageUrl:
-            f.foodImageUrl ||
-            'https://via.placeholder.com/200x150?text=Food'
-        }));
-
-        this.restaurants = [...formattedRestaurants, ...formattedFoods];
-        this.loading = false;
-      })
-      .catch((err) => {
-        console.error(err);
-        this.error = 'Search failed';
-        this.loading = false;
-      });
+  const term = this.searchTerm.trim();
+  if (!term) {
+    this.fetchRestaurants();
+    return;
   }
+
+  this.loading = true;
+  this.error = '';
+
+  const restaurantSearch = this.api.get(`Restaurant/Search?name=${this.searchTerm}`);
+  const foodRestaurantSearch = this.api.get(`Foods/SearchRestaurantsByFoodName?name=${this.searchTerm}`);
+  const cuisineSearch = this.api.get(`Filter/SearchByCuisine?cuisine=${this.searchTerm}`);
+
+  Promise.all([
+    restaurantSearch.toPromise(),
+    foodRestaurantSearch.toPromise(),
+    cuisineSearch.toPromise()
+  ])
+    .then(([restaurantMatches, foodRestaurantMatches, cuisineMatches]: any) => {
+      const formattedRestaurants = restaurantMatches.map((r: any) => ({
+        ...r,
+        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+        type: 'restaurant'
+      }));
+
+      const formattedFoodRestaurants = foodRestaurantMatches.map((r: any) => ({
+        ...r,
+        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+        type: 'restaurant',
+        matchedFood: this.searchTerm
+      }));
+
+      const formattedCuisineRestaurants = cuisineMatches.map((r: any) => ({
+        ...r,
+        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+        type: 'restaurant',
+        matchedCuisine: this.searchTerm
+      }));
+
+      const allRestaurants = [
+        ...formattedRestaurants,
+        ...formattedFoodRestaurants,
+        ...formattedCuisineRestaurants
+      ];
+
+      const uniqueRestaurants = allRestaurants.filter((r, index, self) =>
+        index === self.findIndex(other => other.restId === r.restId)
+      );
+
+      this.restaurants = uniqueRestaurants;
+      this.loading = false;
+    })
+    .catch((err) => {
+      console.error('Search failed:', err);
+      this.error = 'Search failed';
+      this.loading = false;
+    });
+}
+
+
+//Search food inside restaurant
+searchFoodsInRestaurant() {
+  if (!this.menu || !this.foodSearchTerm.trim()) {
+    this.filteredMenu = [...this.menu];
+    return;
+  }
+
+  const term = this.foodSearchTerm.toLowerCase();
+  this.filteredMenu = this.menu.filter(f =>
+    f.name.toLowerCase().includes(term) ||
+    f.description?.toLowerCase().includes(term) ||
+    f.category?.toLowerCase().includes(term)
+  );
+}
 
   // ------------------- Filter -------------------
   applyFilter() {
@@ -116,10 +147,7 @@ export class Home implements OnInit {
     let result =
       this.filterType === 'none'
         ? [...this.menu]
-        : this.menu.filter(
-            (f) =>
-              f.category?.toLowerCase() === this.filterType.toLowerCase()
-          );
+        : this.menu.filter((f) => f.category?.toLowerCase() === this.filterType.toLowerCase());
 
     if (this.foodSort === 'price') {
       result.sort((a, b) => a.price - b.price);
@@ -183,9 +211,7 @@ export class Home implements OnInit {
   }
 
   updateCart(item: any) {
-    const idx = this.cartItems.findIndex(
-      (ci) => ci.foodId === item.foodId && ci.restId === item.restId
-    );
+    const idx = this.cartItems.findIndex((ci) => ci.foodId === item.foodId && ci.restId === item.restId);
     if (item.quantity > 0) {
       if (idx === -1) {
         this.cartItems.push({

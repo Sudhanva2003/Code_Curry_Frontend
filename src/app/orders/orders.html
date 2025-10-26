@@ -4,18 +4,15 @@
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="error">{{ error }}</div>
 
-  <!-- Open Orders Section -->
+  <!-- Open Orders -->
   <h3 class="section-subtitle">Open Orders</h3>
-  <div *ngIf="!loading && openOrders.length === 0" class="empty-msg">
-    No open orders
-  </div>
+  <div *ngIf="!loading && openOrders.length === 0" class="empty-msg">No open orders</div>
   <div class="order-list" *ngIf="!loading && openOrders.length > 0">
     <div class="order-card" *ngFor="let order of openOrders">
       <h4>Order #{{ order.orderId }}</h4>
       <p><strong>Date:</strong> {{ order.orderDate | date:'medium' }}</p>
       <p><strong>Status:</strong> {{ order.status }}</p>
       <p><strong>Total:</strong> ₹{{ order.totalAmount }}</p>
-
       <div class="order-items">
         <div class="item" *ngFor="let item of order.items">
           <span>{{ item.foodName }} (x{{ item.quantity }})</span>
@@ -25,17 +22,18 @@
     </div>
   </div>
 
-  <!-- Past Orders Section -->
+  <!-- Past Orders -->
   <h3 class="section-subtitle">Past Orders</h3>
-  <div class="month-selector">
-  <label for="monthSelect"><strong>Select Month:</strong></label>
-  <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="changeMonth(selectedMonth)">
-    <option *ngFor="let month of months" [value]="month">{{ month }}</option>
-  </select>
-</div>
+
+  <!-- Month Navigation -->
+  <div class="month-navigation">
+    <button (click)="goToPrevMonth()">← {{ prevMonthLabel }}</button>
+    <span class="month-label">{{ currentMonth }} {{ currentYear }}</span>
+    <button (click)="goToNextMonth()" [disabled]="!canGoNext()">→ {{ nextMonthLabel }}</button>
+  </div>
 
   <div *ngIf="!loading && filteredPastOrders.length === 0" class="empty-msg">
-    No past orders for {{ selectedMonth }}
+    No past orders for {{ currentMonth }} {{ currentYear }}
   </div>
 
   <div class="order-list" *ngIf="!loading && filteredPastOrders.length > 0">
@@ -51,12 +49,44 @@
           <span>₹{{ item.price }}</span>
         </div>
       </div>
+
+      <!-- Rating Section -->
+      <div class="rating-section">
+        <!-- Restaurant Rating -->
+        <div *ngIf="canRateRestaurant(order.restId)">
+          <label>Rate Restaurant:</label>
+          <input type="number" min="1" max="5" step="0.5"
+                 [(ngModel)]="order.restaurantRating"
+                 [disabled]="order.restaurantRated">
+          <button
+            (click)="order.restaurantRating !== null && submitRatingRestaurant(order.orderId, order.restaurantRating!)"
+            [disabled]="order.restaurantRated || order.restaurantRating == null">
+            Submit
+          </button>
+        </div>
+
+        <!-- Deliverer Rating -->
+        <div *ngIf="canRateDeliverer(order.delivererId)">
+          <label>Rate Deliverer:</label>
+          <input type="number" min="1" max="5" step="0.5"
+                 [(ngModel)]="order.delivererRating"
+                 [disabled]="order.delivererRated">
+          <button
+            (click)="submitRatingDeliverer(order.orderId, order.delivererRating!)"
+            [disabled]="order.delivererRated || order.delivererRating == null">
+            Submit
+          </button>
+        </div>
+
+      </div>
+
     </div>
   </div>
 
+  <!-- Pagination -->
   <div class="pagination" *ngIf="filteredPastOrders.length > 0">
-    <button (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
+    <button (click)="prevPage()" [disabled]="currentPage === 1">← Prev</button>
     <span>Page {{ currentPage }} of {{ totalPages }}</span>
-    <button (click)="nextPage()" [disabled]="currentPage >= totalPages">Next &gt;</button>
+    <button (click)="nextPage()" [disabled]="currentPage >= totalPages || !canGoNext()">Next →</button>
   </div>
 </div>
