@@ -45,6 +45,7 @@ export class Home implements OnInit {
       next: (data: any) => {
         this.restaurants = data.map((r: any) => ({
           ...r,
+          restaurantStatus: r.restStatus || r.RestStatus || 'Open',
           restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant'
         }));
         this.loading = false;
@@ -57,6 +58,7 @@ export class Home implements OnInit {
     });
   }
 
+  // ------------------- Restaurant Sort -------------------
   applyRestaurantSort() {
     this.fetchRestaurants(); // re-fetch sorted restaurants
   }
@@ -79,6 +81,7 @@ export class Home implements OnInit {
         const formattedRestaurants = restaurants.map((r: any) => ({
           ...r,
           type: 'restaurant',
+          restaurantStatus: r.restStatus || r.RestStatus || 'Open',
           restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant'
         }));
 
@@ -98,16 +101,15 @@ export class Home implements OnInit {
       });
   }
 
-  // ------------------- Food Filter + Sort -------------------
+  // ------------------- Filter -------------------
   applyFilter() {
     if (!this.menu) return;
 
-    // Filter
-    let result = this.filterType === 'none' 
-      ? [...this.menu] 
-      : this.menu.filter(f => f.category?.toLowerCase() === this.filterType.toLowerCase());
+    let result =
+      this.filterType === 'none'
+        ? [...this.menu]
+        : this.menu.filter((f) => f.category?.toLowerCase() === this.filterType.toLowerCase());
 
-    // Sort
     if (this.foodSort === 'price') {
       result.sort((a, b) => a.price - b.price);
     }
@@ -121,6 +123,8 @@ export class Home implements OnInit {
 
   // ------------------- Restaurant Selection -------------------
   selectRestaurant(r: any) {
+    if (r.restaurantStatus === 'Closed') return;
+
     this.selectedRestaurant = r;
     this.loading = true;
     this.api.get(`Filter/Foods?restId=${r.restId}&category=${this.filterType}&sort=${this.foodSort}`).subscribe({
@@ -162,15 +166,15 @@ export class Home implements OnInit {
   }
 
   updateCart(item: any) {
-    const idx = this.cartItems.findIndex(ci => ci.foodId === item.foodId && ci.restId === item.restId);
+    const idx = this.cartItems.findIndex((ci) => ci.foodId === item.foodId && ci.restId === item.restId);
     if (item.quantity > 0) {
       if (idx === -1) {
-        this.cartItems.push({ 
-          foodId: item.foodId, 
-          quantity: item.quantity, 
-          restId: item.restId, 
-          name: item.name, 
-          price: item.price 
+        this.cartItems.push({
+          foodId: item.foodId,
+          quantity: item.quantity,
+          restId: item.restId,
+          name: item.name,
+          price: item.price
         });
       } else {
         this.cartItems[idx].quantity = item.quantity;
@@ -199,7 +203,7 @@ export class Home implements OnInit {
 
     const payload = {
       userId: user.userId,
-      orderItems: this.cartItems.map(i => ({
+      orderItems: this.cartItems.map((i) => ({
         foodId: i.foodId,
         quantity: i.quantity
       }))

@@ -15,25 +15,31 @@
   </div>
 
   <!-- Restaurant sort (Restaurant view only) -->
-<div class="restaurant-controls" *ngIf="!selectedRestaurant">
-  <div class="controls-right">
-    <label for="restaurantSort">Sort by:</label>
-    <select id="restaurantSort"
-            [(ngModel)]="restaurantSort"
-            (change)="applyRestaurantSort()"
-            class="dropdown">
-      <option value="rating">Rating</option>
-      <option value="distance">Distance</option>
-    </select>
+  <div class="restaurant-controls" *ngIf="!selectedRestaurant">
+    <div class="controls-right">
+      <label for="restaurantSort">Sort by:</label>
+      <select id="restaurantSort"
+              [(ngModel)]="restaurantSort"
+              (change)="applyRestaurantSort()"
+              class="dropdown">
+        <option value="rating">Rating</option>
+        <option value="distance">Distance</option>
+      </select>
+    </div>
   </div>
-</div>
 
   <!-- Restaurant list -->
   <div *ngIf="!loading && !error && !selectedRestaurant" class="restaurant-list">
-    <div class="restaurant-card" *ngFor="let r of restaurants" (click)="selectRestaurant(r)">
+    <div class="restaurant-card"
+         *ngFor="let r of restaurants"
+         (click)="r.restaurantStatus === 'Open' && selectRestaurant(r)"
+         [ngClass]="{ 'closed-restaurant': r.restaurantStatus === 'Closed' }">
+
       <div class="restaurant-image">
         <img [src]="r.restImageUrl" alt="{{ r.name }}">
+        <div *ngIf="r.restaurantStatus === 'Closed'" class="closed-badge">CLOSED</div>
       </div>
+
       <h3>{{ r.name }}</h3>
       <p><strong>Rating:</strong> {{ r.rating }} ★</p>
       <p><strong>Distance:</strong> 2Km Away</p>
@@ -42,29 +48,28 @@
 
   <!-- Food filter & sort (Food view only) -->
   <div class="menu-controls" *ngIf="selectedRestaurant">
-  <div class="controls-right">
-    <label for="filter">Filter:</label>
-    <select id="filter"
-            [(ngModel)]="filterType"
-            (change)="applyFilter()"
-            class="dropdown">
-      <option value="none">None</option>
-      <option value="veg">Veg</option>
-      <option value="non veg">Non-Veg</option>
-      <option value="vegan">Vegan</option>
-    </select>
+    <div class="controls-right">
+      <label for="filter">Filter:</label>
+      <select id="filter"
+              [(ngModel)]="filterType"
+              (change)="applyFilter()"
+              class="dropdown">
+        <option value="none">None</option>
+        <option value="veg">Veg</option>
+        <option value="non veg">Non-Veg</option>
+        <option value="vegan">Vegan</option>
+      </select>
 
-    <label for="sort">Sort by:</label>
-    <select id="sort"
-            [(ngModel)]="foodSort"
-            (change)="applySort()"
-            class="dropdown">
-      <option value="none">None</option>
-      <option value="price">Price</option>
-    </select>
+      <label for="sort">Sort by:</label>
+      <select id="sort"
+              [(ngModel)]="foodSort"
+              (change)="applySort()"
+              class="dropdown">
+        <option value="none">None</option>
+        <option value="price">Price</option>
+      </select>
+    </div>
   </div>
-</div>
-
 
   <!-- Menu view -->
   <div *ngIf="!loading && selectedRestaurant">
@@ -72,19 +77,25 @@
     <h2 class="restaurant-title">{{ selectedRestaurant.name }}</h2>
 
     <div class="menu-list">
-      <div class="menu-card" *ngFor="let m of filteredMenu">
+      <div class="menu-card" 
+           *ngFor="let m of filteredMenu"
+           [ngClass]="{ 'unavailable-food': m.foodStatus !== 'Available' }">
         <div class="menu-image">
           <img [src]="m.foodImageUrl" alt="{{ m.name }}">
+          <div *ngIf="m.foodStatus !== 'Available'" class="unavailable-badge">NOT AVAILABLE</div>
         </div>
         <h3>{{ m.name }}</h3>
         <p><em>{{ m.category }}</em></p>
         <p><strong>₹{{ m.price }}</strong></p>
 
-        <!-- Counter -->
-        <div class="counter">
+        <div class="counter" *ngIf="m.foodStatus === 'Available'">
           <button (click)="decrementItem(m)" [disabled]="m.quantity === 0">-</button>
           <span>{{ m.quantity || 0 }}</span>
           <button (click)="incrementItem(m)">+</button>
+        </div>
+        
+        <div class="unavailable-text" *ngIf="m.foodStatus !== 'Available'">
+          Currently Unavailable
         </div>
       </div>
     </div>
