@@ -59,7 +59,7 @@
                  [(ngModel)]="order.restaurantRating"
                  [disabled]="order.restaurantRated">
           <button
-            (click)="order.restaurantRating !== null && submitRating(order.orderId, order.restaurantRating!, 'restaurant')"
+            (click)="order.restaurantRating !== null && submitRatingRestaurant(order.orderId, order.restaurantRating!)"
             [disabled]="order.restaurantRated || order.restaurantRating == null">
             Submit
           </button>
@@ -72,7 +72,7 @@
                  [(ngModel)]="order.delivererRating"
                  [disabled]="order.delivererRated">
           <button
-            (click)="submitRating(order.orderId, order.delivererRating!, 'deliverer')"
+            (click)="submitRatingDeliverer(order.orderId, order.delivererRating!)"
             [disabled]="order.delivererRated || order.delivererRating == null">
             Submit
           </button>

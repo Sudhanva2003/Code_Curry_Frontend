@@ -1,177 +1,3 @@
-// // import { Component, OnInit } from '@angular/core';
-// // import { ApiService } from '../api-service';
-// // import { AuthGuard } from '../auth.guard';
-
-// // @Component({
-// //   selector: 'orders',
-// //   standalone: false,
-// //   templateUrl: './orders.html',
-// //   styleUrl: './orders.css'
-// // })
-
-// // export class Orders implements OnInit {
-// //   openOrders: any[] = [];
-// //   pastOrders: any[] = [];
-// //   loading = true;
-// //   error = '';
-
-// //   filteredPastOrders: any[] = [];
-// // currentPage = 1;
-// // pageSize = 5;
-// // selectedMonth = 'October';
-
-// // getFilteredOrders() {
-// //   const month = this.selectedMonth.toLowerCase();
-// //   const filtered = this.pastOrders.filter(order => {
-// //     const orderMonth = new Date(order.date).toLocaleString('default', { month: 'long' }).toLowerCase();
-// //     return orderMonth === month;
-// //   });
-
-// //   const start = (this.currentPage - 1) * this.pageSize;
-// //   const end = start + this.pageSize;
-// //   this.filteredPastOrders = filtered.slice(start, end);
-// // }
-
-// // nextPage() {
-// //   this.currentPage++;
-// //   this.getFilteredOrders();
-// // }
-
-// // prevPage() {
-// //   if (this.currentPage > 1) {
-// //     this.currentPage--;
-// //     this.getFilteredOrders();
-// //   }
-// // }
-
-// // changeMonth(month: string) {
-// //   this.selectedMonth = month;
-// //   this.currentPage = 1;
-// //   this.getFilteredOrders();
-// // }
-
-
-// //   constructor(private api: ApiService, private auth: AuthGuard) {}
-
-// //   ngOnInit() {
-// //     console.log("hi");
-// //     const userId = this.auth.getUser()?.userId;
-// //     if (userId) {
-// //       console.log("hi");
-// //       this.api.get(`Users/ViewUserOrders/${userId}`).subscribe({
-// //         next: (res: any) => {
-// //           console.log("API Response:", res); // should log JSON correctly
-// //           this.openOrders = res.openOrders || [];
-// //           this.pastOrders = res.pastOrders || [];
-// //           this.loading = false;
-// //           this.pastOrders = res.pastOrders || [];
-// // this.getFilteredOrders();
-// //         },
-// //         error: (err) => {
-// //           console.error("API Error:", err);
-// //           this.error = 'Failed to load orders';
-// //           this.loading = false;
-// //         }
-// //       });
-// //     } else {
-// //       console.log("noway");
-// //       this.error = "User not logged in";
-// //       this.loading = false;
-// //     }
-// //   }
-// // }
-
-// import { Component, OnInit } from '@angular/core';
-// import { ApiService } from '../api-service';
-// import { AuthGuard } from '../auth.guard';
-
-// @Component({
-//   selector: 'orders',
-//   standalone: false,
-//   templateUrl: './orders.html',
-//   styleUrl: './orders.css'
-// })
-// export class Orders implements OnInit {
-//   openOrders: any[] = [];
-//   pastOrders: any[] = [];
-//   filteredPastOrders: any[] = [];
-//   currentPage = 1;
-//   pageSize = 5;
-//   selectedMonth = 'October';
-//   months: string[] = [
-//     'January', 'February', 'March', 'April', 'May', 'June',
-//     'July', 'August', 'September', 'October', 'November', 'December'
-//   ];
-//   loading = true;
-//   error = '';
-
-//   constructor(private api: ApiService, private auth: AuthGuard) {}
-
-//   ngOnInit() {
-//     const userId = this.auth.getUser()?.userId;
-//     if (userId) {
-//       this.api.get(`Customer/ViewUserOrders/${userId}`).subscribe({
-//         next: (res: any) => {
-//           this.openOrders = res.openOrders || [];
-//           this.pastOrders = res.pastOrders || [];
-//           this.loading = false;
-//           this.getFilteredOrders();
-//         },
-//         error: (err) => {
-//           this.error = 'Failed to load orders';
-//           this.loading = false;
-//         }
-//       });
-//     } else {
-//       this.error = "User not logged in";
-//       this.loading = false;
-//     }
-//   }
-
-//   getFilteredOrders() {
-//     const month = this.selectedMonth.toLowerCase();
-//     const filtered = this.pastOrders.filter(order => {
-//       if (!order.orderDate) return false;
-//       const orderMonth = new Date(order.orderDate).toLocaleString('default', { month: 'long' }).toLowerCase();
-//       return orderMonth === month;
-//     });
-
-//     const start = (this.currentPage - 1) * this.pageSize;
-//     const end = start + this.pageSize;
-//     this.filteredPastOrders = filtered.slice(start, end);
-//   }
-
-//   get totalPages(): number {
-//     const month = this.selectedMonth.toLowerCase();
-//     const filtered = this.pastOrders.filter(order => {
-//       if (!order.orderDate) return false;
-//       const orderMonth = new Date(order.orderDate).toLocaleString('default', { month: 'long' }).toLowerCase();
-//       return orderMonth === month;
-//     });
-//     return Math.ceil(filtered.length / this.pageSize);
-//   }
-
-//   nextPage() {
-//     if (this.currentPage < this.totalPages) {
-//       this.currentPage++;
-//       this.getFilteredOrders();
-//     }
-//   }
-
-//   prevPage() {
-//     if (this.currentPage > 1) {
-//       this.currentPage--;
-//       this.getFilteredOrders();
-//     }
-//   }
-
-//   changeMonth(month: string) {
-//     this.selectedMonth = month;
-//     this.currentPage = 1;
-//     this.getFilteredOrders();
-//   }
-// }
-
 
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
@@ -348,32 +174,44 @@ export class Orders implements OnInit {
     return this.pastOrders.some(o => o.delivererId === delivererId && o.status === 'Delivered');
   }
 
-  submitRating(orderId: number, rating: number, target: 'restaurant' | 'deliverer') {
-    let endpoint = '';
+  submitRatingRestaurant(orderId: number, rating: number) {
+    const endpoint = `Orders/SubmitRating?userId=${this.userId}&orderId=${orderId}&rating=${rating}`;
 
-    if (target === 'restaurant') {
-      endpoint = `Orders/SubmitRating?userId=${this.userId}&orderId=${orderId}&rating=${rating}`;
-    } else if (target === 'deliverer') {
-      const order = this.pastOrders.find(o => o.orderId === orderId);
-      if (!order?.delivererId) {
-        alert('Deliverer not found for this order.');
-        return;
-      }
-      endpoint = `Orders/SubmitDelivererRating?userId=${this.userId}&delivererId=${order.delivererId}&rating=${rating}`;
-    }
-
-    this.api.post(endpoint,  { responseType: 'text' }).subscribe({
-      next: (res) => {
-        alert(res);
+    this.api.post(endpoint, null).subscribe({
+      next: (res: any) => {
+        alert(res.message);
         const order = this.pastOrders.find(o => o.orderId === orderId);
         if (order) {
-          if (target === 'restaurant') order.restaurantRated = true;
-          if (target === 'deliverer') order.delivererRated = true;
+          order.restaurantRated = true;
         }
       },
       error: (err) => {
         console.error('Rating error:', err);
-        alert(err?.error || 'Rating failed. You may not be eligible.');
+        alert(err?.error?.message || 'Rating failed. You may not be eligible.');
+      }
+    });
+  }
+
+  submitRatingDeliverer(orderId: number, rating: number) {
+    const order = this.pastOrders.find(o => o.orderId === orderId);
+    if (!order?.delivererId) {
+      alert('Deliverer not found for this order.');
+      return;
+    }
+
+    const endpoint = `Orders/SubmitDelivererRating?userId=${this.userId}&delivererId=${order.delivererId}&rating=${rating}`;
+
+    this.api.post(endpoint, null).subscribe({
+      next: (res: any) => {
+        alert(res.message);
+        const order = this.pastOrders.find(o => o.orderId === orderId);
+        if (order) {
+          order.delivererRated = true;
+        }
+      },
+      error: (err) => {
+        console.error('Rating error:', err);
+        alert(err?.error?.message || 'Rating failed. You may not be eligible.');
       }
     });
   }
