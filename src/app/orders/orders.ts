@@ -173,33 +173,45 @@ export class Orders implements OnInit {
     return this.pastOrders.some(o => o.delivererId === delivererId && o.status === 'Delivered');
   }
 
-  submitRating(orderId: number, rating: number, target: 'restaurant' | 'deliverer') {
-  let endpoint = '';
+  submitRatingRestaurant(orderId: number, rating: number) {
+    const endpoint = `Orders/SubmitRating?userId=${this.userId}&orderId=${orderId}&rating=${rating}`;
 
-  if (target === 'restaurant') {
-    endpoint = `Orders/SubmitRating?userId=${this.userId}&orderId=${orderId}&rating=${rating}`;
-  } else if (target === 'deliverer') {
+    this.api.post(endpoint, null).subscribe({
+      next: (res: any) => {
+        alert(res.message);
+        const order = this.pastOrders.find(o => o.orderId === orderId);
+        if (order) {
+          order.restaurantRated = true;
+        }
+      },
+      error: (err) => {
+        console.error('Rating error:', err);
+        alert(err?.error?.message || 'Rating failed. You may not be eligible.');
+      }
+    });
+  }
+
+  submitRatingDeliverer(orderId: number, rating: number) {
     const order = this.pastOrders.find(o => o.orderId === orderId);
     if (!order?.delivererId) {
       alert('Deliverer not found for this order.');
       return;
     }
-    endpoint = `Orders/SubmitDelivererRating?userId=${this.userId}&delivererId=${order.delivererId}&rating=${rating}`;
-  }
 
-  this.api.post(endpoint, null).subscribe({
-    next: (res: any) => {
-      alert(res.message);
-      const order = this.pastOrders.find(o => o.orderId === orderId);
-      if (order) {
-        if (target === 'restaurant') order.restaurantRated = true;
-        if (target === 'deliverer') order.delivererRated = true;
+    const endpoint = `Orders/SubmitDelivererRating?userId=${this.userId}&delivererId=${order.delivererId}&rating=${rating}`;
+
+    this.api.post(endpoint, null).subscribe({
+      next: (res: any) => {
+        alert(res.message);
+        const order = this.pastOrders.find(o => o.orderId === orderId);
+        if (order) {
+          order.delivererRated = true;
+        }
+      },
+      error: (err) => {
+        console.error('Rating error:', err);
+        alert(err?.error?.message || 'Rating failed. You may not be eligible.');
       }
-    },
-    error: (err) => {
-      console.error('Rating error:', err);
-      alert(err?.error?.message || 'Rating failed. You may not be eligible.');
-    }
-  });
-}
+    });
+  }
 }
