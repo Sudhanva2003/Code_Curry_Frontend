@@ -71,6 +71,17 @@
     </div>
   </div>
 
+  <!-- 🔍 Food Search Bar (inside restaurant view) -->
+  <div class="search-container" *ngIf="selectedRestaurant">
+    <input
+      type="text"
+      [(ngModel)]="foodSearchTerm"
+      (input)="searchFoodsInRestaurant()"
+      placeholder="Search food in {{ selectedRestaurant.name }}"
+      class="search-bar"
+    />
+  </div>
+
   <!-- Menu view -->
   <div *ngIf="!loading && selectedRestaurant">
     <button class="back-btn" (click)="backToRestaurants()">⬅ Back</button>
