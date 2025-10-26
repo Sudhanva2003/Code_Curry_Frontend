@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';  
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-restaurant-settings',
@@ -14,6 +14,9 @@ export class Settings implements OnInit {
   editedRestaurant: any = null;
   showEditPopup = false;
   formSubmitted = false;
+  showSupportPopup = false;
+  selectedCategory: string = 'default';
+  issueDetails: string = '';
   defaultImage = 'https://t3.ftcdn.net/jpg/03/24/73/92/360_F_324739203_keeq8udvv0P2h1MLYJ0GLSlTBagoXS48.jpg';
 
   constructor(private auth: AuthGuard, private http: HttpClient, private router: Router) {}
@@ -131,6 +134,43 @@ export class Settings implements OnInit {
     this.showEditPopup = false;
     this.editedRestaurant = null;
     this.formSubmitted = false;
+  }
+
+  openSupportPopup(): void {
+    this.selectedCategory = 'default';
+    this.issueDetails = '';
+    this.showSupportPopup = true;
+  }
+
+  closeSupportPopup(): void {
+    this.showSupportPopup = false;
+    this.selectedCategory = 'default';
+    this.issueDetails = '';
+  }
+
+  submitSupportTicket(): void {
+    if (this.selectedCategory === 'default' || !this.issueDetails.trim()) {
+      alert('Please select a category and describe the issue.');
+      return;
+    }
+
+    const supportTicket = {
+      restId: this.restaurant.restId,
+      email: this.restaurant.email,
+      category: this.selectedCategory,
+      description: this.issueDetails
+    };
+
+    this.http.post('https://localhost:7265/api/Support/raiseRestaurantTicket', supportTicket).subscribe({
+      next: (response: any) => {
+        alert(`Support Ticket Submitted Successfully!\nTicket ID: ${response.ticketId}\nStatus: ${response.ticketStatus}`);
+        this.closeSupportPopup();
+      },
+      error: (err) => {
+        console.error('Failed to submit ticket', err);
+        alert('Failed to submit support ticket. Please try again.');
+      }
+    });
   }
 
   private isValidUrl(url: string): boolean {

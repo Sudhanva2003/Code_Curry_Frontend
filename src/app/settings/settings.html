@@ -26,9 +26,15 @@
       <span>Delete this restaurant?</span>
       <button (click)="onDelete()">Delete</button>
     </div>
+
+    <div class="action-row">
+      <span>Raise a support ticket?</span>
+      <button (click)="openSupportPopup()">Raise</button>
+    </div>
   </div>
 </div>
 
+<!-- Edit Modal -->
 <div class="modal" *ngIf="showEditPopup">
   <div class="modal-content">
     <span class="close" (click)="closePopup()">&times;</span>
@@ -55,6 +61,35 @@
 
       <button type="submit">Save Changes</button>
     </form>
+  </div>
+</div>
+
+<!-- Support Ticket Popup -->
+<div *ngIf="showSupportPopup" class="support-ticket-popup">
+  <div class="popup-container">
+    <div class="popup-header">
+      <h2>Raise a Support Ticket</h2>
+      <button class="close-btn" (click)="closeSupportPopup()">×</button>
+    </div>
+
+    <label>What is the category of the ticket?</label>
+    <select [(ngModel)]="selectedCategory">
+      <option value="default">Select an option</option>
+      <option value="Order not arrived">Order not arrived</option>
+      <option value="Not all items delivered">Not all items delivered</option>
+      <option value="Issue with food">Issue with food</option>
+      <option value="Technical glitches">Technical glitches</option>
+      <option value="Payment issues">Payment issues</option>
+      <option value="User detail issues">User detail issues</option>
+    </select>
+
+    <label>Write something about the issue:</label>
+    <textarea [(ngModel)]="issueDetails" rows="5" placeholder="Describe the issue..."></textarea>
+
+    <div class="popup-actions">
+      <button class="cancel-btn" (click)="closeSupportPopup()">Cancel</button>
+      <button class="submit-btn" (click)="submitSupportTicket()">Submit</button>
+    </div>
   </div>
 </div>
 

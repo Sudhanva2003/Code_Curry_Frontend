@@ -14,13 +14,16 @@ export class CustomerSettings implements OnInit {
   editedUser: any = null;
   showEditPopup = false;
   formSubmitted = false;
+  showSupportPopup = false;
+  selectedCategory: string = 'default';
+  issueDetails: string = '';
 
-  constructor(private auth: AuthGuard, private http: HttpClient,private router: Router) {}
+  constructor(private auth: AuthGuard, private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const user = this.auth.getUser();
-const userId = user?.userId;
-// Replace with actual method
+    const userId = user?.userId;
+    
     if (userId !== null) {
       this.http.get(`https://localhost:7265/api/Customer/ViewUser/${userId}`).subscribe({
         next: (data: any) => {
@@ -72,7 +75,6 @@ const userId = user?.userId;
           alert('User deleted');
           this.user = null;
           this.router.navigate(['/login']);
-          
         },
         error: (err) => {
           console.error('Failed to delete user', err);
@@ -86,5 +88,42 @@ const userId = user?.userId;
     this.showEditPopup = false;
     this.editedUser = null;
     this.formSubmitted = false;
+  }
+
+  openSupportPopup(): void {
+    this.selectedCategory = 'default';
+    this.issueDetails = '';
+    this.showSupportPopup = true;
+  }
+
+  closeSupportPopup(): void {
+    this.showSupportPopup = false;
+    this.selectedCategory = 'default';
+    this.issueDetails = '';
+  }
+
+  submitSupportTicket(): void {
+    if (this.selectedCategory === 'default' || !this.issueDetails.trim()) {
+      alert('Please select a category and describe the issue.');
+      return;
+    }
+
+    const supportTicket = {
+      userId: this.user.userId,
+      email: this.user.email,
+      category: this.selectedCategory,
+      description: this.issueDetails
+    };
+
+    this.http.post('https://localhost:7265/api/Support/raiseUserTicket', supportTicket).subscribe({
+      next: (response: any) => {
+        alert(`Support Ticket Submitted Successfully!\nTicket ID: ${response.ticketId}\nStatus: ${response.ticketStatus}`);
+        this.closeSupportPopup();
+      },
+      error: (err) => {
+        console.error('Failed to submit ticket', err);
+        alert('Failed to submit support ticket. Please try again.');
+      }
+    });
   }
 }

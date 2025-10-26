@@ -1,3 +1,4 @@
+/* Restaurant Card */
 .restaurant-card {
   max-width: 500px;
   margin: 20px auto;
@@ -24,6 +25,7 @@
   border-radius: 10px;
 }
 
+/* Actions */
 .actions {
   margin-top: 16px;
 }
@@ -50,6 +52,7 @@ button:hover {
   background-color: #0056b3;
 }
 
+/* Edit Modal */
 .modal {
   position: fixed;
   top: 0;
@@ -90,6 +93,7 @@ button:hover {
   color: #000;
 }
 
+/* Form Styling */
 form label {
   display: block;
   margin-top: 12px;
@@ -129,8 +133,128 @@ form button:hover {
   background-color: #0056b3;
 }
 
+/* Error Messages */
 .error {
   color: red;
   font-size: 13px;
   margin-top: 4px;
+}
+
+/* ===== SUPPORT TICKET MODAL STYLES ===== */
+.support-ticket-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.popup-container {
+  background: #fff;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.popup-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.close-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+  background-color: #0056b3;
+}
+
+.popup-container label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+}
+
+.popup-container select,
+.popup-container textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.popup-container select:focus,
+.popup-container textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.popup-container textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cancel-btn,
+.submit-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
+}
+
+.cancel-btn:hover {
+  background-color: #5a6268;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
 }
