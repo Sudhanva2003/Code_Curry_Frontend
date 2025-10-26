@@ -4,15 +4,15 @@
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="error">{{ error }}</div>
 
-  <div class="month-selector">
-    <label for="monthSelect"><strong>Select Month:</strong></label>
-    <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="changeMonth(selectedMonth)">
-      <option *ngFor="let month of months" [value]="month">{{ month }}</option>
-    </select>
+  <!-- Month Navigation -->
+  <div class="month-navigation">
+    <button (click)="goToPrevMonth()">← {{ prevMonthLabel }}</button>
+    <span class="month-label">{{ currentMonth }} {{ currentYear }}</span>
+    <button (click)="goToNextMonth()" [disabled]="!canGoNext()">→ {{ nextMonthLabel }}</button>
   </div>
 
   <div *ngIf="!loading && filteredPastOrders.length === 0" class="empty-msg">
-    No past orders for {{ selectedMonth }}
+    No past orders for {{ currentMonth }} {{ currentYear }}
   </div>
 
   <div class="order-list" *ngIf="!loading && filteredPastOrders.length > 0">
@@ -31,9 +31,10 @@
     </div>
   </div>
 
+  <!-- Pagination -->
   <div class="pagination" *ngIf="filteredPastOrders.length > 0">
-    <button (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
+    <button (click)="prevPage()" [disabled]="currentPage === 1">← Prev</button>
     <span>Page {{ currentPage }} of {{ totalPages }}</span>
-    <button (click)="nextPage()" [disabled]="currentPage >= totalPages">Next &gt;</button>
+    <button (click)="nextPage()" [disabled]="currentPage >= totalPages || !canGoNext()">Next →</button>
   </div>
 </div>

@@ -1,5 +1,3 @@
-
-
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
@@ -15,13 +13,15 @@ export class OrderHistory implements OnInit {
   filteredPastOrders: any[] = [];
   currentPage = 1;
   pageSize = 5;
-  selectedMonth = 'October';
-  months: string[] = [
+  loading = true;
+  error = '';
+
+  currentDate = new Date();
+  today = new Date();
+  monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
-  loading = true;
-  error = '';
 
   constructor(private api: ApiService, private auth: AuthGuard) {}
 
@@ -34,7 +34,7 @@ export class OrderHistory implements OnInit {
           this.loading = false;
           this.getFilteredOrders();
         },
-        error: (err) => {
+        error: () => {
           this.error = 'Failed to load past orders';
           this.loading = false;
         }
@@ -45,12 +45,55 @@ export class OrderHistory implements OnInit {
     }
   }
 
+  get currentMonth(): string {
+    return this.monthNames[this.currentDate.getMonth()];
+  }
+
+  get currentYear(): number {
+    return this.currentDate.getFullYear();
+  }
+
+  get prevMonthLabel(): string {
+    const prev = new Date(this.currentDate);
+    prev.setMonth(prev.getMonth() - 1);
+    return `${this.monthNames[prev.getMonth()]} ${prev.getFullYear()}`;
+  }
+
+  get nextMonthLabel(): string {
+    const next = new Date(this.currentDate);
+    next.setMonth(next.getMonth() + 1);
+    return `${this.monthNames[next.getMonth()]} ${next.getFullYear()}`;
+  }
+
+  canGoNext(): boolean {
+    return (
+      this.currentDate.getMonth() < this.today.getMonth() ||
+      this.currentDate.getFullYear() < this.today.getFullYear()
+    );
+  }
+
+  goToPrevMonth() {
+    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+    this.currentPage = 1;
+    this.getFilteredOrders();
+  }
+
+  goToNextMonth() {
+    if (this.canGoNext()) {
+      this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+      this.currentPage = 1;
+      this.getFilteredOrders();
+    }
+  }
+
   getFilteredOrders() {
-    const month = this.selectedMonth.toLowerCase();
+    const month = this.currentMonth.toLowerCase();
+    const year = this.currentYear;
     const filtered = this.pastOrders.filter(order => {
       if (!order.orderDate) return false;
-      const orderMonth = new Date(order.orderDate).toLocaleString('default', { month: 'long' }).toLowerCase();
-      return orderMonth === month;
+      const date = new Date(order.orderDate);
+      const orderMonth = date.toLocaleString('default', { month: 'long' }).toLowerCase();
+      return orderMonth === month && date.getFullYear() === year;
     });
 
     const start = (this.currentPage - 1) * this.pageSize;
@@ -59,17 +102,19 @@ export class OrderHistory implements OnInit {
   }
 
   get totalPages(): number {
-    const month = this.selectedMonth.toLowerCase();
+    const month = this.currentMonth.toLowerCase();
+    const year = this.currentYear;
     const filtered = this.pastOrders.filter(order => {
       if (!order.orderDate) return false;
-      const orderMonth = new Date(order.orderDate).toLocaleString('default', { month: 'long' }).toLowerCase();
-      return orderMonth === month;
+      const date = new Date(order.orderDate);
+      const orderMonth = date.toLocaleString('default', { month: 'long' }).toLowerCase();
+      return orderMonth === month && date.getFullYear() === year;
     });
     return Math.ceil(filtered.length / this.pageSize);
   }
 
   nextPage() {
-    if (this.currentPage < this.totalPages) {
+    if (this.currentPage < this.totalPages && this.canGoNext()) {
       this.currentPage++;
       this.getFilteredOrders();
     }
@@ -80,11 +125,5 @@ export class OrderHistory implements OnInit {
       this.currentPage--;
       this.getFilteredOrders();
     }
-  }
-
-  changeMonth(month: string) {
-    this.selectedMonth = month;
-    this.currentPage = 1;
-    this.getFilteredOrders();
   }
 }

@@ -15,9 +15,10 @@ export class ApiService {
   }
 
   // Generic POST
-  post(endpoint: string, body: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/${endpoint}`, body);
-  }
+  post(endpoint: string, body: any, options?: any): Observable<any> {
+  return this.http.post(`${this.baseUrl}/${endpoint}`, body, options);
+}
+
 
 
   put(endpoint: string, body: any = {}): Observable<any> {

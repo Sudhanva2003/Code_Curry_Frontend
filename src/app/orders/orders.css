@@ -1,96 +1,189 @@
+/* Container */
 .orders-container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 10px;
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
 }
 
+/* Titles */
 .section-title {
-  text-align: center;
+  font-size: 28px;
   font-weight: bold;
-  font-size: 26px;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .section-subtitle {
-  margin-top: 20px;
-  font-weight: bold;
-  font-size: 20px;
-  text-align: left;
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
 }
 
+/* Empty message */
 .empty-msg {
-  text-align: center;
   font-style: italic;
-  color: gray;
-  margin: 10px 0;
+  color: #777;
+  margin: 10px 0 20px;
+  text-align: center;
 }
 
+/* Order list */
 .order-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-bottom: 30px;
 }
 
+/* Order card */
 .order-card {
   border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 15px;
-  background: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 15px 20px;
+  background-color: #fdfdfd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .order-card h4 {
-  text-align: center;
-  margin-bottom: 10px;
+  margin-top: 0;
+  font-size: 18px;
+  color: #444;
 }
 
+.order-card p {
+  margin: 4px 0;
+  font-size: 15px;
+}
+
+/* Items inside order */
 .order-items {
   margin-top: 10px;
-  border-top: 1px dashed #ccc;
+  border-top: 1px solid #eee;
   padding-top: 10px;
 }
 
 .item {
   display: flex;
   justify-content: space-between;
-  margin: 5px 0;
   font-size: 14px;
+  padding: 4px 0;
 }
 
-.month-selector {
-  margin: 20px 0;
+/* Rating section */
+.rating-section {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.month-selector button {
+.rating-section label {
+  font-weight: 500;
   margin-right: 10px;
-  padding: 6px 12px;
-  background-color: #eee;
-  border: none;
-  cursor: pointer;
 }
 
-.month-selector button:hover {
-  background-color: #ddd;
-}
-
-.order-card {
+.rating-section input[type="number"] {
+  width: 80px;
+  padding: 4px 6px;
+  font-size: 14px;
   border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 5px;
+  border-radius: 4px;
+  margin-right: 8px;
 }
 
-.order-items .item {
-  margin-left: 10px;
+.rating-section button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.pagination {
-  margin-top: 20px;
+.rating-section button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.rating-section button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Month navigation */
+.month-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.month-label {
+  font-size: 18px;
+  font-weight: bold;
   text-align: center;
+  flex-grow: 1;
+}
+
+/* Navigation buttons */
+.month-navigation button {
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.month-navigation button:hover:not(:disabled) {
+  background-color: #005fa3;
+}
+
+.month-navigation button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px;
 }
 
 .pagination button {
-  margin: 0 10px;
-  padding: 6px 12px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #005fa3;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 14px;
+  font-weight: 500;
 }

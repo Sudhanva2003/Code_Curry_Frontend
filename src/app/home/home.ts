@@ -63,8 +63,60 @@ export class Home implements OnInit {
   }
 
   // ------------------- Search -------------------
- searchRestaurantsAndFoods() {
-  if (!this.searchTerm.trim()) {
+//  searchRestaurantsAndFoods() {
+//   const term = this.searchTerm.trim();
+//   if (!term) {
+//     this.fetchRestaurants();
+//     return;
+//   }
+
+//   this.loading = true;
+//   this.error = '';
+
+//   const restaurantSearch = this.api.get(`Restaurant/Search?name=${this.searchTerm}`);
+//   const foodRestaurantSearch = this.api.get(`Foods/SearchRestaurantsByFoodName?name=${this.searchTerm}`);
+//   const cuisineSearch = this.api.get(`Restaurant/SearchByCuisine?cuisine=${this.searchTerm}`);
+
+//   Promise.all([restaurantSearch.toPromise(), foodRestaurantSearch.toPromise(),cuisineSearch.toPromise()])
+//     .then(([restaurantMatches, foodRestaurantMatches,cuisineMatches]: any) => {
+//       const formattedRestaurants = restaurantMatches.map((r: any) => ({
+//         ...r,
+//         restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+//         type: 'restaurant'
+//       }));
+
+//       const formattedFoodRestaurants = foodRestaurantMatches.map((r: any) => ({
+//         ...r,
+//         restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+//         type: 'restaurant',
+//         matchedFood: this.searchTerm // optional: for UI display
+//       }));
+//        const formattedCuisineRestaurants = cuisineMatches.map((r: any) => ({
+//         ...r,
+//         restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+//         type: 'restaurant',
+//         matchedCuisine: this.searchTerm
+//       }));
+
+//       // Combine and deduplicate by restId
+//       const allRestaurants = [...formattedRestaurants, ...formattedFoodRestaurants];
+//       const uniqueRestaurants = allRestaurants.filter((r, index, self) =>
+//         index === self.findIndex(other => other.restId === r.restId)
+//       );
+      
+
+//       this.restaurants = uniqueRestaurants;
+//       this.loading = false;
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       this.error = 'Search failed';
+//       this.loading = false;
+//     });
+// }
+searchRestaurantsAndFoods() {
+  const term = this.searchTerm.trim();
+  if (!term) {
     this.fetchRestaurants();
     return;
   }
@@ -74,9 +126,14 @@ export class Home implements OnInit {
 
   const restaurantSearch = this.api.get(`Restaurant/Search?name=${this.searchTerm}`);
   const foodRestaurantSearch = this.api.get(`Foods/SearchRestaurantsByFoodName?name=${this.searchTerm}`);
+  const cuisineSearch = this.api.get(`Filter/SearchByCuisine?cuisine=${this.searchTerm}`);
 
-  Promise.all([restaurantSearch.toPromise(), foodRestaurantSearch.toPromise()])
-    .then(([restaurantMatches, foodRestaurantMatches]: any) => {
+  Promise.all([
+    restaurantSearch.toPromise(),
+    foodRestaurantSearch.toPromise(),
+    cuisineSearch.toPromise()
+  ])
+    .then(([restaurantMatches, foodRestaurantMatches, cuisineMatches]: any) => {
       const formattedRestaurants = restaurantMatches.map((r: any) => ({
         ...r,
         restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
@@ -87,11 +144,22 @@ export class Home implements OnInit {
         ...r,
         restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
         type: 'restaurant',
-        matchedFood: this.searchTerm // optional: for UI display
+        matchedFood: this.searchTerm
       }));
 
-      // Combine and deduplicate by restId
-      const allRestaurants = [...formattedRestaurants, ...formattedFoodRestaurants];
+      const formattedCuisineRestaurants = cuisineMatches.map((r: any) => ({
+        ...r,
+        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+        type: 'restaurant',
+        matchedCuisine: this.searchTerm
+      }));
+
+      const allRestaurants = [
+        ...formattedRestaurants,
+        ...formattedFoodRestaurants,
+        ...formattedCuisineRestaurants
+      ];
+
       const uniqueRestaurants = allRestaurants.filter((r, index, self) =>
         index === self.findIndex(other => other.restId === r.restId)
       );
@@ -100,11 +168,12 @@ export class Home implements OnInit {
       this.loading = false;
     })
     .catch((err) => {
-      console.error(err);
+      console.error('Search failed:', err);
       this.error = 'Search failed';
       this.loading = false;
     });
 }
+
 
 //Search food inside restaurant
 searchFoodsInRestaurant() {
@@ -210,7 +279,7 @@ searchFoodsInRestaurant() {
   }
 
   goToCart() {
-    this.router.navigate(['user/cart']);
+    this.router.navigate(['customer/cart']);
   }
 
   placeOrder() {
@@ -234,7 +303,7 @@ searchFoodsInRestaurant() {
         this.cartItems = [];
         this.totalQuantity = 0;
         localStorage.removeItem('cart');
-        this.router.navigate(['user/orders']);
+        this.router.navigate(['customer/orders']);
       },
       error: (err) => {
         console.error(err);

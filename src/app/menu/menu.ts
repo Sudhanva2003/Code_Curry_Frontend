@@ -28,7 +28,10 @@ export class Menu implements OnInit {
   addForm: FormGroup;
   currentItem: any = null;
 
-  searchTerm:string='';
+  searchTerm: string = '';
+
+  // Category options for dropdown
+  categories: string[] = ['Veg', 'Non Veg', 'Vegan'];
 
   constructor(private auth: AuthGuard, private http: HttpClient, private fb: FormBuilder) {
     this.editForm = this.fb.group({
@@ -78,17 +81,17 @@ export class Menu implements OnInit {
       }
     });
   }
+
   searchFoods(): void {
     const term = this.searchTerm.trim();
     if (!term) {
-      this.loadMenu(); // Reload all if empty
+      this.loadMenu();
       return;
     }
 
     this.loading = true;
     this.http.get(`https://localhost:7265/api/Foods/Search?name=${term}`).subscribe({
       next: (data: any) => {
-        // Optional: filter only foods belonging to this restaurant
         this.menuItems = data
           .filter((f: any) => f.restId === this.restId)
           .map((item: any) => ({

@@ -1,24 +1,22 @@
 <div class="order-history-container">
   <h2 class="section-title">Delivered Orders</h2>
 
-  <div class="filter-bar">
-    <label for="month">Month:</label>
-    <select id="month" [(ngModel)]="selectedMonth" (change)="changeMonth(selectedMonth)">
-      <option *ngFor="let month of ['January','February','March','April','May','June','July','August','September','October','November','December']" [value]="month">
-        {{ month }}
-      </option>
-    </select>
+  <!-- Month Navigation -->
+  <div class="month-navigation">
+    <button (click)="goToPrevMonth()">← {{ prevMonthLabel }}</button>
+    <span class="month-label">{{ currentMonth }} {{ currentYear }}</span>
+    <button (click)="goToNextMonth()" [disabled]="!canGoNext()">→ {{ nextMonthLabel }}</button>
   </div>
 
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="error">{{ error }}</div>
 
   <div class="content-wrapper">
-    <div *ngIf="!loading && filteredOrders && filteredOrders.length === 0" class="empty-msg">
-      No delivered orders for {{ selectedMonth }}
+    <div *ngIf="!loading && filteredOrders.length === 0" class="empty-msg">
+      No delivered orders for {{ currentMonth }} {{ currentYear }}
     </div>
 
-    <div class="order-list" *ngIf="!loading && filteredOrders && filteredOrders.length > 0">
+    <div class="order-list" *ngIf="!loading && filteredOrders.length > 0">
       <div class="order-card" *ngFor="let order of paginatedOrders">
         <h4>Order #{{ order.orderId }}</h4>
         <div class="order-items">
@@ -35,11 +33,11 @@
       </div>
     </div>
 
-    <!-- ✅ Pagination always at bottom -->
-    <div class="pagination-controls" *ngIf="filteredOrders && filteredOrders.length > 0">
-      <button (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
+    <!-- Pagination -->
+    <div class="pagination-controls" *ngIf="filteredOrders.length > 0">
+      <button (click)="prevPage()" [disabled]="currentPage === 1">← Prev</button>
       <span>Page {{ currentPage }}</span>
-      <button (click)="nextPage()" [disabled]="(currentPage * pageSize) >= filteredOrders.length">Next &gt;</button>
+      <button (click)="nextPage()" [disabled]="(currentPage * pageSize) >= filteredOrders.length || !canGoNext()">Next →</button>
     </div>
   </div>
 </div>

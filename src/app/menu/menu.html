@@ -58,10 +58,14 @@
         <input type="text" formControlName="name" placeholder="Enter food name" />
       </div>
 
-      <div class="menu-form-group">
-        <label>Category *</label>
-        <input type="text" formControlName="category" placeholder="veg/non veg/vegan" />
-      </div>
+    <div class="menu-form-group">
+  <label>Category *</label>
+  <select formControlName="category">
+    <option value="" disabled>Select category</option>
+    <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+  </select>
+</div>
+
 
       <div class="menu-form-group">
         <label>Price *</label>
@@ -107,10 +111,14 @@
         <input type="text" formControlName="name" placeholder="Enter food name" />
       </div>
 
-      <div class="menu-form-group">
-        <label>Category *</label>
-        <input type="text" formControlName="category" placeholder="veg/non veg/vegan" />
-      </div>
+     <div class="menu-form-group">
+  <label>Category *</label>
+  <select formControlName="category">
+    <option value="" disabled>Select category</option>
+    <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+  </select>
+</div>
+
 
       <div class="menu-form-group">
         <label>Price *</label>

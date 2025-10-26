@@ -9,14 +9,20 @@ import { AuthGuard } from '../auth.guard';
   styleUrls: ['./delivered-orders.css']
 })
 export class DeliveredOrders implements OnInit {
-  deliveredOrders: any[] = []; // ✅ original
-  filteredOrders: any[] = [];  // ✅ filtered by month
+  deliveredOrders: any[] = [];
+  filteredOrders: any[] = [];
   loading = true;
   error = '';
 
-  selectedMonth = 'October'; // ✅ default month
-  currentPage = 1;
+  currentDate = new Date();
+  today = new Date();
   pageSize = 5;
+  currentPage = 1;
+
+  monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
   constructor(private api: ApiService, private auth: AuthGuard) {}
 
@@ -25,11 +31,11 @@ export class DeliveredOrders implements OnInit {
     if (delivererId) {
       this.api.get(`Deliverer/ViewDeliveredOrders/${delivererId}`).subscribe({
         next: (res: any) => {
-          this.deliveredOrders = Array.isArray(res) ? res : []; // ✅ defensive fallback
-          this.applyFilters(); // ✅ apply month filter
+          this.deliveredOrders = Array.isArray(res) ? res : [];
+          this.applyFilters();
           this.loading = false;
         },
-        error: (err) => {
+        error: () => {
           this.error = 'Failed to load delivered orders';
           this.loading = false;
         }
@@ -40,13 +46,54 @@ export class DeliveredOrders implements OnInit {
     }
   }
 
-  applyFilters() {
-    const monthIndex = new Date(`${this.selectedMonth} 1, 2025`).getMonth();
-    this.filteredOrders = this.deliveredOrders.filter(order => {
-      const date = new Date(order.deliveryDate);
-      return date.getMonth() === monthIndex;
-    });
+  get currentMonth(): string {
+    return this.monthNames[this.currentDate.getMonth()];
+  }
+
+  get currentYear(): number {
+    return this.currentDate.getFullYear();
+  }
+
+  get prevMonthLabel(): string {
+    const prev = new Date(this.currentDate);
+    prev.setMonth(prev.getMonth() - 1);
+    return `${this.monthNames[prev.getMonth()]} ${prev.getFullYear()}`;
+  }
+
+  get nextMonthLabel(): string {
+    const next = new Date(this.currentDate);
+    next.setMonth(next.getMonth() + 1);
+    return `${this.monthNames[next.getMonth()]} ${next.getFullYear()}`;
+  }
+
+  canGoNext(): boolean {
+    return (
+      this.currentDate.getMonth() < this.today.getMonth() ||
+      this.currentDate.getFullYear() < this.today.getFullYear()
+    );
+  }
+
+  goToPrevMonth() {
+    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
     this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  goToNextMonth() {
+    if (this.canGoNext()) {
+      this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+      this.currentPage = 1;
+      this.applyFilters();
+    }
+  }
+
+  applyFilters() {
+    const month = this.currentDate.getMonth();
+    const year = this.currentDate.getFullYear();
+    this.filteredOrders = this.deliveredOrders.filter(order => {
+      const date = new Date(order.orderDate);
+      return date.getMonth() === month && date.getFullYear() === year;
+    });
   }
 
   get paginatedOrders() {
@@ -55,7 +102,7 @@ export class DeliveredOrders implements OnInit {
   }
 
   nextPage() {
-    if ((this.currentPage * this.pageSize) < this.filteredOrders.length) {
+    if ((this.currentPage * this.pageSize) < this.filteredOrders.length && this.canGoNext()) {
       this.currentPage++;
     }
   }
@@ -64,10 +111,5 @@ export class DeliveredOrders implements OnInit {
     if (this.currentPage > 1) {
       this.currentPage--;
     }
-  }
-
-  changeMonth(month: string) {
-    this.selectedMonth = month;
-    this.applyFilters();
   }
 }
