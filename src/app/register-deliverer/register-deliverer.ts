@@ -50,7 +50,7 @@ export class RegisterDeliverer {
 
     this.http.post('https://localhost:7265/api/Deliverer/DelivererRegister', delivererData).subscribe({
       next: () => {
-        this.http.post<any>('https://localhost:7265/api/Customer/login', {
+        this.http.post<any>('https://localhost:7265/api/Login/login', {
           email: delivererData.email,
           password: delivererData.password
         }).subscribe({

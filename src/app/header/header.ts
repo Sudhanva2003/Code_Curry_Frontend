@@ -13,7 +13,8 @@ export class Header implements OnInit {
   role: 'customer' | 'restaurant' | 'deliverer' | 'admin' | null = null;
   showProfileBox = false;
 
-  constructor(private auth: AuthGuard, private router: Router) {}
+  constructor(private auth: AuthGuard, private router: Router) {
+  }
 
   ngOnInit() {
     const user = this.auth.getUser();

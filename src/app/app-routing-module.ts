@@ -26,6 +26,7 @@ import { AdminView } from './admin-view/admin-view';
 import { OpenTickets } from './open-tickets/open-tickets';
 import { MyTickets } from './my-tickets/my-tickets';
 import { ResolvedTickets } from './resolved-tickets/resolved-tickets';
+import { AuthInterceptor } from './auth.interceptor';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },

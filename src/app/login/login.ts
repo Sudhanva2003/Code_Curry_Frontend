@@ -26,6 +26,7 @@ export class Login {
   }
 
   submit() {
+   // alert("submitted");
     if (this.loginForm.invalid) {
       alert('Please enter valid credentials');
       return;
@@ -33,18 +34,20 @@ export class Login {
 
     const { email, password } = this.loginForm.value;
 
-    this.http.post<any>('https://localhost:7265/api/Customer/login', { email, password })
+    this.http.post<any>('https://localhost:7265/api/Login/login', { email, password })
       .subscribe({
         next: (res) => {
           // Expected response: { id, name, role }
           this.auth.setUser(res);
-
+          console.log('Login Response:', res); 
+          //alert("2");
           switch (res.role?.toLowerCase()) {
             case 'restaurant':
               this.router.navigate(['/restaurant']);
               break;
 
             case 'customer':
+             
               this.router.navigate(['/customer']);
               break;
 

@@ -16,9 +16,10 @@ export class RoleGuard implements CanActivate {
   ): Observable<boolean> | Promise<boolean> | boolean {
     const requiredRole = next.data['role'];  // Get required role from route data
     const user = this.authGuard.getUser();
-
+    console.log("RoleGuard: Checking access for role:", requiredRole,user?.role,user);
     // Check if the user is logged in and has the required role
-    if (user && user.role === requiredRole) {
+    if (user && user.role?.toLowerCase() === requiredRole) {
+      console.log("RoleGuard: Access granted");
       return true;  // Access granted
     } else {
       this.router.navigate(['/login']);  // Redirect to login if not authorized

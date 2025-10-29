@@ -1,4 +1,4 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
@@ -20,7 +20,7 @@ import { Home } from './home/home';
 import { Cart } from './cart/cart';
 import { Orders } from './orders/orders';
 import { CustomerSettings } from './customer-settings/customer-settings';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RestaurantMenu } from './restaurant-menu/restaurant-menu';
 import { RegisterDeliverer } from './register-deliverer/register-deliverer';
 import { LiveOrders } from './live-orders/live-orders';
@@ -32,6 +32,7 @@ import { AdminView } from './admin-view/admin-view';
 import { OpenTickets } from './open-tickets/open-tickets';
 import { MyTickets } from './my-tickets/my-tickets';
 import { ResolvedTickets } from './resolved-tickets/resolved-tickets';
+import { AuthInterceptor } from './auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -69,10 +70,10 @@ import { ResolvedTickets } from './resolved-tickets/resolved-tickets';
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    HttpClientModule  
   ],
   providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideHttpClient()
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }  // Register the AuthInterceptor
   ],
   bootstrap: [App]
 })

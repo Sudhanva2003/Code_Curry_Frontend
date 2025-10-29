@@ -46,7 +46,7 @@ export class RegisterCustomer {
 
     this.http.post('https://localhost:7265/api/Customer/register', userData).subscribe({
       next: () => {
-        this.http.post<any>('https://localhost:7265/api/Customer/login', {
+        this.http.post<any>('https://localhost:7265/api/Login/login', {
           email: userData.email,
           password: userData.password
         }).subscribe({
