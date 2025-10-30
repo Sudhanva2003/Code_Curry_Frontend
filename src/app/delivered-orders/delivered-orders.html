@@ -4,7 +4,7 @@
   <div class="filter-bar">
     <label for="month">Month:</label>
     <select id="month" [(ngModel)]="selectedMonth" (change)="changeMonth(selectedMonth)">
-      <option *ngFor="let month of ['January','February','March','April','May','June','July','August','September','October','November','December']" [value]="month">
+      <option *ngFor="let month of monthNames" [value]="month">
         {{ month }}
       </option>
     </select>
@@ -14,13 +14,15 @@
   <div *ngIf="error">{{ error }}</div>
 
   <div class="content-wrapper">
-    <div *ngIf="!loading && filteredOrders && filteredOrders.length === 0" class="empty-msg">
+    <div *ngIf="!loading && filteredOrders.length === 0" class="empty-msg">
       No delivered orders for {{ selectedMonth }}
     </div>
 
-    <div class="order-list" *ngIf="!loading && filteredOrders && filteredOrders.length > 0">
+    <div class="order-list" *ngIf="!loading && filteredOrders.length > 0">
       <div class="order-card" *ngFor="let order of paginatedOrders">
         <h4>Order #{{ order.orderId }}</h4>
+        <p><strong>Date:</strong> {{ order.orderDate | date:'medium' }}</p>
+        <p><strong>Status:</strong> {{ order.status }}</p>
         <div class="order-items">
           <div class="item">
             <span><strong>Restaurant Address:</strong></span>
@@ -31,12 +33,11 @@
             <span>{{ order.customerAddress }}</span>
           </div>
         </div>
-        <p class="delivery-fee"><strong>Delivery Fee:</strong> ₹50</p>
+        <p class="delivery-fee"><strong>Delivery Fee:</strong> ₹{{ order.deliveryFee || 50 }}</p>
       </div>
     </div>
 
-    <!-- ✅ Pagination always at bottom -->
-    <div class="pagination-controls" *ngIf="filteredOrders && filteredOrders.length > 0">
+    <div class="pagination-controls" *ngIf="filteredOrders.length > 0">
       <button (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
       <span>Page {{ currentPage }}</span>
       <button (click)="nextPage()" [disabled]="(currentPage * pageSize) >= filteredOrders.length">Next &gt;</button>

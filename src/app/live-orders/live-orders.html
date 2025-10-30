@@ -27,7 +27,11 @@
       <p class="delivery-fee"><strong>Delivery Fee:</strong> ₹50</p>
 
       <div class="order-actions">
-        <button (click)="assignDelivery(order.orderId)">Assign Delivery</button>
+        <!-- Assign Delivery for active orders -->
+        <button *ngIf="order.status === 'Paid' || order.status === 'Prepared'" 
+                (click)="assignDelivery(order.orderId)">
+          Assign Delivery
+        </button>
       </div>
     </div>
   </div>

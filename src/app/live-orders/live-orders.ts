@@ -2,6 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
 
+interface Order {
+  orderId: number;
+  status: string;
+  restaurantAddress: string;
+  customerAddress: string;
+}
+
 @Component({
   selector: 'live-orders',
   standalone: false,
@@ -9,22 +16,25 @@ import { AuthGuard } from '../auth.guard';
   styleUrls: ['./live-orders.css']
 })
 export class LiveOrders implements OnInit {
-  orders: any[] = [];
+  orders: Order[] = [];
+  deliveredOrders: Order[] = []; // ✅ Added to hold completed/cancelled orders
   loading = true;
   error = '';
 
   constructor(private api: ApiService, private auth: AuthGuard) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadOrders();
   }
 
-  loadOrders() {
+  loadOrders(): void {
     this.loading = true;
     this.api.get(`Deliverer/ViewLiveOrders`).subscribe({
-      next: (res: any) => {
-        console.log("API Response:", res);
-        this.orders = res || [];
+      next: (res: Order[]) => {
+        this.orders = (res || []).filter((order: Order) =>
+          order.status === 'Paid' ||
+          order.status === 'Prepared' 
+        );
         this.loading = false;
       },
       error: (err) => {
@@ -34,33 +44,47 @@ export class LiveOrders implements OnInit {
       }
     });
   }
+   cancelOrder(orderId: number): void {
+    const confirmed = confirm("Are you sure you want to cancel this delivery?");
+    if (!confirmed) return;
 
-  assignDelivery(orderId: number) {
-    const delivererId = this.auth.getId(); // deliverer ID
+    this.api.put(`Deliverer/CancelOrder/${orderId}`, {}).subscribe({
+      next: () => {
+        alert("Order cancelled.");
+        this.loadOrders();
+      },
+      error: (err) => {
+        console.error("Cancel error:", err);
+        alert("Failed to cancel order.");
+      }
+    });
+  }
 
-    // Null / undefined check
+  assignDelivery(orderId: number): void {
+    const delivererId = this.auth.getId();
     if (!delivererId) {
       alert('Deliverer ID not found. Please log in again.');
       return;
     }
 
     const confirmed = confirm("Assign this order for delivery?");
-  
-    if (confirmed) {
-      const body = { delivererId }; // wrap in object
-      this.api.put(`Deliverer/AssignOrder/${orderId}`, body).subscribe({
-        next: (res) => {
-          alert('Order assigned for delivery!');
-          // Save delivererId and orderId to localStorage
-          localStorage.setItem('currentOrderId', orderId.toString());
-          localStorage.setItem('currentDelivererId', delivererId.toString());
-          this.loadOrders();
-        },
-        error: (err) => {
-          console.error("Error assigning delivery:", err);
-          alert('Failed to assign delivery.');
-        }
-      });
-    }
+    if (!confirmed) return;
+
+    const body = { delivererId };
+    this.api.put(`Deliverer/AssignOrder/${orderId}`, body).subscribe({
+      next: () => {
+        alert('Order assigned for delivery!');
+        localStorage.setItem('currentOrderId', orderId.toString());
+        localStorage.setItem('currentDelivererId', delivererId.toString());
+        this.loadOrders();
+      },
+      error: (err) => {
+        console.error("Error assigning delivery:", err);
+        alert('Failed to assign delivery.');
+      }
+    });
   }
+
+ 
+
 }

@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
@@ -29,7 +28,7 @@ interface Order {
   selector: 'orders',
   standalone: false,
   templateUrl: './orders.html',
-  styleUrl: './orders.css'
+  styleUrls: ['./orders.css']
 })
 export class Orders implements OnInit {
   openOrders: Order[] = [];
@@ -54,35 +53,67 @@ export class Orders implements OnInit {
     const user = this.auth.getUser();
     if (user?.userId) {
       this.userId = user.userId;
-      this.api.get(`Customer/ViewUserOrders/${this.userId}`).subscribe({
-        next: (res: any) => {
-          this.openOrders = (res.openOrders || []).map((order: any) => ({
-            ...order,
-            restaurantRating: null,
-            delivererRating: null,
-            restaurantRated: false,
-            delivererRated: false
-          }));
-          this.pastOrders = (res.pastOrders || []).map((order: any) => ({
-            ...order,
-            restaurantRating: null,
-            delivererRating: null,
-            restaurantRated: false,
-            delivererRated: false
-          }));
-          this.loading = false;
-          this.getFilteredOrders();
-        },
-        error: () => {
-          this.error = 'Failed to load orders';
-          this.loading = false;
-        }
-      });
+      this.refreshOrders();
     } else {
       this.error = "User not logged in";
       this.loading = false;
     }
   }
+
+  refreshOrders() {
+    this.loading = true;
+    this.api.get(`Customer/ViewUserOrders/${this.userId}`).subscribe({
+      next: (res: any) => {
+        this.openOrders = (res.openOrders || []).filter((order: any) =>
+          order.status === 'Paid'|| 
+        order.status === 'Prepared' ||
+        order.status =='Assigned' 
+        ).map((order: any) => ({
+          ...order,
+          restaurantRating: null,
+          delivererRating: null,
+          restaurantRated: false,
+          delivererRated: false
+        }));
+
+        this.pastOrders = (res.pastOrders || []).filter((order: any) =>
+          order.status === 'Delivered' ||
+           order.status === 'CancelledByCustomer'||
+          order.status === 'CancelledByRest'||
+          order.status === 'CancelledByDeliverer'
+        ).map((order: any) => ({
+          ...order,
+          restaurantRating: null,
+          delivererRating: null,
+          restaurantRated: false,
+          delivererRated: false
+        }));
+
+        this.getFilteredOrders();
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Failed to reload orders';
+        this.loading = false;
+      }
+    });
+  }
+
+  cancelOrder(orderId: number): void {
+  const confirmed = confirm("Are you sure you want to cancel this order?");
+  if (!confirmed) return;
+
+  this.api.put(`Customer/CancelOrder/${orderId}`, {}).subscribe({
+    next: () => {
+      alert('Order cancelled successfully.');
+      this.refreshOrders(); // ✅ reloads open + past
+    },
+    error: (err) => {
+      console.error("Cancel error:", err);
+      alert('Failed to cancel order.');
+    }
+  });
+}
 
   get currentMonth(): string {
     return this.monthNames[this.currentDate.getMonth()];
@@ -111,13 +142,13 @@ export class Orders implements OnInit {
     );
   }
 
-  goToPrevMonth() {
+  goToPrevMonth(): void {
     this.currentDate.setMonth(this.currentDate.getMonth() - 1);
     this.currentPage = 1;
     this.getFilteredOrders();
   }
 
-  goToNextMonth() {
+  goToNextMonth(): void {
     if (this.canGoNext()) {
       this.currentDate.setMonth(this.currentDate.getMonth() + 1);
       this.currentPage = 1;
@@ -125,9 +156,10 @@ export class Orders implements OnInit {
     }
   }
 
-  getFilteredOrders() {
+  getFilteredOrders(): void {
     const month = this.currentMonth.toLowerCase();
     const year = this.currentYear;
+
     const filtered = this.pastOrders.filter(order => {
       if (!order.orderDate) return false;
       const date = new Date(order.orderDate);
@@ -143,23 +175,25 @@ export class Orders implements OnInit {
   get totalPages(): number {
     const month = this.currentMonth.toLowerCase();
     const year = this.currentYear;
+
     const filtered = this.pastOrders.filter(order => {
       if (!order.orderDate) return false;
       const date = new Date(order.orderDate);
       const orderMonth = date.toLocaleString('default', { month: 'long' }).toLowerCase();
       return orderMonth === month && date.getFullYear() === year;
     });
+
     return Math.ceil(filtered.length / this.pageSize);
   }
 
-  nextPage() {
-    if (this.currentPage < this.totalPages && this.canGoNext()) {
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.getFilteredOrders();
     }
   }
 
-  prevPage() {
+  prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.getFilteredOrders();
@@ -174,16 +208,13 @@ export class Orders implements OnInit {
     return this.pastOrders.some(o => o.delivererId === delivererId && o.status === 'Delivered');
   }
 
-  submitRatingRestaurant(orderId: number, rating: number) {
+  submitRatingRestaurant(orderId: number, rating: number): void {
     const endpoint = `Orders/SubmitRating?userId=${this.userId}&orderId=${orderId}&rating=${rating}`;
-
     this.api.post(endpoint, null).subscribe({
       next: (res: any) => {
         alert(res.message);
         const order = this.pastOrders.find(o => o.orderId === orderId);
-        if (order) {
-          order.restaurantRated = true;
-        }
+        if (order) order.restaurantRated = true;
       },
       error: (err) => {
         console.error('Rating error:', err);
@@ -192,7 +223,7 @@ export class Orders implements OnInit {
     });
   }
 
-  submitRatingDeliverer(orderId: number, rating: number) {
+  submitRatingDeliverer(orderId: number, rating: number): void {
     const order = this.pastOrders.find(o => o.orderId === orderId);
     if (!order?.delivererId) {
       alert('Deliverer not found for this order.');
@@ -200,14 +231,11 @@ export class Orders implements OnInit {
     }
 
     const endpoint = `Orders/SubmitDelivererRating?userId=${this.userId}&delivererId=${order.delivererId}&rating=${rating}`;
-
     this.api.post(endpoint, null).subscribe({
       next: (res: any) => {
         alert(res.message);
         const order = this.pastOrders.find(o => o.orderId === orderId);
-        if (order) {
-          order.delivererRated = true;
-        }
+        if (order) order.delivererRated = true;
       },
       error: (err) => {
         console.error('Rating error:', err);

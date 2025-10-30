@@ -1,8 +1,19 @@
-
-
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
+
+interface OrderItem {
+  name: string;
+  quantity: number;
+}
+
+interface Order {
+  orderId: number;
+  orderDate: string;
+  status: string;
+  finalPrice: number;
+  items: OrderItem[];
+}
 
 @Component({
   selector: 'order-history',
@@ -11,8 +22,8 @@ import { AuthGuard } from '../auth.guard';
   styleUrls: ['./order-history.css']
 })
 export class OrderHistory implements OnInit {
-  pastOrders: any[] = [];
-  filteredPastOrders: any[] = [];
+  pastOrders: Order[] = [];
+  filteredPastOrders: Order[] = [];
   currentPage = 1;
   pageSize = 5;
   selectedMonth = 'October';
@@ -29,12 +40,19 @@ export class OrderHistory implements OnInit {
     const restId = this.auth.getId();
     if (restId) {
       this.api.get(`Restaurant/ViewRestaurantPastOrders/${restId}`).subscribe({
-        next: (res: any) => {
-          this.pastOrders = res || [];
+        next: (res: Order[]) => {
+          this.pastOrders = (res || []).filter((order: Order) =>
+            order.status === 'Delivered' ||
+            order.status === 'Prepared' ||
+            order.status === 'CancelledByRest'||
+            order.status === 'CancelledByCustomer'
+            ||
+            order.status === 'CancelledByDeliverer'
+          );
           this.loading = false;
           this.getFilteredOrders();
         },
-        error: (err) => {
+        error: () => {
           this.error = 'Failed to load past orders';
           this.loading = false;
         }
@@ -45,9 +63,9 @@ export class OrderHistory implements OnInit {
     }
   }
 
-  getFilteredOrders() {
+  getFilteredOrders(): void {
     const month = this.selectedMonth.toLowerCase();
-    const filtered = this.pastOrders.filter(order => {
+    const filtered = this.pastOrders.filter((order: Order) => {
       if (!order.orderDate) return false;
       const orderMonth = new Date(order.orderDate).toLocaleString('default', { month: 'long' }).toLowerCase();
       return orderMonth === month;
@@ -60,7 +78,7 @@ export class OrderHistory implements OnInit {
 
   get totalPages(): number {
     const month = this.selectedMonth.toLowerCase();
-    const filtered = this.pastOrders.filter(order => {
+    const filtered = this.pastOrders.filter((order: Order) => {
       if (!order.orderDate) return false;
       const orderMonth = new Date(order.orderDate).toLocaleString('default', { month: 'long' }).toLowerCase();
       return orderMonth === month;
@@ -68,21 +86,21 @@ export class OrderHistory implements OnInit {
     return Math.ceil(filtered.length / this.pageSize);
   }
 
-  nextPage() {
+  nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.getFilteredOrders();
     }
   }
 
-  prevPage() {
+  prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.getFilteredOrders();
     }
   }
 
-  changeMonth(month: string) {
+  changeMonth(month: string): void {
     this.selectedMonth = month;
     this.currentPage = 1;
     this.getFilteredOrders();

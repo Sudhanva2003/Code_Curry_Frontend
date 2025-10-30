@@ -13,11 +13,17 @@
       <p><strong>Date:</strong> {{ order.orderDate | date:'medium' }}</p>
       <p><strong>Status:</strong> {{ order.status }}</p>
       <p><strong>Total:</strong> ₹{{ order.totalAmount }}</p>
+
       <div class="order-items">
         <div class="item" *ngFor="let item of order.items">
           <span>{{ item.foodName }} (x{{ item.quantity }})</span>
           <span>₹{{ item.price }}</span>
         </div>
+      </div>
+
+      <!-- Cancel Button for Paid Orders -->
+      <div *ngIf="order.status === 'Paid'|| order.status=='Assigned' || order.status=='Prepared'" class="cancel-section">
+        <button (click)="cancelOrder(order.orderId)">Cancel Order</button>
       </div>
     </div>
   </div>
@@ -40,7 +46,17 @@
     <div class="order-card" *ngFor="let order of filteredPastOrders">
       <h4>Order #{{ order.orderId }}</h4>
       <p><strong>Date:</strong> {{ order.orderDate | date:'medium' }}</p>
-      <p><strong>Status:</strong> {{ order.status }}</p>
+      <p>
+        <strong>Status:</strong>
+        <span [ngClass]="{
+          'cancelled': order.status === 'CancelledByCustomer',
+          'delivered': order.status === 'Delivered',
+          'prepared': order.status === 'Prepared'
+        }">
+          {{ order.status }}
+        </span>
+      </p>
+
       <p><strong>Total:</strong> ₹{{ order.totalAmount }}</p>
 
       <div class="order-items">
@@ -51,7 +67,7 @@
       </div>
 
       <!-- Rating Section -->
-      <div class="rating-section">
+      <div class="rating-section" *ngIf="order.status === 'Delivered'">
         <!-- Restaurant Rating -->
         <div *ngIf="canRateRestaurant(order.restId)">
           <label>Rate Restaurant:</label>
@@ -59,7 +75,7 @@
                  [(ngModel)]="order.restaurantRating"
                  [disabled]="order.restaurantRated">
           <button
-            (click)="order.restaurantRating !== null && submitRatingRestaurant(order.orderId, order.restaurantRating!)"
+            (click)="submitRatingRestaurant(order.orderId, order.restaurantRating!)"
             [disabled]="order.restaurantRated || order.restaurantRating == null">
             Submit
           </button>
@@ -77,9 +93,7 @@
             Submit
           </button>
         </div>
-
       </div>
-
     </div>
   </div>
 
@@ -87,6 +101,6 @@
   <div class="pagination" *ngIf="filteredPastOrders.length > 0">
     <button (click)="prevPage()" [disabled]="currentPage === 1">← Prev</button>
     <span>Page {{ currentPage }} of {{ totalPages }}</span>
-    <button (click)="nextPage()" [disabled]="currentPage >= totalPages || !canGoNext()">Next →</button>
+    <button (click)="nextPage()" [disabled]="currentPage >= totalPages">Next →</button>
   </div>
 </div>
