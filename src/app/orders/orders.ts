@@ -87,6 +87,62 @@ export class Orders implements OnInit {
     }
   }
 
+  refreshOrders() {
+    this.loading = true;
+    this.api.get(`Customer/ViewUserOrders/${this.userId}`).subscribe({
+      next: (res: any) => {
+        this.openOrders = (res.openOrders || []).filter((order: any) =>
+          order.status === 'Paid'|| 
+        order.status === 'Prepared' ||
+        order.status =='Assigned' 
+        ).map((order: any) => ({
+          ...order,
+          restaurantRating: null,
+          delivererRating: null,
+          restaurantRated: false,
+          delivererRated: false
+        }));
+
+        this.pastOrders = (res.pastOrders || []).filter((order: any) =>
+          order.status === 'Delivered' ||
+           order.status === 'CancelledByCustomer'||
+          order.status === 'CancelledByRest'||
+          order.status === 'CancelledByDeliverer'
+        ).map((order: any) => ({
+          ...order,
+          restaurantRating: null,
+          delivererRating: null,
+          restaurantRated: false,
+          delivererRated: false
+        }));
+
+        this.getFilteredOrders();
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Failed to reload orders';
+        this.loading = false;
+      }
+    });
+  }
+
+  cancelOrder(orderId: number): void {
+  const confirmed = confirm("Are you sure you want to cancel this order?");
+  if (!confirmed) return;
+
+  this.api.put(`Customer/CancelOrder/${orderId}`, {}).subscribe({
+    next: () => {
+      alert('Order cancelled successfully.');
+      this.refreshOrders(); // ✅ reloads open + past
+    },
+    error: (err) => {
+      console.error("Cancel error:", err);
+      alert('Failed to cancel order.');
+    }
+  });
+}
+
+
   get currentMonth(): string {
     return this.monthNames[this.currentDate.getMonth()];
   }

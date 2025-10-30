@@ -23,6 +23,14 @@
         <h4>Order #{{ order.orderId }}</h4>
         <div class="order-items">
           <div class="item">
+            <span><strong>Status:</strong></span>
+            <span>{{ order.status }}</span>
+          </div>
+          <div class="item">
+            <span><strong>Status:</strong></span>
+            <span>{{ order.orderDate }}</span>
+          </div>
+          <div class="item">
             <span><strong>Restaurant Address:</strong></span>
             <span>{{ order.restaurantAddress }}</span>
           </div>

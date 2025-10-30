@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Router}  from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-delivery',
@@ -16,7 +16,7 @@ export class Delivery implements OnInit {
   showDeliveryPopup = false;
   isPickedUp = false;
 
-  constructor(private http: HttpClient,private router:Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     // Fetch orderId and delivererId from localStorage
@@ -63,26 +63,49 @@ export class Delivery implements OnInit {
   }
 
   confirmDelivery(): void {
-  this.http
-    .put(`https://localhost:7265/api/Deliverer/MarkDelivered/${this.orderId}`, {}, { responseType: 'text' })
-    .subscribe({
-      next: (res) => {
-        alert(res); // shows "Order marked as delivered."
-        this.showDeliveryPopup = false;
-        localStorage.removeItem('currentOrderId');
-        localStorage.removeItem('currentDelivererId');
-        this.router.navigate(['/deliverer/delivered-orders']);
-      },
-      error: (err) => {
-        console.error('Failed to mark delivered', err);
-        alert('Failed to mark delivery. Try again.');
-      },
-    });
-}
-
-
+    this.http
+      .put(`https://localhost:7265/api/Deliverer/MarkDelivered/${this.orderId}`, {}, { responseType: 'text' })
+      .subscribe({
+        next: (res) => {
+          alert(res); // shows "Order marked as delivered."
+          this.showDeliveryPopup = false;
+          localStorage.removeItem('currentOrderId');
+          localStorage.removeItem('currentDelivererId');
+          this.router.navigate(['/deliverer/delivered-orders']); // Navigate to delivered orders page
+        },
+        error: (err) => {
+          console.error('Failed to mark delivered', err);
+          alert('Failed to mark delivery. Try again.');
+        },
+      });
+  }
 
   cancelDelivery(): void {
     this.showDeliveryPopup = false;
+  }
+
+  cancelOrder(): void {
+    if (this.isPickedUp) {
+      alert("You cannot cancel the delivery after pickup.");
+      return;
+    }
+
+    const confirmed = confirm("Are you sure you want to cancel this delivery?");
+    if (!confirmed) return;
+
+    this.http
+      .put(`https://localhost:7265/api/Deliverer/CancelOrder/${this.orderId}`, {}, { responseType: 'text' })
+      .subscribe({
+        next: (res) => {
+          alert(res);
+          localStorage.removeItem('currentOrderId');
+          localStorage.removeItem('currentDelivererId');
+          this.deliveryDetail = null;
+        },
+        error: (err) => {
+          console.error('Failed to cancel delivery', err);
+          alert('Failed to cancel delivery. Try again.');
+        },
+      });
   }
 }

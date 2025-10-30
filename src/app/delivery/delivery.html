@@ -54,6 +54,18 @@
     </div>
   </div>
 
+   <!-- Cancel Button -->
+  <div class="delivery-action">
+    <button
+      class="cancel-btn"
+      (click)="cancelOrder()"
+      [disabled]="isPickedUp"
+      title="You can only cancel before pickup"
+    >
+      Cancel Delivery
+    </button>
+  </div>
+
   <!-- Delivery Confirmation Popup -->
   <div class="modal" *ngIf="showDeliveryPopup">
     <div class="modal-content">

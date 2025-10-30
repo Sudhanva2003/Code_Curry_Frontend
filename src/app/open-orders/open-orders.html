@@ -12,18 +12,34 @@
     <div class="order-card" *ngFor="let order of orders">
       <h4>Order #{{ order.orderId }}</h4>
       <p><strong>Date:</strong> {{ order.orderDate | date:'medium' }}</p>
-      <p><strong>Status:</strong> {{ order.status }}</p>
+      <p>
+        <strong>Status:</strong>
+        <span [ngClass]="{
+          'cancelled': order.status.startsWith('CancelledBy'),
+          'paid': order.status === 'Paid'
+        }">
+          {{ order.status }}
+        </span>
+      </p>
       <p><strong>Total:</strong> ₹{{ order.totalAmount }}</p>
 
       <div class="order-items">
         <div class="item" *ngFor="let item of order.items">
-          <span>{{ item.name }} (x{{ item.quantity }})</span>
+          <span>{{ item.foodName }} (x{{ item.quantity }})</span>
         </div>
       </div>
 
-      <!-- Mark Prepared Button -->
+      <!-- Action Buttons -->
       <div class="order-actions">
-        <button (click)="markPrepared(order.orderId)">Mark Prepared</button>
+        <!-- Mark Prepared for Paid or Assigned Orders -->
+        <button *ngIf="order.status === 'Paid' || order.status === 'Assigned'" (click)="markPrepared(order.orderId)">
+          Mark Prepared
+        </button>
+
+        <!-- Cancel Order for Paid or Assigned Orders -->
+        <button *ngIf="order.status === 'Paid' || order.status === 'Assigned'" (click)="cancelOrder(order.orderId)">
+          Cancel Order
+        </button>
       </div>
     </div>
   </div>
