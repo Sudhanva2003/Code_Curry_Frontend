@@ -13,6 +13,10 @@
       <p><strong>Date:</strong> {{ order.orderDate | date:'medium' }}</p>
       <p><strong>Status:</strong> {{ order.status }}</p>
       <p><strong>Total:</strong> ₹{{ order.totalAmount }}</p>
+      <p><strong>Handling Fee:</strong> ₹{{ order.handlingFee }}</p>
+      <p><strong>Delivery Fee:</strong> ₹{{ order.deliveryFee }}</p>
+      <p><strong>GST:</strong> ₹{{ order.gst }}</p>
+      <p><strong>Final Price:</strong> ₹{{ order.finalPrice }}</p>
       <div class="order-items">
         <div class="item" *ngFor="let item of order.items">
           <span>{{ item.foodName }} (x{{ item.quantity }})</span>
@@ -25,7 +29,6 @@
   <!-- Past Orders -->
   <h3 class="section-subtitle">Past Orders</h3>
 
-  <!-- Month Navigation -->
   <div class="month-navigation">
     <button (click)="goToPrevMonth()">← {{ prevMonthLabel }}</button>
     <span class="month-label">{{ currentMonth }} {{ currentYear }}</span>
@@ -42,6 +45,10 @@
       <p><strong>Date:</strong> {{ order.orderDate | date:'medium' }}</p>
       <p><strong>Status:</strong> {{ order.status }}</p>
       <p><strong>Total:</strong> ₹{{ order.totalAmount }}</p>
+      <p><strong>Handling Fee:</strong> ₹{{ order.handlingFee }}</p>
+      <p><strong>Delivery Fee:</strong> ₹{{ order.deliveryFee }}</p>
+      <p><strong>GST:</strong> ₹{{ order.gst }}</p>
+      <p><strong>Final Price:</strong> ₹{{ order.finalPrice }}</p>
 
       <div class="order-items">
         <div class="item" *ngFor="let item of order.items">
@@ -52,7 +59,6 @@
 
       <!-- Rating Section -->
       <div class="rating-section">
-        <!-- Restaurant Rating -->
         <div *ngIf="canRateRestaurant(order.restId)">
           <label>Rate Restaurant:</label>
           <input type="number" min="1" max="5" step="0.5"
@@ -65,7 +71,6 @@
           </button>
         </div>
 
-        <!-- Deliverer Rating -->
         <div *ngIf="canRateDeliverer(order.delivererId)">
           <label>Rate Deliverer:</label>
           <input type="number" min="1" max="5" step="0.5"
@@ -83,7 +88,6 @@
     </div>
   </div>
 
-  <!-- Pagination -->
   <div class="pagination" *ngIf="filteredPastOrders.length > 0">
     <button (click)="prevPage()" [disabled]="currentPage === 1">← Prev</button>
     <span>Page {{ currentPage }} of {{ totalPages }}</span>

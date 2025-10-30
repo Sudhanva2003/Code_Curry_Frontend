@@ -59,13 +59,18 @@ export class Cart implements OnInit {
     return this.cartItems.reduce((sum, i) => sum + i.quantity, 0);
   }
 
+  get PlatformCharges(): number {
+  return this.totalAmount * 0.02;  // 2% of the total amount
+}
+
   get handlingCharges(): number {
     return this.itemCount * 5;
   }
 
   get deliveryCharges(): number {
-    return 50;
-  }
+  const uniqueRestaurants = new Set(this.cartItems.map(item => item.restId));
+  return 50 * uniqueRestaurants.size;  // 50 per unique restaurant
+}
 
   get cgst(): number {
     return this.totalAmount * 0.09;
@@ -76,7 +81,7 @@ export class Cart implements OnInit {
   }
 
   get finalTotal(): number {
-    return this.totalAmount + this.handlingCharges + this.deliveryCharges + this.cgst + this.sgst;
+    return this.totalAmount + this.PlatformCharges+this.handlingCharges + this.deliveryCharges + this.cgst + this.sgst;
   }
 
   confirmPay() {

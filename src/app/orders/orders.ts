@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
@@ -18,6 +17,11 @@ interface Order {
   orderDate: string;
   status: string;
   totalAmount: number;
+  platformFee: number;
+  handlingFee: number;
+  deliveryFee: number;
+  gst: number;
+  finalPrice: number;
   items: OrderItem[];
   restaurantRating: number | null;
   delivererRating: number | null;
@@ -29,7 +33,7 @@ interface Order {
   selector: 'orders',
   standalone: false,
   templateUrl: './orders.html',
-  styleUrl: './orders.css'
+  styleUrls: ['./orders.css']
 })
 export class Orders implements OnInit {
   openOrders: Order[] = [];
@@ -40,7 +44,6 @@ export class Orders implements OnInit {
   loading = true;
   error = '';
   userId: number = 0;
-
   currentDate = new Date();
   today = new Date();
   monthNames = [
@@ -167,12 +170,20 @@ export class Orders implements OnInit {
   }
 
   canRateRestaurant(restId: number): boolean {
-    return this.pastOrders.some(o => o.restId === restId && o.status === 'Delivered');
-  }
+  return this.pastOrders.some(o => 
+    o.restId === restId && 
+    o.status === 'Delivered' && 
+    o.restaurantRating === null
+  );
+}
 
-  canRateDeliverer(delivererId: number): boolean {
-    return this.pastOrders.some(o => o.delivererId === delivererId && o.status === 'Delivered');
-  }
+canRateDeliverer(delivererId: number): boolean {
+  return this.pastOrders.some(o => 
+    o.delivererId === delivererId && 
+    o.status === 'Delivered' && 
+    o.delivererRating === null
+  );
+}
 
   submitRatingRestaurant(orderId: number, rating: number) {
     const endpoint = `Orders/SubmitRating?userId=${this.userId}&orderId=${orderId}&rating=${rating}`;
