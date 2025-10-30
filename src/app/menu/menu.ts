@@ -28,23 +28,23 @@ export class Menu implements OnInit {
   addForm: FormGroup;
   currentItem: any = null;
 
-  searchTerm:string='';
+  searchTerm: string = '';
 
   constructor(private auth: AuthGuard, private http: HttpClient, private fb: FormBuilder) {
     this.editForm = this.fb.group({
       name: ['', Validators.required],
-      category: ['', Validators.required],
+      category: ['Non veg', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
-      description: ['', Validators.required],
+      description: [''],
       foodStatus: ['Available'],
       foodImageUrl: ['']
     });
 
     this.addForm = this.fb.group({
       name: ['', Validators.required],
-      category: ['', Validators.required],
+      category: ['Non veg', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
-      description: ['', Validators.required],
+      description: [''],
       foodStatus: ['Available'],
       foodImageUrl: ['']
     });
@@ -78,6 +78,7 @@ export class Menu implements OnInit {
       }
     });
   }
+
   searchFoods(): void {
     const term = this.searchTerm.trim();
     if (!term) {
@@ -118,7 +119,7 @@ export class Menu implements OnInit {
   openAddPopup(): void {
     this.addForm.reset({
       name: '',
-      category: '',
+      category: 'Non veg',
       price: 0,
       description: '',
       foodStatus: 'Available',
@@ -162,7 +163,7 @@ export class Menu implements OnInit {
       name: item.name,
       category: item.category,
       price: item.price,
-      description: item.description,
+      description: item.description || '',
       foodStatus: item.foodStatus,
       foodImageUrl: item.foodImageUrl || ''
     });

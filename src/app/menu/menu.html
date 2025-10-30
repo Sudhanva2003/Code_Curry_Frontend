@@ -3,17 +3,16 @@
     <h1>Restaurant Menu</h1>
     <button class="add-btn" (click)="openAddPopup()">+ Add Food</button>
   </div>
-  <!-- 🔍 Search Bar -->
-<div class="search-container">
-  <input
-    type="text"
-    [(ngModel)]="searchTerm"
-    (input)="searchFoods()"
-    placeholder="Search by food name"
-    class="search-bar"
-  />
-</div>
 
+  <div class="search-container">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="searchFoods()"
+      placeholder="Search by food name"
+      class="search-bar"
+    />
+  </div>
 
   <div *ngIf="loading" class="center">Loading menu...</div>
   <div *ngIf="error" class="center error">{{ error }}</div>
@@ -60,14 +59,24 @@
 
       <div class="menu-form-group">
         <label>Category *</label>
-        <input type="text" formControlName="category" placeholder="veg/non veg/vegan" />
+        <select formControlName="category">
+          <option value="Non veg">Non veg</option>
+          <option value="Veg">Veg</option>
+          <option value="Vegan">Vegan</option>
+        </select>
       </div>
 
       <div class="menu-form-group">
-        <label>Price *</label>
-        <input type="number" formControlName="price" step="0.01" placeholder="0.00" />
-      </div>
-
+  <label>Price *</label>
+  <input type="number" formControlName="price" step="0.01" placeholder="0.00" />
+  <!-- Validation Error Message -->
+  <div *ngIf="addForm.get('price')?.hasError('min') && addForm.get('price')?.touched" class="error-message">
+    Price cannot be negative.
+  </div>
+  <div *ngIf="editForm.get('price')?.hasError('min') && editForm.get('price')?.touched" class="error-message">
+    Price cannot be negative.
+  </div>
+</div>
       <div class="menu-form-group">
         <label>Description</label>
         <textarea formControlName="description" placeholder="Describe the dish..." rows="3"></textarea>
@@ -109,13 +118,24 @@
 
       <div class="menu-form-group">
         <label>Category *</label>
-        <input type="text" formControlName="category" placeholder="veg/non veg/vegan" />
+        <select formControlName="category">
+          <option value="Non veg">Non veg</option>
+          <option value="Veg">Veg</option>
+          <option value="Vegan">Vegan</option>
+        </select>
       </div>
 
       <div class="menu-form-group">
-        <label>Price *</label>
-        <input type="number" formControlName="price" step="0.01" placeholder="0.00" />
-      </div>
+  <label>Price *</label>
+  <input type="number" formControlName="price" step="0.01" placeholder="0.00" />
+  <!-- Validation Error Message -->
+  <div *ngIf="addForm.get('price')?.hasError('min') && addForm.get('price')?.touched" class="error-message">
+    Price cannot be negative.
+  </div>
+  <div *ngIf="editForm.get('price')?.hasError('min') && editForm.get('price')?.touched" class="error-message">
+    Price cannot be negative.
+  </div>
+</div>
 
       <div class="menu-form-group">
         <label>Description</label>

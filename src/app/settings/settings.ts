@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +16,7 @@ export class Settings implements OnInit {
   formSubmitted = false;
   defaultImage = 'https://t3.ftcdn.net/jpg/03/24/73/92/360_F_324739203_keeq8udvv0P2h1MLYJ0GLSlTBagoXS48.jpg';
 
-  constructor(private auth: AuthGuard, private http: HttpClient,private router: Router) {}
+  constructor(private auth: AuthGuard, private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const restId = this.auth.getRestId();
@@ -42,8 +41,8 @@ export class Settings implements OnInit {
       name: this.restaurant.name,
       phone: this.restaurant.phone,
       address: this.restaurant.address,
-      RestStatus: this.restaurant.RestStatus,
-      cuisine:this.restaurant.cuisine,
+      RestStatus: this.restaurant.restStatus,
+      cuisine: this.restaurant.cuisine,
       restImageUrl: this.restaurant.restImageUrl
     };
     this.showEditPopup = true;
@@ -54,7 +53,6 @@ export class Settings implements OnInit {
     this.formSubmitted = true;
 
     if (form.valid && this.restaurant?.restId) {
-      // If invalid or empty URL, default to original
       if (!this.editedRestaurant.restImageUrl || !this.isValidUrl(this.editedRestaurant.restImageUrl)) {
         this.editedRestaurant.restImageUrl = this.defaultImage;
       }
@@ -98,7 +96,27 @@ export class Settings implements OnInit {
     this.formSubmitted = false;
   }
 
-  // Simple URL validation
+   toggleRestaurantStatus(): void {
+    const newStatus = this.restaurant.restStatus === 'Open' ? 'Closed' : 'Open';
+    const confirmationMessage = `Are you sure you want to ${newStatus.toLowerCase()} the restaurant?`;
+
+    if (confirm(confirmationMessage)) {
+      this.http.patch(`https://localhost:7265/api/Restaurant/SetRestaurantStatus/${this.restaurant.restId}`, {
+        
+        restStatus: newStatus
+      }).subscribe({
+        next: () => {
+          this.restaurant.restStatus = newStatus;
+          alert(`Restaurant status changed to ${newStatus}`);
+        },
+        error: (err) => {
+          console.error('Failed to update restaurant status', err);
+          alert('Failed to update status');
+        }
+      });
+    }
+  }
+
   private isValidUrl(url: string): boolean {
     try {
       const parsed = new URL(url);

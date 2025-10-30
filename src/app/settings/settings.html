@@ -8,7 +8,21 @@
   <p><strong>Cuisine:</strong>{{restaurant.cuisine}}</p>
   <p><strong>Address:</strong> {{ restaurant.address }}</p>
   <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
-   <p><strong>Restaurant Status:</strong> {{ restaurant.RestStatus === 'Open' ? 'Open' : 'Closed' }}</p>
+  <p><strong>Fssai Number:</strong>{{restaurant.fssaiNo}}</p>
+  <p><strong>Gst Number:</strong>{{restaurant.gstNo}}</p>
+  
+  <!-- Restaurant Status and Toggle Button -->
+  <p><strong>Restaurant Status:</strong>{{ restaurant.restStatus }}</p>
+
+
+<!-- Add a gap or styling to create space -->
+<div class="status-button-container">
+  <button 
+    (click)="toggleRestaurantStatus()" 
+    [ngClass]="{'open': restaurant.restStatus === 'Open', 'closed': restaurant.restStatus === 'Closed'}">
+    {{ restaurant.restStatus === 'Open' ? 'Close' : 'Open' }}
+  </button>
+</div>
 
   <div class="actions">
     <div class="action-row">
@@ -23,7 +37,7 @@
   </div>
 </div>
 
-<!-- Popup Modal -->
+<!-- Popup Modal for Editing Restaurant -->
 <div class="modal" *ngIf="showEditPopup">
   <div class="modal-content">
     <span class="close" (click)="closePopup()">&times;</span>
@@ -42,15 +56,8 @@
       <input type="text" [(ngModel)]="editedRestaurant.address" name="address" required #address="ngModel" />
       <div *ngIf="(address.touched || formSubmitted) && address.invalid" class="error">Address is required.</div>
 
-      <!-- New Cuisine Input -->
       <label>Cuisine:</label>
       <input type="text" [(ngModel)]="editedRestaurant.cuisine" name="cuisine" placeholder="Enter cuisine type" />
-
-     <label>Restaurant Status:</label>
-      <select [(ngModel)]="editedRestaurant.RestStatus" name="RestStatus" required>
-        <option [value]="'Open'">Open</option>
-        <option [value]="'Closed'">Closed</option>
-      </select>
 
       <label>Restaurant Image (optional):</label>
       <input type="text" [(ngModel)]="editedRestaurant.restImageUrl" name="restImageUrl" placeholder="Enter image URL (optional)" />

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {Router}  from '@angular/router';
 
 @Component({
   selector: 'app-delivery',
@@ -15,7 +16,7 @@ export class Delivery implements OnInit {
   showDeliveryPopup = false;
   isPickedUp = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private router:Router) {}
 
   ngOnInit(): void {
     // Fetch orderId and delivererId from localStorage
@@ -70,6 +71,7 @@ export class Delivery implements OnInit {
         this.showDeliveryPopup = false;
         localStorage.removeItem('currentOrderId');
         localStorage.removeItem('currentDelivererId');
+        this.router.navigate(['/deliverer/delivered-orders']);
       },
       error: (err) => {
         console.error('Failed to mark delivered', err);

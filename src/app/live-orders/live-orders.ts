@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'live-orders',
@@ -13,7 +14,7 @@ export class LiveOrders implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private api: ApiService, private auth: AuthGuard) {}
+  constructor(private api: ApiService, private auth: AuthGuard,private router:Router) {}
 
   ngOnInit() {
     this.loadOrders();
@@ -55,6 +56,7 @@ export class LiveOrders implements OnInit {
           localStorage.setItem('currentOrderId', orderId.toString());
           localStorage.setItem('currentDelivererId', delivererId.toString());
           this.loadOrders();
+           this.router.navigate(['deliverer/delivery']);
         },
         error: (err) => {
           console.error("Error assigning delivery:", err);
