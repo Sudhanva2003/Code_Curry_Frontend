@@ -13,7 +13,6 @@
 
       <div class="action-row">
         <span>Are you sure you want to delete this user?</span>
-        <!-- Updated to use .btn-primary for Blue Delete Button -->
         <button class="btn-primary" (click)="onDelete()">Delete</button>
       </div>
 
@@ -81,3 +80,29 @@
     </div>
   </div>
 </div>
+
+<!-- =============================== -->
+<!-- ✅ Past Tickets Container -->
+<!-- =============================== -->
+<div class="past-tickets-section" *ngIf="pastTickets && pastTickets.length > 0; else noTickets">
+  <h3>Past Support Tickets</h3>
+
+  <div class="ticket-card" *ngFor="let ticket of pastTickets">
+    <p><strong>Ticket ID:</strong> {{ ticket.ticketId }}</p>
+    <p><strong>Category:</strong> {{ ticket.category }}</p>
+    <p><strong>Description:</strong> {{ ticket.description || ticket.text }}</p>
+    <p><strong>Status:</strong> {{ ticket.ticketStatus || ticket.status }}</p>
+    <p><strong>Date:</strong> {{ formatDate(ticket.createdDate || ticket.date || ticket.createdAt) }}</p>
+
+    <!-- Admin's Resolution Comment -->
+    <p *ngIf="ticket.adminMessage">
+      <strong>Admin Resolution:</strong> {{ ticket.adminMessage }}
+    </p>
+  </div>
+</div>
+
+<ng-template #noTickets>
+  <div class="no-tickets">
+    <p>No previous tickets found.</p>
+  </div>
+</ng-template>

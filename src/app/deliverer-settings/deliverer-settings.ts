@@ -14,17 +14,22 @@ export class DelivererSettings implements OnInit {
   editedDeliverer: any = null;
   showEditPopup = false;
   formSubmitted = false;
+  showSupportPopup = false;
+  selectedCategory: string = 'default';
+  issueDetails: string = '';
+  pastTickets: any[] = [];
 
   constructor(private auth: AuthGuard, private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const user = this.auth.getUser();
-    const DelivererId = user?.userId;
+    const delivererId = user?.userId ?? 0;
 
-    if (DelivererId !== null) {
-      this.http.get(`https://localhost:7265/api/Deliverer/DelivererProfile/${DelivererId}`).subscribe({
+    if (delivererId) {
+      this.http.get(`https://localhost:7265/api/Deliverer/DelivererProfile/${delivererId}`).subscribe({
         next: (data: any) => {
-          this.deliverer = { ...data, userId: DelivererId };
+          this.deliverer = { ...data, userId: delivererId };
+          this.loadPastTickets(delivererId);
         },
         error: (err) => {
           console.error('Failed to load deliverer profile', err);
@@ -32,6 +37,33 @@ export class DelivererSettings implements OnInit {
         }
       });
     }
+  }
+
+  loadPastTickets(userId: number): void {
+    this.http.get(`https://localhost:7265/api/Support/viewOpenTickets/${userId}`).subscribe({
+      next: (openTickets: any) => {
+        this.http.get(`https://localhost:7265/api/Support/viewClosedTickets/${userId}`).subscribe({
+          next: (closedTickets: any) => {
+            // Combine all tickets
+            const allTickets = [...(openTickets || []), ...(closedTickets || [])];
+            
+            // Sort by ticketId descending (newest first)
+            this.pastTickets = allTickets.sort((a, b) => {
+              const dateA = new Date(a.createdAt || a.date || a.resolvedAt || 0).getTime();
+              const dateB = new Date(b.createdAt || b.date || b.resolvedAt || 0).getTime();
+              
+              if (dateB !== dateA) {
+                return dateB - dateA;
+              }
+              
+              return (b.ticketId || 0) - (a.ticketId || 0);
+            });
+          },
+          error: (err) => console.error('Error loading closed tickets', err)
+        });
+      },
+      error: (err) => console.error('Error loading open tickets', err)
+    });
   }
 
   onEdit(): void {
@@ -85,5 +117,54 @@ export class DelivererSettings implements OnInit {
     this.showEditPopup = false;
     this.editedDeliverer = null;
     this.formSubmitted = false;
+  }
+
+  openSupportPopup(): void {
+    this.selectedCategory = 'default';
+    this.issueDetails = '';
+    this.showSupportPopup = true;
+  }
+
+  closeSupportPopup(): void {
+    this.showSupportPopup = false;
+    this.selectedCategory = 'default';
+    this.issueDetails = '';
+  }
+
+  submitSupportTicket(): void {
+    if (this.selectedCategory === 'default' || !this.issueDetails.trim()) {
+      alert('Please select a category and describe the issue.');
+      return;
+    }
+
+    const supportTicket = {
+      userId: this.deliverer.userId,
+      email: this.deliverer.email,
+      category: this.selectedCategory,
+      description: this.issueDetails
+    };
+
+    this.http.post('https://localhost:7265/api/Support/raiseUserTicket', supportTicket).subscribe({
+      next: (response: any) => {
+        alert(`Support Ticket Submitted Successfully!`);
+        this.closeSupportPopup();
+        this.loadPastTickets(this.deliverer.userId ?? 0);
+      },
+      error: (err) => {
+        console.error('Failed to submit ticket', err);
+        alert('Failed to submit support ticket. Please try again.');
+      }
+    });
+  }
+
+  formatDate(date: string): string {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }

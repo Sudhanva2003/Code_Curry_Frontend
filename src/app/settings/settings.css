@@ -258,3 +258,54 @@ form button:hover {
 .submit-btn:hover {
   background-color: #0056b3;
 }
+
+/* Existing styles remain unchanged above */
+
+/* ===== PAST TICKETS SECTION ===== */
+.past-tickets-section {
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 16px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.past-tickets-section h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #007bff;
+  font-weight: 600;
+}
+
+.ticket-card {
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  text-align: left;
+  transition: box-shadow 0.2s ease;
+}
+
+.ticket-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+.ticket-card p {
+  font-size: 14px;
+  margin: 4px 0;
+  color: #333;
+}
+
+.ticket-card strong {
+  color: #007bff;
+}
+
+.no-tickets {
+  text-align: center;
+  font-size: 14px;
+  color: #777;
+  margin: 20px auto;
+}

@@ -17,6 +17,7 @@ export class Settings implements OnInit {
   showSupportPopup = false;
   selectedCategory: string = 'default';
   issueDetails: string = '';
+  pastTickets: any[] = [];
   defaultImage = 'https://t3.ftcdn.net/jpg/03/24/73/92/360_F_324739203_keeq8udvv0P2h1MLYJ0GLSlTBagoXS48.jpg';
 
   constructor(private auth: AuthGuard, private http: HttpClient, private router: Router) {}
@@ -30,6 +31,7 @@ export class Settings implements OnInit {
           if (!this.restaurant.restImageUrl) {
             this.restaurant.restImageUrl = this.defaultImage;
           }
+          this.loadPastTickets(restId);
         },
         error: (err) => {
           console.error('Failed to load restaurant', err);
@@ -37,6 +39,37 @@ export class Settings implements OnInit {
         }
       });
     }
+  }
+
+  loadPastTickets(restId: number): void {
+    this.http.get(`https://localhost:7265/api/Support/viewMyRestTickets/${restId}`).subscribe({
+      next: (response: any) => {
+        // Combine all tickets
+        const allTickets = [
+          ...(response.openTickets || []),
+          ...(response.assignedTickets || []),
+          ...(response.resolvedTickets || [])
+        ];
+
+        // Sort by ticketId descending (newest first) or by date if available
+        this.pastTickets = allTickets.sort((a, b) => {
+          // Try sorting by date first
+          const dateA = new Date(a.createdAt || a.date || a.resolvedAt || 0).getTime();
+          const dateB = new Date(b.createdAt || b.date || b.resolvedAt || 0).getTime();
+          
+          if (dateB !== dateA) {
+            return dateB - dateA; // Newest first
+          }
+          
+          // If dates are same or missing, sort by ticketId (higher ID = newer)
+          return (b.ticketId || 0) - (a.ticketId || 0);
+        });
+      },
+      error: (err) => {
+        console.error('Failed to fetch past tickets', err);
+        this.pastTickets = [];
+      }
+    });
   }
 
   toggleRestaurantStatus(): void {
@@ -163,13 +196,25 @@ export class Settings implements OnInit {
 
     this.http.post('https://localhost:7265/api/Support/raiseRestaurantTicket', supportTicket).subscribe({
       next: (response: any) => {
-        alert(`Support Ticket Submitted Successfully!\nTicket ID: ${response.ticketId}\nStatus: ${response.ticketStatus}`);
+        alert(`Support Ticket Submitted Successfully!`);
         this.closeSupportPopup();
+        this.loadPastTickets(this.restaurant.restId);
       },
       error: (err) => {
         console.error('Failed to submit ticket', err);
         alert('Failed to submit support ticket. Please try again.');
       }
+    });
+  }
+
+  formatDate(date: string): string {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   }
 

@@ -93,6 +93,32 @@
   </div>
 </div>
 
+<!-- =============================== -->
+<!-- ✅ NEW: Past Tickets Container -->
+<!-- =============================== -->
+<div class="past-tickets-section" *ngIf="pastTickets && pastTickets.length > 0; else noTickets">
+  <h3>Past Support Tickets</h3>
+
+  <div class="ticket-card" *ngFor="let ticket of pastTickets">
+    <p><strong>Ticket ID:</strong> {{ ticket.ticketId }}</p>
+    <p><strong>Category:</strong> {{ ticket.category }}</p>
+    <p><strong>Description:</strong> {{ ticket.description || ticket.text }}</p>
+    <p><strong>Status:</strong> {{ ticket.ticketStatus || ticket.status }}</p>
+    <p><strong>Date:</strong> {{ ticket.createdDate | date:'medium' }}</p>
+
+    <!-- ADD THIS LINE FOR ADMIN'S RESOLUTION COMMENT -->
+    <p *ngIf="ticket.adminMessage || ticket.adminResponse">
+      <strong>Admin Resolution:</strong> {{ ticket.adminMessage || ticket.adminResponse }}
+    </p>
+  </div>
+</div>
+
+<ng-template #noTickets>
+  <div class="no-tickets">
+    <p>No previous tickets found.</p>
+  </div>
+</ng-template>
+
 <div *ngIf="!restaurant">
   <p>Loading restaurant details...</p>
 </div>

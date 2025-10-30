@@ -1,1 +1,45 @@
-<p>my-tickets works!</p>
+<div class="tickets-container">
+  <h2>My Assigned Tickets</h2>
+
+  <div *ngIf="loading" class="info">Loading...</div>
+  <div *ngIf="error" class="info error">{{ error }}</div>
+  <div *ngIf="!loading && !error && tickets.length === 0" class="info">You have no assigned tickets.</div>
+
+  <div *ngFor="let t of tickets" class="ticket-card assigned">
+    <p><strong>Ticket ID:</strong> {{ t.ticketId }}</p>
+    <p><strong>User ID:</strong> {{ t.userId || t.restId }}</p>
+    <p><strong>User Role:</strong> {{ t.role || 'N/A' }}</p>
+    <p><strong>User Email:</strong> {{ t.email }}</p>
+    <p><strong>Category:</strong> {{ t.category }}</p>
+    <p><strong>Text:</strong> {{ t.description }}</p>
+    <p><strong>Date:</strong> {{ formatDate(t.createdDate) }}</p>
+    <p><strong>Status:</strong> <span class="status-badge assigned">{{ t.ticketStatus }}</span></p>
+
+    <button class="btn-primary" (click)="markAsComplete(t)">Mark as Complete</button>
+  </div>
+</div>
+<!-- Existing ticket cards code stays here -->
+
+<!-- Modal for Mark as Complete -->
+<div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Mark Ticket as Complete</h2>
+    <p>Ticket ID: {{ selectedTicket?.ticketId }}</p>
+    
+    <div class="form-group">
+      <label for="adminMessage">Resolution Comment:</label>
+      <textarea 
+        id="adminMessage"
+        [(ngModel)]="adminMessage"
+        placeholder="Enter your resolution comments here..."
+        rows="5"
+        class="form-control">
+      </textarea>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="btn-cancel" (click)="closeModal()">Cancel</button>
+      <button class="btn-submit" (click)="submitComplete()">Mark as Complete</button>
+    </div>
+  </div>
+</div>

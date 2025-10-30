@@ -17,17 +17,19 @@ export class CustomerSettings implements OnInit {
   showSupportPopup = false;
   selectedCategory: string = 'default';
   issueDetails: string = '';
+  pastTickets: any[] = [];
 
   constructor(private auth: AuthGuard, private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const user = this.auth.getUser();
-    const userId = user?.userId;
-    
-    if (userId !== null) {
+    const userId = user?.userId ?? 0;
+
+    if (userId) {
       this.http.get(`https://localhost:7265/api/Customer/ViewUser/${userId}`).subscribe({
         next: (data: any) => {
           this.user = { ...data, userId };
+          this.loadPastTickets(userId);
         },
         error: (err) => {
           console.error('Failed to load user', err);
@@ -35,6 +37,33 @@ export class CustomerSettings implements OnInit {
         }
       });
     }
+  }
+
+  loadPastTickets(userId: number): void {
+    this.http.get(`https://localhost:7265/api/Support/viewOpenTickets/${userId}`).subscribe({
+      next: (openTickets: any) => {
+        this.http.get(`https://localhost:7265/api/Support/viewClosedTickets/${userId}`).subscribe({
+          next: (closedTickets: any) => {
+            // Combine all tickets
+            const allTickets = [...(openTickets || []), ...(closedTickets || [])];
+            
+            // Sort by ticketId descending (newest first)
+            this.pastTickets = allTickets.sort((a, b) => {
+              const dateA = new Date(a.createdAt || a.date || a.resolvedAt || 0).getTime();
+              const dateB = new Date(b.createdAt || b.date || b.resolvedAt || 0).getTime();
+              
+              if (dateB !== dateA) {
+                return dateB - dateA;
+              }
+              
+              return (b.ticketId || 0) - (a.ticketId || 0);
+            });
+          },
+          error: (err) => console.error('Error loading closed tickets', err)
+        });
+      },
+      error: (err) => console.error('Error loading open tickets', err)
+    });
   }
 
   onEdit(): void {
@@ -117,13 +146,25 @@ export class CustomerSettings implements OnInit {
 
     this.http.post('https://localhost:7265/api/Support/raiseUserTicket', supportTicket).subscribe({
       next: (response: any) => {
-        alert(`Support Ticket Submitted Successfully!\nTicket ID: ${response.ticketId}\nStatus: ${response.ticketStatus}`);
+        alert(`Support Ticket Submitted Successfully!`);
         this.closeSupportPopup();
+        this.loadPastTickets(this.user.userId ?? 0);
       },
       error: (err) => {
         console.error('Failed to submit ticket', err);
         alert('Failed to submit support ticket. Please try again.');
       }
+    });
+  }
+
+  formatDate(date: string): string {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   }
 }
