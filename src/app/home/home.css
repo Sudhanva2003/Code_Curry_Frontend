@@ -1,43 +1,53 @@
 .home-container {
-  padding: 20px;
+  padding: 30px;
+  overflow-y: auto;
+  min-height: 100vh;
+  /* Adds small scroll even on full screen */
+  height: calc(100vh - 60px);
+  padding-bottom: 120px; /* space for cart bar */
+  scroll-behavior: smooth;
 }
 
-.restaurant-list, .menu-list {
+/* List containers */
+.restaurant-list,
+.menu-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 30px;
   justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
 }
 
 /* Restaurant Card */
 .restaurant-card {
   position: relative;
-  flex: 0 1 220px;
+  flex: 0 1 280px;
   border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 12px;
+  padding: 15px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s, opacity 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, opacity 0.3s ease;
   cursor: pointer;
   background-color: #fff;
 }
 
 .restaurant-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .restaurant-card h3 {
-  font-size: 1.5em;
-  margin: 8px 0;
+  font-size: 1.6em;
+  margin: 10px 0;
 }
 
 .restaurant-image {
   width: 100%;
-  height: 140px;
-  margin-bottom: 8px;
+  height: 180px;
+  margin-bottom: 10px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 10px;
   position: relative;
 }
 
@@ -45,10 +55,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
-/* 🏴 Closed Restaurant Style */
+/* Closed Restaurant */
 .closed-restaurant {
   background-color: #333;
   color: #ddd;
@@ -62,7 +72,6 @@
   filter: grayscale(100%) brightness(50%);
 }
 
-/* "CLOSED" badge overlay */
 .closed-badge {
   position: absolute;
   top: 10px;
@@ -73,37 +82,37 @@
   border-radius: 20px;
   font-size: 12px;
   font-weight: bold;
-  letter-spacing: 1px;
   text-transform: uppercase;
   opacity: 0.9;
 }
 
 /* Menu Card */
 .menu-card {
-  flex: 0 1 200px;
+  flex: 0 1 240px;
   border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 12px;
+  padding: 15px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease;
+  background-color: #fff;
 }
 
 .menu-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .menu-card h3 {
-  font-size: 1.3em;
-  margin: 8px 0;
+  font-size: 1.4em;
+  margin: 10px 0;
 }
 
 .menu-image {
   width: 100%;
-  height: 150px;
-  margin-bottom: 8px;
+  height: 180px;
+  margin-bottom: 10px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 10px;
   position: relative;
 }
 
@@ -111,10 +120,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
-/* ✅ Unavailable Food Styles */
+/* Unavailable Food */
 .unavailable-food {
   background-color: #2a2a2a;
   color: #999;
@@ -137,7 +146,7 @@
   color: #999;
 }
 
-/* "NOT AVAILABLE" badge overlay */
+/* Unavailable Badge */
 .unavailable-badge {
   position: absolute;
   top: 10px;
@@ -153,57 +162,44 @@
   opacity: 0.95;
 }
 
-/* Unavailable Food Text */
-.unavailable-text {
-  margin-top: 8px;
-  padding: 6px;
-  background: #3a3a3a;
-  color: #999;
-  border-radius: 5px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-/* Counter */
-.counter {
+/* Controls layout */
+.controls-right {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 15px;
+  margin: 10px 30px 10px 0;
 }
 
-.counter button {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid #888;
-  background: #f2f2f2;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.counter button:disabled {
-  background: #e0e0e0;
-  cursor: not-allowed;
-}
-
-/* Back Button */
-.back-btn {
-  margin-bottom: 10px;
-  background: #1976d2;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+.dropdown {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
   cursor: pointer;
 }
 
-.back-btn:hover {
-  background: #1565c0;
+/* Search bar */
+.search-container {
+  text-align: center;
+  margin: 20px 0;
 }
 
-/* Floating cart bar */
+.search-bar {
+  width: 60%;
+  max-width: 450px;
+  padding: 12px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 16px;
+}
+
+.search-bar:focus {
+  border-color: #ff6600;
+}
+
+/* View Cart Bar */
 .view-cart-bar {
   position: fixed;
   bottom: 20px;
@@ -217,7 +213,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 25px;
-  min-width: 320px;
+  min-width: 340px;
   z-index: 9999;
 }
 
@@ -243,43 +239,59 @@
   transform: scale(1.05);
 }
 
-/* Search Bar */
-.search-container {
-  text-align: center;
-  margin: 15px 0;
+/* Scroll Behavior */
+body,
+.home-container {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
 }
 
-.search-bar {
-  width: 60%;
-  max-width: 400px;
-  padding: 10px;
-  border-radius: 25px;
-  border: 1px solid #ccc;
-  outline: none;
-}
-
-.search-bar:focus {
-  border-color: #ff6600;
-}
-
-/* Dropdown controls */
-.controls-right {
+.counter {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  gap: 10px;
-  margin: 10px 30px 10px 0;
+  justify-content: center;
+  gap: 12px; /* spacing between buttons and number box */
+  margin-top: 10px;
 }
 
-.dropdown {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #fff;
+.counter button {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
-label {
-  font-weight: 500;
+.counter button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #5b0fa3, #1d63d8);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.counter button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Number box in the middle */
+.counter span {
+  width: 45px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 600;
   color: #333;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }

@@ -23,19 +23,21 @@ export class DeliveredOrders implements OnInit {
   loading = true;
   error = '';
 
-  selectedMonth = 'October'; // default month
+  currentMonth!: string;
+  currentYear!: number;
+  prevMonthLabel!: string;
+  nextMonthLabel!: string;
+
   currentPage = 1;
   pageSize = 5;
-
-  months: string[] = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
+  totalPages = 1;
 
   constructor(private api: ApiService, private auth: AuthGuard) {}
 
   ngOnInit(): void {
     const delivererId = this.auth.getId();
+    this.setCurrentMonthAndYear(new Date());
+
     if (delivererId) {
       this.api.get(`Deliverer/ViewDeliveredOrders/${delivererId}`).subscribe({
         next: (res: Order[]) => {
@@ -65,15 +67,33 @@ export class DeliveredOrders implements OnInit {
     }
   }
 
+  setCurrentMonthAndYear(date: Date): void {
+    this.currentMonth = date.toLocaleString('default', { month: 'long' });
+    this.currentYear = date.getFullYear();
+    this.updateMonthLabels();
+  }
+
+  updateMonthLabels(): void {
+    const currentDate = new Date(`${this.currentMonth} 1, ${this.currentYear}`);
+    const prev = new Date(currentDate);
+    prev.setMonth(prev.getMonth() - 1);
+    const next = new Date(currentDate);
+    next.setMonth(next.getMonth() + 1);
+
+    this.prevMonthLabel = prev.toLocaleString('default', { month: 'short' });
+    this.nextMonthLabel = next.toLocaleString('default', { month: 'short' });
+  }
+
   applyFilters(): void {
-    const month = this.selectedMonth.toLowerCase();
     this.filteredOrders = this.deliveredOrders.filter((order: Order) => {
       if (!order.orderDate) return false;
-      const orderMonth = new Date(order.orderDate)
-        .toLocaleString('default', { month: 'long' })
-        .toLowerCase();
-      return orderMonth === month;
+      const date = new Date(order.orderDate);
+      const month = date.toLocaleString('default', { month: 'long' });
+      const year = date.getFullYear();
+      return month === this.currentMonth && year === this.currentYear;
     });
+
+    this.totalPages = Math.ceil(this.filteredOrders.length / this.pageSize) || 1;
     this.currentPage = 1;
   }
 
@@ -84,7 +104,7 @@ export class DeliveredOrders implements OnInit {
   }
 
   nextPage(): void {
-    if ((this.currentPage * this.pageSize) < this.filteredOrders.length) {
+    if (this.currentPage < this.totalPages) {
       this.currentPage++;
     }
   }
@@ -95,22 +115,26 @@ export class DeliveredOrders implements OnInit {
     }
   }
 
-  changeMonth(month: string): void {
-    this.selectedMonth = month;
+  goToNextMonth(): void {
+    const date = new Date(`${this.currentMonth} 1, ${this.currentYear}`);
+    date.setMonth(date.getMonth() + 1);
+    this.setCurrentMonthAndYear(date);
     this.applyFilters();
   }
 
-  get availableMonths(): string[] {
-    const monthsSet = new Set(
-      this.deliveredOrders.map((order: Order) => {
-        if (!order.orderDate) return '';
-        return new Date(order.orderDate).toLocaleString('default', { month: 'long' });
-      })
-    );
-    return Array.from(monthsSet).filter(Boolean);
+  goToPrevMonth(): void {
+    const date = new Date(`${this.currentMonth} 1, ${this.currentYear}`);
+    date.setMonth(date.getMonth() - 1);
+    this.setCurrentMonthAndYear(date);
+    this.applyFilters();
   }
 
-  // Format order date for display (like in OrderHistory)
+  canGoNext(): boolean {
+    const current = new Date(`${this.currentMonth} 1, ${this.currentYear}`);
+    const now = new Date();
+    return current < new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+
   formatDate(dateStr: string): string {
     if (!dateStr) return '';
     const date = new Date(dateStr);

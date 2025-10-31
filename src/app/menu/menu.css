@@ -29,10 +29,12 @@
 /* Card List */
 .card-list {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap; /* changed from nowrap to wrap */
   gap: 16px;
-  overflow-x: auto;
+  overflow-y: auto; /* vertical scroll */
+  overflow-x: hidden; /* disable horizontal scroll */
   padding-bottom: 12px;
+  justify-content: center; /* optional: centers cards */
 }
 
 /* Individual Card */

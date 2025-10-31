@@ -1,10 +1,10 @@
 .delivery-container {
-  max-width: 800px;
-  margin: 30px auto;
-  padding: 20px;
-  background: #fff;
+  max-width: 850px;
+  margin: 40px auto;
+  padding: 25px;
+  background: linear-gradient(135deg, #fffaf5, #ffe8cc);
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   font-family: 'Poppins', sans-serif;
 }
 
@@ -14,54 +14,88 @@
   padding-bottom: 20px;
 }
 
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.section-header h2 {
+  margin-bottom: 6px;
+  color: #333;
 }
 
 .address {
-  font-size: 14px;
-  color: #666;
+  font-size: 15px;
+  color: #6b4b1f;
+  font-style: italic;
+  letter-spacing: 0.3px;
 }
 
 .items-section ul {
   list-style: none;
   padding: 0;
+  margin-top: 10px;
 }
 
 .items-section li {
   padding: 6px 0;
   font-size: 15px;
+  color: #333;
 }
 
 .qty {
   font-weight: bold;
 }
 
-.tick-btn {
-  float: right;
-  background-color: #28a745;
+/* Generic Delivery Action Buttons Container */
+.delivery-action {
+  margin-top: 18px;
+  text-align: center;
+}
+
+/* Arrived At Restaurant Button */
+.arrived-btn {
+  background-color: #ff9800;
   color: white;
   border: none;
-  border-radius: 50%;
-  font-size: 22px;
-  width: 40px;
-  height: 40px;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 15px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
+  font-weight: 600;
 }
 
-.tick-btn:hover {
-  transform: scale(1.1);
+.arrived-btn:hover:not(:disabled) {
+  background-color: #fb8c00;
+  transform: translateY(-2px);
 }
 
-.tick-btn:disabled {
+.arrived-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
+/* Complete Delivery Button (Green) */
 .deliver-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-weight: 600;
+}
+
+.deliver-btn:hover:not(:disabled) {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.deliver-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Cancel Delivery Button (Red) */
+.cancel-delivery {
   background-color: #dc3545;
   color: white;
   border: none;
@@ -70,18 +104,20 @@
   font-size: 16px;
   cursor: pointer;
   transition: 0.3s ease;
+  font-weight: 600;
 }
 
-.deliver-btn:disabled {
+.cancel-delivery:hover:not(:disabled) {
+  background-color: #c82333;
+  transform: translateY(-2px);
+}
+
+.cancel-delivery:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-.deliver-btn:hover:not(:disabled) {
-  background-color: #b02a37;
-}
-
-/* Popup modal styling */
+/* Popup modal styling (unchanged) */
 .modal {
   position: fixed;
   top: 0;
@@ -120,10 +156,24 @@
 }
 
 .cancel-btn {
-  background: #ccc;
+ 
+  background-color: #dc3545 !important;
+
   color: black;
   border: none;
   padding: 8px 15px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+/* No Delivery Found Message */
+.no-delivery {
+  text-align: center;
+  margin-top: 80px;
+}
+
+.no-delivery h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #555;
 }

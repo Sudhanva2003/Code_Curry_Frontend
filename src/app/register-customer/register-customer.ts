@@ -20,12 +20,20 @@ export class RegisterCustomer {
     private http: HttpClient
   ) {
     this.form = this.fb.group({
-      fullName: ['', Validators.required],
-      address: ['', Validators.required],
+      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      address: ['', [Validators.required, Validators.minLength(6)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
+      phone: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('^[0-9]+$'), // only digits
+          Validators.minLength(10),
+          Validators.maxLength(15)
+        ]
+      ],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['customer', Validators.required] // default is customer
+      role: ['customer', Validators.required] // default role
     });
   }
 
@@ -41,7 +49,7 @@ export class RegisterCustomer {
       phone: this.form.value.phone,
       address: this.form.value.address,
       password: this.form.value.password,
-      role: this.form.value.role // can be 'customer', 'deliverer', or 'admin'
+      role: this.form.value.role
     };
 
     this.http.post('https://localhost:7265/api/Customer/register', userData).subscribe({

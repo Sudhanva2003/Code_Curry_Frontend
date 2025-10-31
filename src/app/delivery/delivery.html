@@ -2,8 +2,10 @@
   <!-- Restaurant Section -->
   <div class="section">
     <div class="section-header">
-      <h2>{{ deliveryDetail.restaurantName }}</h2>
-      <p class="address">{{ deliveryDetail.restaurantAddress }}</p>
+      <div>
+        <h2>{{ deliveryDetail.restaurantName }}</h2>
+        <p class="address">{{ deliveryDetail.restaurantAddress }}</p>
+      </div>
     </div>
 
     <div class="items-section">
@@ -14,9 +16,11 @@
         </li>
       </ul>
 
-      <button class="tick-btn" (click)="onPickupConfirm()" [disabled]="isPickedUp">
-        ✓
-      </button>
+      <div class="delivery-action">
+        <button class="arrived-btn" (click)="onPickupConfirm()" [disabled]="isPickedUp">
+          Arrived At Restaurant
+        </button>
+      </div>
     </div>
   </div>
 
@@ -39,8 +43,10 @@
   <!-- Customer Section -->
   <div class="section">
     <div class="section-header">
-      <h2>{{ deliveryDetail.customerName }}</h2>
-      <p class="address">{{ deliveryDetail.customerAddress }}</p>
+      <div>
+        <h2>{{ deliveryDetail.customerName }}</h2>
+        <p class="address">{{ deliveryDetail.customerAddress }}</p>
+      </div>
     </div>
 
     <div class="delivery-action">
@@ -49,18 +55,16 @@
         [disabled]="!isPickedUp"
         (click)="onDeliveryConfirm()"
       >
-        Delivery Complete
+        Complete Delivery
       </button>
     </div>
   </div>
 
-   <!-- Cancel Button -->
+  <!-- Cancel Button -->
   <div class="delivery-action">
     <button
-      class="cancel-btn"
+      class="cancel-btn cancel-delivery"
       (click)="cancelOrder()"
-      [disabled]="isPickedUp"
-      title="You can only cancel before pickup"
     >
       Cancel Delivery
     </button>
@@ -78,6 +82,7 @@
   </div>
 </div>
 
-<div *ngIf="!deliveryDetail">
-  <p>Loading delivery details...</p>
+<!-- No Delivery Found -->
+<div *ngIf="!deliveryDetail" class="no-delivery">
+  <h2>No Delivery Found</h2>
 </div>

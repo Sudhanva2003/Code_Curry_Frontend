@@ -85,11 +85,6 @@ export class Delivery implements OnInit {
   }
 
   cancelOrder(): void {
-    if (this.isPickedUp) {
-      alert("You cannot cancel the delivery after pickup.");
-      return;
-    }
-
     const confirmed = confirm("Are you sure you want to cancel this delivery?");
     if (!confirmed) return;
 

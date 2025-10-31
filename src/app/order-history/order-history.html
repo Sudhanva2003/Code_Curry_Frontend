@@ -4,11 +4,11 @@
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="error">{{ error }}</div>
 
-  <div class="month-selector">
-    <label for="monthSelect"><strong>Select Month:</strong></label>
-    <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="changeMonth(selectedMonth)">
-      <option *ngFor="let month of months" [value]="month">{{ month }}</option>
-    </select>
+  <!-- Month navigation -->
+  <div class="month-navigation">
+    <button class="btn prev-month" (click)="changeToPrevMonth()">&lt; Prev Month</button>
+    <span class="month-label">{{ selectedMonth }}</span>
+    <button class="btn next-month" (click)="changeToNextMonth()">Next Month &gt;</button>
   </div>
 
   <div *ngIf="!loading && filteredPastOrders.length === 0" class="empty-msg">
@@ -22,20 +22,21 @@
       <p><strong>Status:</strong> {{ order.status }}</p>
       <p><strong>Total:</strong> ₹{{ order.totalAmount }}</p>
       <p><strong>Handling Fee:</strong> ₹{{ order.handlingFee }}</p>
-      <p><strong>FinalPrice:</strong> ₹{{ order.finalPrice }}</p> 
+      <p><strong>Final Price:</strong> ₹{{ order.finalPrice }}</p>
 
       <div class="order-items">
         <div class="item" *ngFor="let item of order.items">
-          <span>{{ item.name }} (x{{ item.quantity }}) </span>
-          <span>₹{{ item.price }}</span> 
+          <span>{{ item.name }} (x{{ item.quantity }})</span>
+          <span>₹{{ item.price }}</span>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Pagination -->
   <div class="pagination" *ngIf="filteredPastOrders.length > 0">
-    <button (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
-    <span>Page {{ currentPage }} of {{ totalPages }}</span>
-    <button (click)="nextPage()" [disabled]="currentPage >= totalPages">Next &gt;</button>
+    <button class="btn prev" (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
+    <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button class="btn next" (click)="nextPage()" [disabled]="currentPage >= totalPages">Next &gt;</button>
   </div>
 </div>

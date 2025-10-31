@@ -53,7 +53,7 @@
   gap: 12px;
 }
 
-/* Buttons */
+/* Buttons base */
 button {
   padding: 10px 16px;
   border-radius: 8px;
@@ -64,29 +64,39 @@ button {
   transition: all 0.2s ease;
 }
 
-/* Primary action */
+/* ===== BUTTON COLORS ===== */
+
+/* Edit button - brown */
 .btn-primary {
-  background-color: #1976d2;
+  background-color: #8B4513;
   color: white;
 }
-
 .btn-primary:hover {
-  background-color: #1565c0;
-  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+  background-color: #6b3410;
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
 }
 
-/* Secondary action - CHANGED TO BLUE */
+/* Delete button - red */
 .btn-secondary {
+  background-color: #d32f2f;
+  color: white;
+}
+.btn-secondary:hover {
+  background-color: #b71c1c;
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+/* Raise button - blue */
+.actions .action-row:nth-child(3) .btn-primary {
   background-color: #1976d2;
   color: white;
 }
-
-.btn-secondary:hover {
+.actions .action-row:nth-child(3) .btn-primary:hover {
   background-color: #1565c0;
   box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
 }
 
-/* Form modal */
+/* ===== MODAL STYLES ===== */
 .modal {
   position: fixed;
   top: 0;

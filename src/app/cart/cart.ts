@@ -23,7 +23,7 @@ export class Cart implements OnInit {
   }
 
   updateTotal() {
-    this.totalAmount = this.cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    this.totalAmount = this.roundToTwo(this.cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0));
   }
 
   incrementItem(item: any) {
@@ -54,34 +54,45 @@ export class Cart implements OnInit {
     this.showPayPopup = false;
   }
 
+  // Helper function for rounding to 2 decimals
+  roundToTwo(value: number): number {
+    return Math.round(value * 100) / 100;
+  }
+
   // ---- Additional calculated getters ----
   get itemCount(): number {
     return this.cartItems.reduce((sum, i) => sum + i.quantity, 0);
   }
 
   get PlatformCharges(): number {
-  return this.totalAmount * 0.02;  // 2% of the total amount
-}
+    return this.roundToTwo(this.totalAmount * 0.02); // 2% platform fee
+  }
 
   get handlingCharges(): number {
-    return this.itemCount * 5;
+    return this.roundToTwo(this.itemCount * 5);
   }
 
   get deliveryCharges(): number {
-  const uniqueRestaurants = new Set(this.cartItems.map(item => item.restId));
-  return 50 * uniqueRestaurants.size;  // 50 per unique restaurant
-}
+    const uniqueRestaurants = new Set(this.cartItems.map(item => item.restId));
+    return this.roundToTwo(50 * uniqueRestaurants.size); // ₹50 per unique restaurant
+  }
 
   get cgst(): number {
-    return this.totalAmount * 0.09;
+    return this.roundToTwo(this.totalAmount * 0.09);
   }
 
   get sgst(): number {
-    return this.totalAmount * 0.09;
+    return this.roundToTwo(this.totalAmount * 0.09);
   }
 
   get finalTotal(): number {
-    return this.totalAmount + this.PlatformCharges+this.handlingCharges + this.deliveryCharges + this.cgst + this.sgst;
+    const total = this.totalAmount +
+                  this.PlatformCharges +
+                  this.handlingCharges +
+                  this.deliveryCharges +
+                  this.cgst +
+                  this.sgst;
+    return this.roundToTwo(total);
   }
 
   confirmPay() {

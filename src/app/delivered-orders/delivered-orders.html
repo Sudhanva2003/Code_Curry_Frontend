@@ -1,53 +1,39 @@
 <div class="order-history-container">
   <h2 class="section-title">Delivered Orders</h2>
 
-  <div class="filter-bar">
-    <label for="month">Month:</label>
-    <select id="month" [(ngModel)]="selectedMonth" (change)="changeMonth(selectedMonth)">
-      <option *ngFor="let month of ['January','February','March','April','May','June','July','August','September','October','November','December']" [value]="month">
-        {{ month }}
-      </option>
-    </select>
-  </div>
-
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="error">{{ error }}</div>
 
-  <div class="content-wrapper">
-    <div *ngIf="!loading && filteredOrders && filteredOrders.length === 0" class="empty-msg">
-      No delivered orders for {{ selectedMonth }}
-    </div>
+  <!-- ✅ Month navigation (same style as OrderHistory) -->
+  <div class="month-navigation">
+    <button class="btn prev-month" (click)="goToPrevMonth()">&lt; {{ prevMonthLabel }}</button>
+    <span class="month-label">{{ currentMonth }} {{ currentYear }}</span>
+    <button class="btn next-month" (click)="goToNextMonth()" [disabled]="!canGoNext()">
+      {{ nextMonthLabel }} &gt;
+    </button>
+  </div>
 
-    <div class="order-list" *ngIf="!loading && filteredOrders && filteredOrders.length > 0">
-      <div class="order-card" *ngFor="let order of paginatedOrders">
-        <h4>Order #{{ order.orderId }}</h4>
-        <div class="order-items">
-          <div class="item">
-            <span><strong>Status:</strong></span>
-            <span>{{ order.status }}</span>
-          </div>
-           <div class="item">
-            <span><strong>Order Date:</strong></span>
-            <span>{{ formatDate(order.orderDate) }}</span>
-          </div>
-          <div class="item">
-            <span><strong>Restaurant Address:</strong></span>
-            <span>{{ order.restaurantAddress }}</span>
-          </div>
-          <div class="item">
-            <span><strong>Customer Address:</strong></span>
-            <span>{{ order.customerAddress }}</span>
-          </div>
-        </div>
-        <p class="delivery-fee"><strong>Delivery Fee:</strong> ₹50</p>
-      </div>
-    </div>
+  <div *ngIf="!loading && filteredOrders.length === 0" class="empty-msg">
+    No delivered orders for {{ currentMonth }} {{ currentYear }}
+  </div>
 
-    <!-- ✅ Pagination always at bottom -->
-    <div class="pagination-controls" *ngIf="filteredOrders && filteredOrders.length > 0">
-      <button (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
-      <span>Page {{ currentPage }}</span>
-      <button (click)="nextPage()" [disabled]="(currentPage * pageSize) >= filteredOrders.length">Next &gt;</button>
+  <!-- ✅ Order Cards -->
+  <div class="order-list" *ngIf="!loading && filteredOrders.length > 0">
+    <div class="order-card" *ngFor="let order of paginatedOrders">
+      <h4>Order #{{ order.orderId }}</h4>
+
+      <p><strong>Status:</strong> {{ order.status }}</p>
+      <p><strong>Order Date:</strong> {{ formatDate(order.orderDate) }}</p>
+      <p><strong>Restaurant Address:</strong> {{ order.restaurantAddress }}</p>
+      <p><strong>Customer Address:</strong> {{ order.customerAddress }}</p>
+      <p class="delivery-fee"><strong>Delivery Fee:</strong> ₹{{ order.deliveryFee }}</p>
     </div>
+  </div>
+
+  <!-- ✅ Pagination (same as OrderHistory) -->
+  <div class="pagination" *ngIf="filteredOrders.length > 0">
+    <button class="btn prev" (click)="prevPage()" [disabled]="currentPage === 1">&lt; Prev</button>
+    <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button class="btn next" (click)="nextPage()" [disabled]="currentPage >= totalPages">Next &gt;</button>
   </div>
 </div>

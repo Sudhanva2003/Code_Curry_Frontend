@@ -19,21 +19,31 @@
 .order-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 25px;
   justify-content: center;
 }
 
+/* Individual Order Card */
 .order-card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 15px;
-  width: 300px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, #fff7e6, #ffe5b4); /* soft orangish tone */
+  border: 1px solid #f3d9b1;
+  border-radius: 10px;
+  padding: 18px;
+  width: 340px; /* slightly longer card */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: 8px; /* slight gap on all sides */
+}
+
+.order-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
 .order-card h4 {
   text-align: center;
   margin-bottom: 10px;
+  color: #333;
 }
 
 .order-items {
@@ -45,6 +55,7 @@
   justify-content: space-between;
   border-top: 1px solid #eee;
   padding: 5px 0;
+  font-size: 14px;
 }
 
 .delivery-fee {
@@ -60,10 +71,10 @@
 }
 
 .order-actions button {
-  background-color: #007bff;
+  background-color: #ff9800; /* orange button */
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 9px 18px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
@@ -71,5 +82,5 @@
 }
 
 .order-actions button:hover {
-  background-color: #0069d9;
+  background-color: #fb8c00;
 }

@@ -1,39 +1,46 @@
 <div class="register-container">
   <h2>Register Customer</h2>
   <form [formGroup]="form" (ngSubmit)="submit()">
+    
     <div class="form-field">
       <input formControlName="fullName" placeholder="Full Name" />
-<div *ngIf="form.get('fullName')?.invalid && form.get('fullName')?.touched" class="error">
-  Full name is required.
-</div>
-
-    </div>
-
-    <div class="form-field">
-      <input formControlName="address" placeholder="Address" />
-      <div *ngIf="form.get('address')?.invalid && form.get('address')?.touched" class="error">
-        Address is required.
+      <div *ngIf="form.get('fullName')?.touched && form.get('fullName')?.invalid" class="error">
+        <div *ngIf="form.get('fullName')?.errors?.['required']">Full name is required.</div>
+        <div *ngIf="form.get('fullName')?.errors?.['minlength']">Full name must be at least 3 letters.</div>
       </div>
     </div>
 
     <div class="form-field">
-      <input formControlName="email" placeholder="Email" />
-      <div *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="error">
-        Enter a valid email.
+      <input formControlName="address" placeholder="Address" />
+      <div *ngIf="form.get('address')?.touched && form.get('address')?.invalid" class="error">
+        <div *ngIf="form.get('address')?.errors?.['required']">Address is required.</div>
+        <div *ngIf="form.get('address')?.errors?.['minlength']">Address must be at least 6 characters.</div>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <input formControlName="email" type="email" placeholder="Email" />
+      <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="error">
+        <div *ngIf="form.get('email')?.errors?.['required']">Email is required.</div>
+        <div *ngIf="form.get('email')?.errors?.['email']">Enter a valid email.</div>
       </div>
     </div>
 
     <div class="form-field">
       <input formControlName="phone" placeholder="Phone" />
-      <div *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched" class="error">
-        Phone is required.
+      <div *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid" class="error">
+        <div *ngIf="form.get('phone')?.errors?.['required']">Phone number is required.</div>
+        <div *ngIf="form.get('phone')?.errors?.['pattern']">Phone must contain only digits.</div>
+        <div *ngIf="form.get('phone')?.errors?.['minlength']">Phone must be at least 10 digits.</div>
+        <div *ngIf="form.get('phone')?.errors?.['maxlength']">Phone cannot exceed 15 digits.</div>
       </div>
     </div>
 
     <div class="form-field">
       <input formControlName="password" type="password" placeholder="Password" />
-      <div *ngIf="form.get('password')?.invalid && form.get('password')?.touched" class="error">
-        Password must be at least 6 characters.
+      <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="error">
+        <div *ngIf="form.get('password')?.errors?.['required']">Password is required.</div>
+        <div *ngIf="form.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
       </div>
     </div>
 

@@ -332,3 +332,68 @@ button:hover {
   color: #777;
   margin: 20px auto;
 }
+
+/* ======== Action Section ======== */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 25px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.action-row span {
+  font-weight: 500;
+  color: #333;
+}
+
+/* ======== Buttons ======== */
+.action-row button {
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.25s, transform 0.2s;
+  min-width: 90px;
+}
+
+/* Brown Edit button */
+.action-row button:nth-of-type(1),
+.action-row:nth-child(1) button {
+  background-color: #8b4513;
+}
+.action-row button:nth-of-type(1):hover,
+.action-row:nth-child(1) button:hover {
+  background-color: #a0522d;
+  transform: translateY(-2px);
+}
+
+/* Red Delete button */
+.action-row:nth-child(2) button {
+  background-color: #dc3545;
+}
+.action-row:nth-child(2) button:hover {
+  background-color: #b02a37;
+  transform: translateY(-2px);
+}
+
+/* Green Raise button */
+.action-row:nth-child(3) button {
+  background-color: #198754;
+}
+.action-row:nth-child(3) button:hover {
+  background-color: #157347;
+  transform: translateY(-2px);
+}

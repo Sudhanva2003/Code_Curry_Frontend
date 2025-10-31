@@ -5,7 +5,7 @@ import { AuthGuard } from '../auth.guard';
 interface OrderItem {
   name: string;
   quantity: number;
-  price:number;
+  price: number;
 }
 
 interface Order {
@@ -50,7 +50,6 @@ export class OrderHistory implements OnInit {
     if (restId) {
       this.api.get(`Restaurant/ViewRestaurantPastOrders/${restId}`).subscribe({
         next: (res: Order[]) => {
-          // Filter orders based on status (Delivered, Prepared, Cancelled etc.)
           this.pastOrders = (res || []).filter((order: Order) =>
             ['Delivered', 'Prepared', 'CancelledByRest', 'CancelledByCustomer', 'CancelledByDeliverer'].includes(order.status)
           );
@@ -105,13 +104,40 @@ export class OrderHistory implements OnInit {
     }
   }
 
-  changeMonth(month: string): void {
-    this.selectedMonth = month;
+  // Month navigation
+  changeToNextMonth(): void {
+    const currentIndex = this.months.indexOf(this.selectedMonth);
+    this.selectedMonth = this.months[(currentIndex + 1) % this.months.length];
     this.currentPage = 1;
     this.getFilteredOrders();
   }
 
-  // Function to handle the rating of restaurant and deliverer
+  changeToPrevMonth(): void {
+    const currentIndex = this.months.indexOf(this.selectedMonth);
+    this.selectedMonth =
+      this.months[(currentIndex - 1 + this.months.length) % this.months.length];
+    this.currentPage = 1;
+    this.getFilteredOrders();
+  }
+
+  // Reload orders after cancel or rating
+  loadOrders(): void {
+    const restId = this.auth.getId();
+    if (restId) {
+      this.api.get(`Restaurant/ViewRestaurantPastOrders/${restId}`).subscribe({
+        next: (res: Order[]) => {
+          this.pastOrders = res || [];
+          this.loading = false;
+          this.getFilteredOrders();
+        },
+        error: () => {
+          this.error = 'Failed to load past orders';
+          this.loading = false;
+        }
+      });
+    }
+  }
+
   submitRatingRestaurant(orderId: number, rating: number): void {
     this.api.post(`Restaurant/RateRestaurant/${orderId}`, { rating }).subscribe({
       next: () => {
@@ -138,7 +164,6 @@ export class OrderHistory implements OnInit {
     });
   }
 
-  // Function to handle order cancelation
   cancelOrder(orderId: number): void {
     if (confirm('Are you sure you want to cancel this order?')) {
       this.api.delete(`Restaurant/CancelOrder/${orderId}`).subscribe({
@@ -149,36 +174,6 @@ export class OrderHistory implements OnInit {
         error: (err) => {
           console.error('Error canceling order:', err);
           alert('Failed to cancel order.');
-        }
-      });
-    }
-  }
-
-  // Helper function to check if restaurant can rate
-  canRateRestaurant(restId: number): boolean {
-    // Add logic for when a restaurant can rate an order
-    return true; // Modify based on your business logic
-  }
-
-  // Helper function to check if deliverer can rate
-  canRateDeliverer(delivererId: number): boolean {
-    // Add logic for when a deliverer can rate an order
-    return true; // Modify based on your business logic
-  }
-
-  // Load orders again after actions like cancel or rate
-  loadOrders(): void {
-    const restId = this.auth.getId();
-    if (restId) {
-      this.api.get(`Restaurant/ViewRestaurantPastOrders/${restId}`).subscribe({
-        next: (res: Order[]) => {
-          this.pastOrders = res || [];
-          this.loading = false;
-          this.getFilteredOrders();
-        },
-        error: (err) => {
-          this.error = 'Failed to load past orders';
-          this.loading = false;
         }
       });
     }

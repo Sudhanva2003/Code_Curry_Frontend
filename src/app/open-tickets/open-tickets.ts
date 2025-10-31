@@ -24,7 +24,7 @@ export class OpenTickets implements OnInit {
     // Make sure you include the userId in the URL
     const userId = this.adminId; // or get it dynamically from your auth service
 
-    this.http.get(`https://localhost:7265/api/Support/viewOpenTickets/${userId}`).subscribe({
+    this.http.get(`https://localhost:7265/api/Support/viewAllOpenTickets`).subscribe({
       next: (data: any) => {
         // Filter out tickets that have ticketStatus as 'Assigned' or have an assignedAdminId
         this.tickets = (data || []).filter((ticket: any) => 

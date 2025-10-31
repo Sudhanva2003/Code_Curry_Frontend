@@ -70,7 +70,7 @@ import { AuthInterceptor } from './auth.interceptor';
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule  
+    HttpClientModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }  // Register the AuthInterceptor

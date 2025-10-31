@@ -92,9 +92,9 @@ export class Orders implements OnInit {
     this.api.get(`Customer/ViewUserOrders/${this.userId}`).subscribe({
       next: (res: any) => {
         this.openOrders = (res.openOrders || []).filter((order: any) =>
-          order.status === 'Paid'|| 
-        order.status === 'Prepared' ||
-        order.status =='Assigned' 
+          order.status === 'Paid' || 
+          order.status === 'Prepared' ||
+          order.status === 'Assigned'
         ).map((order: any) => ({
           ...order,
           restaurantRating: null,
@@ -105,8 +105,8 @@ export class Orders implements OnInit {
 
         this.pastOrders = (res.pastOrders || []).filter((order: any) =>
           order.status === 'Delivered' ||
-           order.status === 'CancelledByCustomer'||
-          order.status === 'CancelledByRest'||
+          order.status === 'CancelledByCustomer' ||
+          order.status === 'CancelledByRest' ||
           order.status === 'CancelledByDeliverer'
         ).map((order: any) => ({
           ...order,
@@ -127,21 +127,20 @@ export class Orders implements OnInit {
   }
 
   cancelOrder(orderId: number): void {
-  const confirmed = confirm("Are you sure you want to cancel this order?");
-  if (!confirmed) return;
+    const confirmed = confirm("Are you sure you want to cancel this order?");
+    if (!confirmed) return;
 
-  this.api.put(`Customer/CancelOrder/${orderId}`, {}).subscribe({
-    next: () => {
-      alert('Order cancelled successfully.');
-      this.refreshOrders(); // ✅ reloads open + past
-    },
-    error: (err) => {
-      console.error("Cancel error:", err);
-      alert('Failed to cancel order.');
-    }
-  });
-}
-
+    this.api.put(`Customer/CancelOrder/${orderId}`, {}).subscribe({
+      next: () => {
+        alert('Order cancelled successfully.');
+        this.refreshOrders();
+      },
+      error: (err) => {
+        console.error("Cancel error:", err);
+        alert('Failed to cancel order.');
+      }
+    });
+  }
 
   get currentMonth(): string {
     return this.monthNames[this.currentDate.getMonth()];
@@ -170,28 +169,34 @@ export class Orders implements OnInit {
     );
   }
 
+  // ✅ FIXED — properly triggers change detection and pagination
   goToPrevMonth() {
-    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+    const newDate = new Date(this.currentDate);
+    newDate.setMonth(newDate.getMonth() - 1);
+    this.currentDate = newDate;
     this.currentPage = 1;
     this.getFilteredOrders();
   }
 
+  // ✅ FIXED — properly triggers change detection and pagination
   goToNextMonth() {
     if (this.canGoNext()) {
-      this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+      const newDate = new Date(this.currentDate);
+      newDate.setMonth(newDate.getMonth() + 1);
+      this.currentDate = newDate;
       this.currentPage = 1;
       this.getFilteredOrders();
     }
   }
 
+  // ✅ FIX: Removed year filtering
   getFilteredOrders() {
     const month = this.currentMonth.toLowerCase();
-    const year = this.currentYear;
     const filtered = this.pastOrders.filter(order => {
       if (!order.orderDate) return false;
       const date = new Date(order.orderDate);
       const orderMonth = date.toLocaleString('default', { month: 'long' }).toLowerCase();
-      return orderMonth === month && date.getFullYear() === year;
+      return orderMonth === month;
     });
 
     const start = (this.currentPage - 1) * this.pageSize;
@@ -199,47 +204,49 @@ export class Orders implements OnInit {
     this.filteredPastOrders = filtered.slice(start, end);
   }
 
+  // ✅ FIX: Ensure at least 1 page
   get totalPages(): number {
     const month = this.currentMonth.toLowerCase();
-    const year = this.currentYear;
     const filtered = this.pastOrders.filter(order => {
       if (!order.orderDate) return false;
-      const date = new Date(order.orderDate);
-      const orderMonth = date.toLocaleString('default', { month: 'long' }).toLowerCase();
-      return orderMonth === month && date.getFullYear() === year;
+      const orderMonth = new Date(order.orderDate).toLocaleString('default', { month: 'long' }).toLowerCase();
+      return orderMonth === month;
     });
-    return Math.ceil(filtered.length / this.pageSize);
+    const pages = Math.ceil(filtered.length / this.pageSize);
+    return pages > 0 ? pages : 1;
   }
 
   nextPage() {
-    if (this.currentPage < this.totalPages && this.canGoNext()) {
-      this.currentPage++;
-      this.getFilteredOrders();
-    }
+  // ✅ FIX: Remove dependency on canGoNext()
+  if (this.currentPage < this.totalPages) {
+    this.currentPage++;
+    this.getFilteredOrders();
   }
+}
 
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.getFilteredOrders();
-    }
+prevPage() {
+  if (this.currentPage > 1) {
+    this.currentPage--;
+    this.getFilteredOrders();
   }
+}
+
 
   canRateRestaurant(restId: number): boolean {
-  return this.pastOrders.some(o => 
-    o.restId === restId && 
-    o.status === 'Delivered' && 
-    o.restaurantRating === null
-  );
-}
+    return this.pastOrders.some(o => 
+      o.restId === restId && 
+      o.status === 'Delivered' && 
+      o.restaurantRating === null
+    );
+  }
 
-canRateDeliverer(delivererId: number): boolean {
-  return this.pastOrders.some(o => 
-    o.delivererId === delivererId && 
-    o.status === 'Delivered' && 
-    o.delivererRating === null
-  );
-}
+  canRateDeliverer(delivererId: number): boolean {
+    return this.pastOrders.some(o => 
+      o.delivererId === delivererId && 
+      o.status === 'Delivered' && 
+      o.delivererRating === null
+    );
+  }
 
   submitRatingRestaurant(orderId: number, rating: number) {
     const endpoint = `Orders/SubmitRating?userId=${this.userId}&orderId=${orderId}&rating=${rating}`;
@@ -248,9 +255,7 @@ canRateDeliverer(delivererId: number): boolean {
       next: (res: any) => {
         alert(res.message);
         const order = this.pastOrders.find(o => o.orderId === orderId);
-        if (order) {
-          order.restaurantRated = true;
-        }
+        if (order) order.restaurantRated = true;
       },
       error: (err) => {
         console.error('Rating error:', err);
@@ -272,9 +277,7 @@ canRateDeliverer(delivererId: number): boolean {
       next: (res: any) => {
         alert(res.message);
         const order = this.pastOrders.find(o => o.orderId === orderId);
-        if (order) {
-          order.delivererRated = true;
-        }
+        if (order) order.delivererRated = true;
       },
       error: (err) => {
         console.error('Rating error:', err);
