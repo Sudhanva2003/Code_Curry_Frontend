@@ -27,7 +27,7 @@ export class DeliveredOrders implements OnInit {
   currentPage = 1;
   pageSize = 5;
 
-  monthNames = [
+  months: string[] = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
@@ -46,12 +46,12 @@ export class DeliveredOrders implements OnInit {
             'CancelledByDeliverer'
           ];
 
-          this.deliveredOrders = Array.isArray(res)
-            ? res.filter((order: Order) => validStatuses.includes(order.status))
-            : [];
+          this.deliveredOrders = (res || []).filter((order: Order) =>
+            validStatuses.includes(order.status)
+          );
 
-          this.applyFilters();
           this.loading = false;
+          this.applyFilters();
         },
         error: (err) => {
           console.error('Error loading delivered orders:', err);
@@ -60,23 +60,27 @@ export class DeliveredOrders implements OnInit {
         }
       });
     } else {
-      this.error = "Deliverer not logged in";
+      this.error = 'Deliverer not logged in';
       this.loading = false;
     }
   }
 
   applyFilters(): void {
-    const monthIndex = this.monthNames.indexOf(this.selectedMonth);
+    const month = this.selectedMonth.toLowerCase();
     this.filteredOrders = this.deliveredOrders.filter((order: Order) => {
-      const date = new Date(order.orderDate);
-      return date.getMonth() === monthIndex;
+      if (!order.orderDate) return false;
+      const orderMonth = new Date(order.orderDate)
+        .toLocaleString('default', { month: 'long' })
+        .toLowerCase();
+      return orderMonth === month;
     });
     this.currentPage = 1;
   }
 
   get paginatedOrders(): Order[] {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredOrders.slice(start, start + this.pageSize);
+    const end = start + this.pageSize;
+    return this.filteredOrders.slice(start, end);
   }
 
   nextPage(): void {
@@ -97,9 +101,25 @@ export class DeliveredOrders implements OnInit {
   }
 
   get availableMonths(): string[] {
-    return [...new Set(this.deliveredOrders.map((order: Order) => {
-      const date = new Date(order.orderDate);
-      return this.monthNames[date.getMonth()];
-    }))];
+    const monthsSet = new Set(
+      this.deliveredOrders.map((order: Order) => {
+        if (!order.orderDate) return '';
+        return new Date(order.orderDate).toLocaleString('default', { month: 'long' });
+      })
+    );
+    return Array.from(monthsSet).filter(Boolean);
+  }
+
+  // Format order date for display (like in OrderHistory)
+  formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toLocaleString('en-IN', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }

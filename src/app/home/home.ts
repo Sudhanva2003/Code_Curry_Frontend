@@ -64,91 +64,107 @@ export class Home implements OnInit {
     this.fetchRestaurants(); // re-fetch sorted restaurants
   }
 
+  // ------------------- Search Restaurants and Foods -------------------
   searchRestaurantsAndFoods() {
-  const term = this.searchTerm.trim();
-  if (!term) {
-    this.fetchRestaurants();
-    return;
+    const term = this.searchTerm.trim();
+    if (!term) {
+      this.fetchRestaurants();
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+
+    const restaurantSearch = this.api.get(`Restaurant/Search?name=${this.searchTerm}`);
+    const foodRestaurantSearch = this.api.get(`Foods/SearchRestaurantsByFoodName?name=${this.searchTerm}`);
+    const cuisineSearch = this.api.get(`Filter/SearchByCuisine?cuisine=${this.searchTerm}`);
+
+    Promise.all([
+      restaurantSearch.toPromise(),
+      foodRestaurantSearch.toPromise(),
+      cuisineSearch.toPromise()
+    ])
+      .then(([restaurantMatches, foodRestaurantMatches, cuisineMatches]: any) => {
+        const formattedRestaurants = restaurantMatches.map((r: any) => ({
+          ...r,
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+          type: 'restaurant'
+        }));
+
+        const formattedFoodRestaurants = foodRestaurantMatches.map((r: any) => ({
+          ...r,
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+          type: 'restaurant',
+          matchedFood: this.searchTerm
+        }));
+
+        const formattedCuisineRestaurants = cuisineMatches.map((r: any) => ({
+          ...r,
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+          type: 'restaurant',
+          matchedCuisine: this.searchTerm
+        }));
+
+        const allRestaurants = [
+          ...formattedRestaurants,
+          ...formattedFoodRestaurants,
+          ...formattedCuisineRestaurants
+        ];
+
+        const uniqueRestaurants = allRestaurants.filter((r, index, self) =>
+          index === self.findIndex(other => other.restId === r.restId)
+        );
+
+        this.restaurants = uniqueRestaurants;
+        this.loading = false;
+      })
+      .catch((err) => {
+        console.error('Search failed:', err);
+        this.error = 'Search failed';
+        this.loading = false;
+      });
   }
 
-  this.loading = true;
-  this.error = '';
+  // ------------------- Search Foods inside a Restaurant -------------------
+  searchFoodsInRestaurant() {
+    if (!this.menu || !this.foodSearchTerm.trim()) {
+      this.filteredMenu = [...this.menu];
+      return;
+    }
 
-  const restaurantSearch = this.api.get(`Restaurant/Search?name=${this.searchTerm}`);
-  const foodRestaurantSearch = this.api.get(`Foods/SearchRestaurantsByFoodName?name=${this.searchTerm}`);
-  const cuisineSearch = this.api.get(`Filter/SearchByCuisine?cuisine=${this.searchTerm}`);
-
-  Promise.all([
-    restaurantSearch.toPromise(),
-    foodRestaurantSearch.toPromise(),
-    cuisineSearch.toPromise()
-  ])
-    .then(([restaurantMatches, foodRestaurantMatches, cuisineMatches]: any) => {
-      const formattedRestaurants = restaurantMatches.map((r: any) => ({
-        ...r,
-        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
-        type: 'restaurant'
-      }));
-
-      const formattedFoodRestaurants = foodRestaurantMatches.map((r: any) => ({
-        ...r,
-        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
-        type: 'restaurant',
-        matchedFood: this.searchTerm
-      }));
-
-      const formattedCuisineRestaurants = cuisineMatches.map((r: any) => ({
-        ...r,
-        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
-        type: 'restaurant',
-        matchedCuisine: this.searchTerm
-      }));
-
-      const allRestaurants = [
-        ...formattedRestaurants,
-        ...formattedFoodRestaurants,
-        ...formattedCuisineRestaurants
-      ];
-
-      const uniqueRestaurants = allRestaurants.filter((r, index, self) =>
-        index === self.findIndex(other => other.restId === r.restId)
-      );
-
-      this.restaurants = uniqueRestaurants;
-      this.loading = false;
-    })
-    .catch((err) => {
-      console.error('Search failed:', err);
-      this.error = 'Search failed';
-      this.loading = false;
-    });
-}
-
-
-//Search food inside restaurant
-searchFoodsInRestaurant() {
-  if (!this.menu || !this.foodSearchTerm.trim()) {
-    this.filteredMenu = [...this.menu];
-    return;
+    const term = this.foodSearchTerm.toLowerCase();
+    this.filteredMenu = this.menu.filter(f =>
+      f.name.toLowerCase().includes(term) ||
+      f.description?.toLowerCase().includes(term) ||
+      f.category?.toLowerCase().includes(term)
+    );
   }
-
-  const term = this.foodSearchTerm.toLowerCase();
-  this.filteredMenu = this.menu.filter(f =>
-    f.name.toLowerCase().includes(term) ||
-    f.description?.toLowerCase().includes(term) ||
-    f.category?.toLowerCase().includes(term)
-  );
-}
 
   // ------------------- Filter -------------------
   applyFilter() {
     if (!this.menu) return;
 
-    let result =
-      this.filterType === 'none'
-        ? [...this.menu]
-        : this.menu.filter((f) => f.category?.toLowerCase() === this.filterType.toLowerCase());
+    let result: any[] = [];
 
+    if (this.filterType === '' || this.filterType === 'none') {
+      result = [...this.menu];
+    } 
+    else if (this.filterType.toLowerCase() === 'veg') {
+      // Include both veg and vegan
+      result = this.menu.filter(
+        (f) =>
+          f.category?.toLowerCase() === 'veg' ||
+          f.category?.toLowerCase() === 'vegan'
+      );
+    } 
+    else {
+      // Normal filtering for other categories
+      result = this.menu.filter(
+        (f) => f.category?.toLowerCase() === this.filterType.toLowerCase()
+      );
+    }
+
+    // Apply sorting if needed
     if (this.foodSort === 'price') {
       result.sort((a, b) => a.price - b.price);
     }
@@ -156,8 +172,9 @@ searchFoodsInRestaurant() {
     this.filteredMenu = result;
   }
 
+  // ------------------- Sort -------------------
   applySort() {
-    this.applyFilter(); // re-apply with sort
+    this.applyFilter(); // Re-apply filter with sort
   }
 
   // ------------------- Restaurant Selection -------------------
@@ -185,13 +202,14 @@ searchFoodsInRestaurant() {
     });
   }
 
+  // ------------------- Back to Restaurants -------------------
   backToRestaurants() {
     this.selectedRestaurant = null;
     this.menu = [];
     this.filteredMenu = [];
   }
 
-  // ------------------- Cart -------------------
+  // ------------------- Cart Management -------------------
   incrementItem(item: any) {
     item.quantity++;
     this.updateCart(item);
@@ -229,10 +247,12 @@ searchFoodsInRestaurant() {
     this.totalQuantity = this.cartItems.reduce((sum, i) => sum + i.quantity, 0);
   }
 
+  // ------------------- Navigation -------------------
   goToCart() {
     this.router.navigate(['customer/cart']);
   }
 
+  // ------------------- Place Order -------------------
   placeOrder() {
     const user = this.auth.getUser();
     if (!user) {

@@ -71,10 +71,13 @@ export class Settings implements OnInit {
   toggleRestaurantStatus(): void {
     if (!this.restaurant?.restId) return;
 
+    
+    const newStatus = this.restaurant.restStatus === 'Open' ? 'Closed' : 'Open';
+
     this.http
       .patch(
-        `https://localhost:7265/api/Restaurant/ChangeAvailability/${this.restaurant.restId}`,
-        {}
+        `https://localhost:7265/api/Restaurant/SetRestaurantStatus/${this.restaurant.restId}`,
+        { restStatus: newStatus }
       )
       .subscribe({
         next: (res: any) => {
