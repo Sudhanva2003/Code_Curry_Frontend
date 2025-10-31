@@ -1,1 +1,19 @@
-<p>resolved-tickets works!</p>
+<div class="tickets-container">
+  <h2>Resolved Support Tickets</h2>
+
+  <div *ngIf="loading" class="info">Loading...</div>
+  <div *ngIf="error" class="info error">{{ error }}</div>
+  <div *ngIf="!loading && !error && tickets.length === 0" class="info">No resolved tickets available.</div>
+
+  <div *ngFor="let t of tickets" class="ticket-card resolved">
+    <p><strong>Ticket ID:</strong> {{ t.ticketId }}</p>
+    <p><strong>User ID:</strong> {{ t.userId || t.restId }}</p>
+    <p><strong>User Role:</strong> {{ t.role || 'N/A' }}</p>
+    <p><strong>User Email:</strong> {{ t.email }}</p>
+    <p><strong>Category:</strong> {{ t.category }}</p>
+    <p><strong>Text:</strong> {{ t.description }}</p>
+    <p><strong>Created Date:</strong> {{ formatDate(t.createdDate) }}</p>
+    <p *ngIf="t.resolvedDate"><strong>Resolved Date:</strong> <span class="resolved-date">{{ formatDate(t.resolvedDate) }}</span></p>
+    <p *ngIf="t.adminMessage"><strong>Admin Message:</strong> {{ t.adminMessage }}</p>
+  </div>
+</div>

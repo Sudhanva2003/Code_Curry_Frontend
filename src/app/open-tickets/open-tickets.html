@@ -1,1 +1,50 @@
-<p>open-tickets works!</p>
+<div class="tickets-container">
+  <h2>Open Support Tickets</h2>
+
+  <div *ngIf="loading" class="info">Loading...</div>
+  <div *ngIf="error" class="info error">{{ error }}</div>
+  <div *ngIf="!loading && !error && tickets.length === 0" class="info">No open tickets available.</div>
+
+  <div *ngFor="let t of tickets" class="ticket-card" 
+       [ngClass]="{
+         'assigned-to-me': isAssignedToMe(t), 
+         'assigned-to-other': isAssignedToOther(t)
+       }">
+    
+    <p><strong>Ticket ID:</strong> {{ t.ticketId }}</p>
+    <p><strong>User ID:</strong> {{ t.userId || t.restId }}</p>
+    <p><strong>User Role:</strong> {{ t.role || 'N/A' }}</p>
+    <p><strong>User Email:</strong> {{ t.email }}</p>
+    <p><strong>Category:</strong> {{ t.category }}</p>
+    <p><strong>Text:</strong> {{ t.description }}</p>
+    <p><strong>Date:</strong> {{ formatDate(t.createdDate) }}</p>
+    <p><strong>Status:</strong> 
+      <span class="status-badge" [ngClass]="{'status-assigned': t.ticketStatus === 'Assigned'}">
+        {{ t.ticketStatus }}
+      </span>
+    </p>
+
+    <!-- Conditional button display -->
+    <div class="button-group">
+      <!-- Show "Assign to Me" only if not assigned to anyone -->
+      <button *ngIf="!t.assignedAdminId" 
+              class="btn-assign" 
+              (click)="assignToMe(t)">
+        Assign to Me
+      </button>
+
+      <!-- Show "Assigned to you" label and "Mark as Complete" if assigned to current admin -->
+      <ng-container *ngIf="isAssignedToMe(t)">
+        <span class="assigned-label">✓ Assigned to you</span>
+        <button class="btn-primary" (click)="markAsComplete(t)">
+          Mark as Complete
+        </button>
+      </ng-container>
+
+      <!-- Show "Assigned to another admin" if assigned to someone else -->
+      <span *ngIf="isAssignedToOther(t)" class="assigned-other">
+        ⚠ Assigned to another admin
+      </span>
+    </div>
+  </div>
+</div>

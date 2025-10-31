@@ -7,17 +7,25 @@
   <div class="actions">
     <div class="action-row">
       <span>Do you want to edit this user?</span>
-      <button (click)="onEdit()">Edit</button>
+      <button class="btn-primary" (click)="onEdit()">Edit</button>
     </div>
 
     <div class="action-row">
       <span>Are you sure you want to delete this user?</span>
-      <button (click)="onDelete()">Delete</button>
+      <button class="btn-primary" (click)="onDelete()">Delete</button>
+    </div>
+
+    <div class="action-row">
+      <span>Raise a support ticket?</span>
+      <button class="btn-primary" (click)="openSupportPopup()">Raise</button>
     </div>
   </div>
 </div>
 
-<!-- Popup Modal -->
+<div *ngIf="!user">
+  <p>Loading user details...</p>
+</div>
+
 <div class="modal" *ngIf="showEditPopup">
   <div class="modal-content">
     <span class="close" (click)="closePopup()">&times;</span>
@@ -36,11 +44,57 @@
       <input type="text" [(ngModel)]="editedUser.address" name="address" required #address="ngModel" />
       <div *ngIf="(address.touched || formSubmitted) && address.invalid" class="error">Address is required.</div>
 
-      <button type="submit">Save Changes</button>
+      <button type="submit" class="btn-primary">Save Changes</button>
     </form>
   </div>
 </div>
 
-<div *ngIf="!user">
-  <p>Loading user details...</p>
+<div *ngIf="showSupportPopup" class="support-ticket-popup">
+  <div class="popup-container">
+    <div class="popup-header">
+      <h2>Raise a Support Ticket</h2>
+      <button class="close-btn" (click)="closeSupportPopup()">×</button>
+    </div>
+
+    <label>What is the category of the ticket?</label>
+    <select [(ngModel)]="selectedCategory">
+      <option value="default">Select an option</option>
+      <option value="Order not arrived">Order not arrived</option>
+      <option value="Not all items delivered">Not all items delivered</option>
+      <option value="Issue with food">Issue with food</option>
+      <option value="Technical glitches">Technical glitches</option>
+      <option value="Payment issues">Payment issues</option>
+      <option value="User detail issues">User detail issues</option>
+    </select>
+
+    <label>Write something about the issue:</label>
+    <textarea [(ngModel)]="issueDetails" rows="5" placeholder="Describe the issue..."></textarea>
+
+    <div class="popup-actions">
+      <button class="cancel-btn" (click)="closeSupportPopup()">Cancel</button>
+      <button class="submit-btn" (click)="submitSupportTicket()">Submit</button>
+    </div>
+  </div>
 </div>
+
+<div class="past-tickets-section" *ngIf="pastTickets && pastTickets.length > 0; else noTickets">
+  <h3>Past Support Tickets</h3>
+
+  <div class="ticket-card" *ngFor="let ticket of pastTickets">
+    <p><strong>Ticket ID:</strong> {{ ticket.ticketId }}</p>
+    <p><strong>Category:</strong> {{ ticket.category }}</p>
+    <p><strong>Description:</strong> {{ ticket.description || ticket.text }}</p>
+    <p><strong>Status:</strong> {{ ticket.ticketStatus || ticket.status }}</p>
+    <p><strong>Date:</strong> {{ formatDate(ticket.createdDate || ticket.date || ticket.createdAt) }}</p>
+
+    <p *ngIf="ticket.adminMessage">
+      <strong>Admin Resolution:</strong> {{ ticket.adminMessage }}
+    </p>
+  </div>
+</div>
+
+<ng-template #noTickets>
+  <div class="no-tickets">
+    <p>No previous tickets found.</p>
+  </div>
+</ng-template>

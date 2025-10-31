@@ -14,17 +14,22 @@ export class CustomerSettings implements OnInit {
   editedUser: any = null;
   showEditPopup = false;
   formSubmitted = false;
+  showSupportPopup = false;
+  selectedCategory: string = 'default';
+  issueDetails: string = '';
+  pastTickets: any[] = [];
 
-  constructor(private auth: AuthGuard, private http: HttpClient,private router: Router) {}
+  constructor(private auth: AuthGuard, private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const user = this.auth.getUser();
-const userId = user?.userId;
-// Replace with actual method
-    if (userId !== null) {
+    const userId = user?.userId ?? 0;
+
+    if (userId) {
       this.http.get(`https://localhost:7265/api/Customer/ViewUser/${userId}`).subscribe({
         next: (data: any) => {
           this.user = { ...data, userId };
+          this.loadPastTickets(userId);
         },
         error: (err) => {
           console.error('Failed to load user', err);
@@ -32,6 +37,28 @@ const userId = user?.userId;
         }
       });
     }
+  }
+
+  loadPastTickets(userId: number): void {
+    this.http.get(`https://localhost:7265/api/Support/viewOpenTickets/${userId}`).subscribe({
+      next: (openTickets: any) => {
+        this.http.get(`https://localhost:7265/api/Support/viewClosedTickets/${userId}`).subscribe({
+          next: (closedTickets: any) => {
+            const allTickets = [...(openTickets || []), ...(closedTickets || [])];
+            this.pastTickets = allTickets.sort((a, b) => {
+              const dateA = new Date(a.createdAt || a.date || a.resolvedAt || 0).getTime();
+              const dateB = new Date(b.createdAt || b.date || b.resolvedAt || 0).getTime();
+              if (dateB !== dateA) {
+                return dateB - dateA;
+              }
+              return (b.ticketId || 0) - (a.ticketId || 0);
+            });
+          },
+          error: (err) => console.error('Error loading closed tickets', err)
+        });
+      },
+      error: (err) => console.error('Error loading open tickets', err)
+    });
   }
 
   onEdit(): void {
@@ -72,7 +99,6 @@ const userId = user?.userId;
           alert('User deleted');
           this.user = null;
           this.router.navigate(['/login']);
-          
         },
         error: (err) => {
           console.error('Failed to delete user', err);
@@ -86,5 +112,54 @@ const userId = user?.userId;
     this.showEditPopup = false;
     this.editedUser = null;
     this.formSubmitted = false;
+  }
+
+  openSupportPopup(): void {
+    this.selectedCategory = 'default';
+    this.issueDetails = '';
+    this.showSupportPopup = true;
+  }
+
+  closeSupportPopup(): void {
+    this.showSupportPopup = false;
+    this.selectedCategory = 'default';
+    this.issueDetails = '';
+  }
+
+  submitSupportTicket(): void {
+    if (this.selectedCategory === 'default' || !this.issueDetails.trim()) {
+      alert('Please select a category and describe the issue.');
+      return;
+    }
+
+    const supportTicket = {
+      userId: this.user.userId,
+      email: this.user.email,
+      category: this.selectedCategory,
+      description: this.issueDetails
+    };
+
+    this.http.post('https://localhost:7265/api/Support/raiseUserTicket', supportTicket).subscribe({
+      next: (response: any) => {
+        alert(`Support Ticket Submitted Successfully!`);
+        this.closeSupportPopup();
+        this.loadPastTickets(this.user.userId ?? 0);
+      },
+      error: (err) => {
+        console.error('Failed to submit ticket', err);
+        alert('Failed to submit support ticket. Please try again.');
+      }
+    });
+  }
+
+  formatDate(date: string): string {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }
