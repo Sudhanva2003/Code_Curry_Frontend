@@ -47,8 +47,10 @@ export class Home implements OnInit {
         this.restaurants = data.map((r: any) => ({
           ...r,
           restaurantStatus: r.restStatus || r.RestStatus || 'Open',
-          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant'
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+          distance: null  // Initialize distance as null
         }));
+        this.getDistanceForRestaurants();  // Fetch distances for each restaurant
         this.loading = false;
       },
       error: (err) => {
@@ -59,88 +61,133 @@ export class Home implements OnInit {
     });
   }
 
+  // ------------------- Get Distance for Each Restaurant -------------------
+  getDistanceForRestaurants() {
+    // Get user info to fetch their address
+    const user = this.auth.getUser();
+    if (!user || !user.userId) {
+      console.warn('User not logged in, cannot fetch distances');
+      // Set default distance for all restaurants
+      this.restaurants.forEach(restaurant => {
+        restaurant.distance = 'N/A';
+      });
+      return;
+    }
+
+    // Fetch user details to get their address
+    this.api.get(`customer/ViewUser/${user.userId}`).subscribe({
+      next: (userData: any) => {
+        const customerAddress = userData.address || 'Default Address';
+
+        // Now fetch distance for each restaurant
+        this.restaurants.forEach((restaurant) => {
+          this.api.get(`customer/Distance?restAddress=${encodeURIComponent(restaurant.address)}&customerAddress=${encodeURIComponent(customerAddress)}`).subscribe({
+            next: (distance: number) => {
+              restaurant.distance = distance;  // Assign the distance to each restaurant
+            },
+            error: (error) => {
+              console.error('Error fetching distance for restaurant:', restaurant.name, error);
+              restaurant.distance = 'N/A';  // Set N/A if distance fetch fails
+            }
+          });
+        });
+      },
+      error: (err) => {
+        console.error('Error fetching user details:', err);
+        // Set default distance for all restaurants
+        this.restaurants.forEach(restaurant => {
+          restaurant.distance = 'N/A';
+        });
+      }
+    });
+  }
+
+  // ------------------- Search Restaurants and Foods -------------------
+  searchRestaurantsAndFoods() {
+    const term = this.searchTerm.trim();
+    if (!term) {
+      this.fetchRestaurants();
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+
+    const restaurantSearch = this.api.get(`Restaurant/Search?name=${this.searchTerm}`);
+    const foodRestaurantSearch = this.api.get(`Foods/SearchRestaurantsByFoodName?name=${this.searchTerm}`);
+    const cuisineSearch = this.api.get(`Filter/SearchByCuisine?cuisine=${this.searchTerm}`);
+
+    Promise.all([
+      restaurantSearch.toPromise(),
+      foodRestaurantSearch.toPromise(),
+      cuisineSearch.toPromise()
+    ])
+      .then(([restaurantMatches, foodRestaurantMatches, cuisineMatches]: any) => {
+        const formattedRestaurants = restaurantMatches.map((r: any) => ({
+          ...r,
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+          type: 'restaurant',
+          distance: null
+        }));
+
+        const formattedFoodRestaurants = foodRestaurantMatches.map((r: any) => ({
+          ...r,
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+          type: 'restaurant',
+          matchedFood: this.searchTerm,
+          distance: null
+        }));
+
+        const formattedCuisineRestaurants = cuisineMatches.map((r: any) => ({
+          ...r,
+          restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
+          type: 'restaurant',
+          matchedCuisine: this.searchTerm,
+          distance: null
+        }));
+
+        const allRestaurants = [
+          ...formattedRestaurants,
+          ...formattedFoodRestaurants,
+          ...formattedCuisineRestaurants
+        ];
+
+        const uniqueRestaurants = allRestaurants.filter((r, index, self) =>
+          index === self.findIndex(other => other.restId === r.restId)
+        );
+
+        this.restaurants = uniqueRestaurants;
+        this.getDistanceForRestaurants();  // Fetch distances for search results
+        this.loading = false;
+      })
+      .catch((err) => {
+        console.error('Search failed:', err);
+        this.error = 'Search failed';
+        this.loading = false;
+      });
+  }
+
   // ------------------- Restaurant Sort -------------------
   applyRestaurantSort() {
     this.fetchRestaurants();
   }
 
-  searchRestaurantsAndFoods() {
-  const term = this.searchTerm.trim();
-  if (!term) {
-    this.fetchRestaurants();
-    return;
+  // ------------------- Search for Food in Restaurants -------------------
+  searchFoodsInRestaurant() {
+    if (!this.menu || !this.foodSearchTerm.trim()) {
+      this.filteredMenu = [...this.menu];
+      return;
+    }
+
+    const term = this.foodSearchTerm.toLowerCase();
+    this.filteredMenu = this.menu.filter(f =>
+      f.name.toLowerCase().includes(term) ||
+      f.description?.toLowerCase().includes(term) ||
+      f.category?.toLowerCase().includes(term)
+    );
   }
 
-  this.loading = true;
-  this.error = '';
-
-  const restaurantSearch = this.api.get(`Restaurant/Search?name=${this.searchTerm}`);
-  const foodRestaurantSearch = this.api.get(`Foods/SearchRestaurantsByFoodName?name=${this.searchTerm}`);
-  const cuisineSearch = this.api.get(`Filter/SearchByCuisine?cuisine=${this.searchTerm}`);
-
-  Promise.all([
-    restaurantSearch.toPromise(),
-    foodRestaurantSearch.toPromise(),
-    cuisineSearch.toPromise()
-  ])
-    .then(([restaurantMatches, foodRestaurantMatches, cuisineMatches]: any) => {
-      const formattedRestaurants = restaurantMatches.map((r: any) => ({
-        ...r,
-        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
-        type: 'restaurant'
-      }));
-
-      const formattedFoodRestaurants = foodRestaurantMatches.map((r: any) => ({
-        ...r,
-        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
-        type: 'restaurant',
-        matchedFood: this.searchTerm
-      }));
-
-      const formattedCuisineRestaurants = cuisineMatches.map((r: any) => ({
-        ...r,
-        restImageUrl: r.restImageUrl || 'https://via.placeholder.com/200x150?text=Restaurant',
-        type: 'restaurant',
-        matchedCuisine: this.searchTerm
-      }));
-
-      const allRestaurants = [
-        ...formattedRestaurants,
-        ...formattedFoodRestaurants,
-        ...formattedCuisineRestaurants
-      ];
-
-      const uniqueRestaurants = allRestaurants.filter((r, index, self) =>
-        index === self.findIndex(other => other.restId === r.restId)
-      );
-
-      this.restaurants = uniqueRestaurants;
-      this.loading = false;
-    })
-    .catch((err) => {
-      console.error('Search failed:', err);
-      this.error = 'Search failed';
-      this.loading = false;
-    });
-}
-
-
-//Search food inside restaurant
-searchFoodsInRestaurant() {
-  if (!this.menu || !this.foodSearchTerm.trim()) {
-    this.filteredMenu = [...this.menu];
-    return;
-  }
-
-  const term = this.foodSearchTerm.toLowerCase();
-  this.filteredMenu = this.menu.filter(f =>
-    f.name.toLowerCase().includes(term) ||
-    f.description?.toLowerCase().includes(term) ||
-    f.category?.toLowerCase().includes(term)
-  );
-}
-
-  // ------------------- Filter -------------------
+  // ------------------- Filter Foods -------------------
   applyFilter() {
     if (!this.menu) return;
 
@@ -156,6 +203,7 @@ searchFoodsInRestaurant() {
     this.filteredMenu = result;
   }
 
+  // ------------------- Apply Sorting -------------------
   applySort() {
     this.applyFilter();
   }
