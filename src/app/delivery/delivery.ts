@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { NotificationService } from '../notification.service'; // <-- Import NotificationService
 
 @Component({
   selector: 'app-delivery',
@@ -16,7 +17,11 @@ export class Delivery implements OnInit {
   showDeliveryPopup = false;
   isPickedUp = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router, 
+    private notificationService: NotificationService // <-- Inject NotificationService
+  ) {}
 
   ngOnInit(): void {
     // Fetch orderId and delivererId from localStorage
@@ -40,6 +45,7 @@ export class Delivery implements OnInit {
         },
         error: (err) => {
           console.error('Failed to load delivery details', err);
+          this.notificationService.show('Failed to load delivery details. Please try again.'); // <-- Use NotificationService
         },
       });
   }
@@ -51,7 +57,7 @@ export class Delivery implements OnInit {
   confirmPickup(): void {
     this.isPickedUp = true;
     this.showPickupPopup = false;
-    alert('All items picked up successfully!');
+    this.notificationService.show('All items picked up successfully!'); // <-- Use NotificationService
   }
 
   cancelPickup(): void {
@@ -67,15 +73,15 @@ export class Delivery implements OnInit {
       .put(`https://localhost:7265/api/Deliverer/MarkDelivered/${this.orderId}`, {}, { responseType: 'text' })
       .subscribe({
         next: (res) => {
-          alert(res); // shows "Order marked as delivered."
+          this.notificationService.show(res); // <-- Use NotificationService
           this.showDeliveryPopup = false;
           localStorage.removeItem('currentOrderId');
           localStorage.removeItem('currentDelivererId');
-          this.router.navigate(['/deliverer/delivered-orders']); // Navigate to delivered orders page
+          this.router.navigate(['/deliverer/delivered-orders']);
         },
         error: (err) => {
           console.error('Failed to mark delivered', err);
-          alert('Failed to mark delivery. Try again.');
+          this.notificationService.show('Failed to mark delivery. Try again.'); // <-- Use NotificationService
         },
       });
   }
@@ -85,21 +91,21 @@ export class Delivery implements OnInit {
   }
 
   cancelOrder(): void {
-    const confirmed = confirm("Are you sure you want to cancel this delivery?");
+    const confirmed = confirm('Are you sure you want to cancel this delivery?');
     if (!confirmed) return;
 
     this.http
       .put(`https://localhost:7265/api/Deliverer/CancelOrder/${this.orderId}`, {}, { responseType: 'text' })
       .subscribe({
         next: (res) => {
-          alert(res);
+          this.notificationService.show(res); // <-- Use NotificationService
           localStorage.removeItem('currentOrderId');
           localStorage.removeItem('currentDelivererId');
           this.deliveryDetail = null;
         },
         error: (err) => {
           console.error('Failed to cancel delivery', err);
-          alert('Failed to cancel delivery. Try again.');
+          this.notificationService.show('Failed to cancel delivery. Try again.'); // <-- Use NotificationService
         },
       });
   }

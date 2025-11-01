@@ -37,11 +37,24 @@
   <!-- ================= PAST ORDERS ================= -->
   <h3 class="section-subtitle past-orders-title">Past Orders</h3>
 
-  <div class="month-navigation">
-    <button class="month-btn prev" (click)="goToPrevMonth()">← {{ prevMonthLabel }}</button>
-    <span class="month-label">{{ currentMonth }} {{ currentYear }}</span>
-    <button class="month-btn next" (click)="goToNextMonth()" [disabled]="!canGoNext()">→ {{ nextMonthLabel }}</button>
-  </div>
+  <!-- ================= Month Navigation ================= -->
+<!-- ================= Month Navigation ================= -->
+<div class="month-navigation">
+  <button 
+    class="month-btn prev" 
+    (click)="goToPrevMonth()">
+    ← {{ prevMonthLabel }}
+  </button>
+  <span class="month-label">{{ currentMonth }} {{ currentYear }}</span>
+  <button 
+    class="month-btn next" 
+    (click)="goToNextMonth()" 
+    [disabled]="!canGoNext()">
+    → {{ nextMonthLabel }}
+  </button>
+</div>
+
+
 
   <div *ngIf="!loading && filteredPastOrders.length === 0" class="empty-msg">
     No past orders for {{ currentMonth }} {{ currentYear }}

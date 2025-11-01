@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
+import { NotificationService } from '../notification.service'; // <-- Import NotificationService
 
 @Component({
   selector: 'open-orders',
@@ -13,7 +14,11 @@ export class OpenOrders implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private api: ApiService, private auth: AuthGuard) {}
+  constructor(
+    private api: ApiService, 
+    private auth: AuthGuard, 
+    private notificationService: NotificationService // <-- Inject NotificationService
+  ) {}
 
   ngOnInit() {
     this.loadOrders();
@@ -49,12 +54,12 @@ export class OpenOrders implements OnInit {
     if (confirmed) {
       this.api.put(`Restaurant/Prepared/${orderId}`, {}).subscribe({
         next: () => {
-          alert('Order marked as prepared!');
+          this.notificationService.show('Order marked as prepared!', 3000);
           this.loadOrders();
         },
         error: (err) => {
           console.error("Error marking prepared:", err);
-          alert('Failed to mark order as prepared.');
+          this.notificationService.show('Failed to mark order as prepared.', 3000);
         }
       });
     }
@@ -65,12 +70,12 @@ export class OpenOrders implements OnInit {
     if (confirmed) {
       this.api.put(`Restaurant/CancelOrder/${orderId}`, {}).subscribe({
         next: () => {
-          alert('Order cancelled successfully.');
+          this.notificationService.show('Order cancelled successfully.', 3000);
           this.loadOrders();
         },
         error: (err) => {
           console.error("Error cancelling order:", err);
-          alert('Failed to cancel order.');
+          this.notificationService.show('Failed to cancel order.', 3000);
         }
       });
     }
@@ -79,7 +84,7 @@ export class OpenOrders implements OnInit {
   markNoted(orderId: number) {
     const order = this.orders.find(o => o.orderId === orderId);
     if (!order || order.status !== 'CancelledByRest') {
-      alert('This order was not cancelled by the restaurant.');
+      this.notificationService.show('This order was not cancelled by the restaurant.', 3000);
       return;
     }
 
@@ -87,12 +92,12 @@ export class OpenOrders implements OnInit {
     if (confirmed) {
       this.api.put(`Restaurant/Noted/${orderId}`, {}).subscribe({
         next: () => {
-          alert('Order marked as noted.');
+          this.notificationService.show('Order marked as noted.', 3000);
           this.loadOrders();
         },
         error: (err) => {
           console.error("Error marking noted:", err);
-          alert(err?.error || 'Failed to mark order as noted.');
+          this.notificationService.show(err?.error || 'Failed to mark order as noted.', 3000);
         }
       });
     }

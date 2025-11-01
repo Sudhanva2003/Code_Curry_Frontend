@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from '../auth.guard';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';  
+import { Router } from '@angular/router';
+import { NotificationService } from '../notification.service';  // <-- import NotificationService
 
 @Component({
   selector: 'app-customer-settings',
@@ -19,7 +20,12 @@ export class CustomerSettings implements OnInit {
   issueDetails: string = '';
   pastTickets: any[] = [];
 
-  constructor(private auth: AuthGuard, private http: HttpClient, private router: Router) {}
+  constructor(
+    private auth: AuthGuard,
+    private http: HttpClient,
+    private router: Router,
+    private notificationService: NotificationService  // <-- inject NotificationService
+  ) {}
 
   ngOnInit(): void {
     const user = this.auth.getUser();
@@ -77,18 +83,18 @@ export class CustomerSettings implements OnInit {
     if (form.valid && this.user?.userId) {
       this.http.put(`https://localhost:7265/api/Customer/EditUserDetails/${this.user.userId}`, this.editedUser).subscribe({
         next: () => {
-          alert('User updated successfully');
+          this.notificationService.show('User updated successfully', 3000);  // <-- replace alert
           this.user = { ...this.user, ...this.editedUser };
           this.showEditPopup = false;
           this.formSubmitted = false;
         },
         error: (err) => {
           console.error('Failed to update user', err);
-          alert('Update failed');
+          this.notificationService.show('Update failed', 3000);  // <-- replace alert
         }
       });
     } else {
-      alert('Please fill all required fields correctly.');
+      this.notificationService.show('Please fill all required fields correctly.', 3000);  // <-- replace alert
     }
   }
 
@@ -96,13 +102,13 @@ export class CustomerSettings implements OnInit {
     if (this.user?.userId && confirm('Are you sure you want to delete this user?')) {
       this.http.delete(`https://localhost:7265/api/Customer/DeleteUser/${this.user.userId}`).subscribe({
         next: () => {
-          alert('User deleted');
+          this.notificationService.show('User deleted', 3000);  // <-- replace alert
           this.user = null;
           this.router.navigate(['/login']);
         },
         error: (err) => {
           console.error('Failed to delete user', err);
-          alert('Delete failed');
+          this.notificationService.show('Delete failed', 3000);  // <-- replace alert
         }
       });
     }
@@ -128,7 +134,7 @@ export class CustomerSettings implements OnInit {
 
   submitSupportTicket(): void {
     if (this.selectedCategory === 'default' || !this.issueDetails.trim()) {
-      alert('Please select a category and describe the issue.');
+      this.notificationService.show('Please select a category and describe the issue.', 3000);  // <-- replace alert
       return;
     }
 
@@ -141,13 +147,13 @@ export class CustomerSettings implements OnInit {
 
     this.http.post('https://localhost:7265/api/Support/raiseUserTicket', supportTicket).subscribe({
       next: (response: any) => {
-        alert(`Support Ticket Submitted Successfully!`);
+        this.notificationService.show('Support Ticket Submitted Successfully!', 3000);  // <-- replace alert
         this.closeSupportPopup();
         this.loadPastTickets(this.user.userId ?? 0);
       },
       error: (err) => {
         console.error('Failed to submit ticket', err);
-        alert('Failed to submit support ticket. Please try again.');
+        this.notificationService.show('Failed to submit support ticket. Please try again.', 3000);  // <-- replace alert
       }
     });
   }

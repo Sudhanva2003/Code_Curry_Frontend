@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../notification.service'; // <-- Import NotificationService
 
 @Component({
   selector: 'app-my-tickets',
   standalone: false,
   templateUrl: './my-tickets.html',
-  styleUrl: './my-tickets.css'
+  styleUrls: ['./my-tickets.css']
 })
 export class MyTickets implements OnInit {
   tickets: any[] = [];
@@ -18,7 +19,7 @@ export class MyTickets implements OnInit {
   selectedTicket: any = null;
   adminMessage = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private notificationService: NotificationService) {} // <-- Inject NotificationService
 
   ngOnInit(): void {
     this.loadMyTickets();
@@ -54,7 +55,7 @@ export class MyTickets implements OnInit {
 
   submitComplete(): void {
     if (!this.adminMessage.trim()) {
-      alert('Please enter a comment before submitting');
+      this.notificationService.show('Please enter a comment before submitting', 3000);
       return;
     }
 
@@ -70,13 +71,13 @@ export class MyTickets implements OnInit {
         const ticketIdToRemove = this.selectedTicket.ticketId;
         this.tickets = this.tickets.filter(t => t.ticketId !== ticketIdToRemove);
         
-        // Then close modal and show alert
+        // Then close modal and show notification
         this.closeModal();
-        alert('Ticket marked as complete!');
+        this.notificationService.show('Ticket marked as complete!', 3000);
       },
       error: (err) => {
         console.error('Failed to resolve ticket', err);
-        alert('Failed to mark ticket as complete');
+        this.notificationService.show('Failed to mark ticket as complete', 3000);
       }
     });
   }

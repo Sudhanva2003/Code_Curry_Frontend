@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../auth.guard';
 import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../notification.service';  // <-- Import NotificationService
 
 @Component({
   selector: 'register-restaurant',
@@ -17,7 +18,8 @@ export class RegisterRestaurant {
     private fb: FormBuilder,
     private router: Router,
     private auth: AuthGuard,
-    private http: HttpClient
+    private http: HttpClient,
+    private notificationService: NotificationService  // <-- Inject NotificationService
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -33,7 +35,7 @@ export class RegisterRestaurant {
 
   submit() {
     if (!this.form.valid) {
-      alert('Please fill all fields correctly.');
+      this.notificationService.show('Please fill all fields correctly.', 3000);  // <-- Error Notification
       return;
     }
 
@@ -59,21 +61,24 @@ export class RegisterRestaurant {
               this.auth.setUser(res);
               if (res.role === 'restaurant') {
                 this.router.navigate(['/restaurant']);
+                this.notificationService.show('Restaurant registered and logged in successfully!', 3000);  // <-- Success Notification
               } else {
                 this.router.navigate(['/customer']);
               }
             },
-            error: () => alert('Login failed after registration.')
+            error: () => {
+              this.notificationService.show('Login failed after registration.', 3000);  // <-- Error Notification
+            }
           });
         },
         error: (err: any) => {
           if (err.status === 409) {
-            alert('Email already exists.');
+            this.notificationService.show('Email already exists.', 3000);  // <-- Error Notification
           } else if (err.status === 400 && err.error?.errors) {
             const messages = Object.values(err.error.errors).flat().join('\n');
-            alert('Validation errors:\n' + messages);
+            this.notificationService.show('Validation errors:\n' + messages, 5000);  // <-- Error Notification with detailed validation errors
           } else {
-            alert('Restaurant registration failed.');
+            this.notificationService.show('Restaurant registration failed.', 3000);  // <-- Error Notification
           }
         }
       });

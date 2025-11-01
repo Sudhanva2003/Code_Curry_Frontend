@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
+import { NotificationService } from '../notification.service'; // <-- Import NotificationService
 
 interface OrderItem {
   foodId: number;
@@ -51,7 +52,11 @@ export class Orders implements OnInit {
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  constructor(private api: ApiService, private auth: AuthGuard) {}
+  constructor(
+    private api: ApiService,
+    private auth: AuthGuard,
+    private notificationService: NotificationService // <-- Inject NotificationService
+  ) {}
 
   ngOnInit() {
     const user = this.auth.getUser();
@@ -132,12 +137,12 @@ export class Orders implements OnInit {
 
     this.api.put(`Customer/CancelOrder/${orderId}`, {}).subscribe({
       next: () => {
-        alert('Order cancelled successfully.');
+        this.notificationService.show('Order cancelled successfully.', 3000); // <-- Success Notification
         this.refreshOrders();
       },
       error: (err) => {
         console.error("Cancel error:", err);
-        alert('Failed to cancel order.');
+        this.notificationService.show('Failed to cancel order.', 3000); // <-- Error Notification
       }
     });
   }
@@ -169,7 +174,6 @@ export class Orders implements OnInit {
     );
   }
 
-  // ✅ FIXED — properly triggers change detection and pagination
   goToPrevMonth() {
     const newDate = new Date(this.currentDate);
     newDate.setMonth(newDate.getMonth() - 1);
@@ -178,7 +182,6 @@ export class Orders implements OnInit {
     this.getFilteredOrders();
   }
 
-  // ✅ FIXED — properly triggers change detection and pagination
   goToNextMonth() {
     if (this.canGoNext()) {
       const newDate = new Date(this.currentDate);
@@ -189,7 +192,6 @@ export class Orders implements OnInit {
     }
   }
 
-  // ✅ FIX: Removed year filtering
   getFilteredOrders() {
     const month = this.currentMonth.toLowerCase();
     const filtered = this.pastOrders.filter(order => {
@@ -204,7 +206,6 @@ export class Orders implements OnInit {
     this.filteredPastOrders = filtered.slice(start, end);
   }
 
-  // ✅ FIX: Ensure at least 1 page
   get totalPages(): number {
     const month = this.currentMonth.toLowerCase();
     const filtered = this.pastOrders.filter(order => {
@@ -217,20 +218,18 @@ export class Orders implements OnInit {
   }
 
   nextPage() {
-  // ✅ FIX: Remove dependency on canGoNext()
-  if (this.currentPage < this.totalPages) {
-    this.currentPage++;
-    this.getFilteredOrders();
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.getFilteredOrders();
+    }
   }
-}
 
-prevPage() {
-  if (this.currentPage > 1) {
-    this.currentPage--;
-    this.getFilteredOrders();
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.getFilteredOrders();
+    }
   }
-}
-
 
   canRateRestaurant(restId: number): boolean {
     return this.pastOrders.some(o => 
@@ -253,13 +252,13 @@ prevPage() {
 
     this.api.post(endpoint, null).subscribe({
       next: (res: any) => {
-        alert(res.message);
+        this.notificationService.show('Restaurant rated successfully!', 3000); // <-- Success Notification
         const order = this.pastOrders.find(o => o.orderId === orderId);
         if (order) order.restaurantRated = true;
       },
       error: (err) => {
         console.error('Rating error:', err);
-        alert(err?.error?.message || 'Rating failed. You may not be eligible.');
+        this.notificationService.show('Rating failed. You may not be eligible.', 3000); // <-- Error Notification
       }
     });
   }
@@ -267,7 +266,7 @@ prevPage() {
   submitRatingDeliverer(orderId: number, rating: number) {
     const order = this.pastOrders.find(o => o.orderId === orderId);
     if (!order?.delivererId) {
-      alert('Deliverer not found for this order.');
+      this.notificationService.show('Deliverer not found for this order.', 3000); // <-- Error Notification
       return;
     }
 
@@ -275,13 +274,13 @@ prevPage() {
 
     this.api.post(endpoint, null).subscribe({
       next: (res: any) => {
-        alert(res.message);
+        this.notificationService.show('Deliverer rated successfully!', 3000); // <-- Success Notification
         const order = this.pastOrders.find(o => o.orderId === orderId);
         if (order) order.delivererRated = true;
       },
       error: (err) => {
         console.error('Rating error:', err);
-        alert(err?.error?.message || 'Rating failed. You may not be eligible.');
+        this.notificationService.show('Rating failed. You may not be eligible.', 3000); // <-- Error Notification
       }
     });
   }

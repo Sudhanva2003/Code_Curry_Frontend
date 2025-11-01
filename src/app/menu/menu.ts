@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthGuard } from '../auth.guard';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NotificationService } from '../notification.service';  // <-- Import NotificationService
 
 @Component({
   selector: 'app-menu',
@@ -30,7 +31,12 @@ export class Menu implements OnInit {
 
   searchTerm: string = '';
 
-  constructor(private auth: AuthGuard, private http: HttpClient, private fb: FormBuilder) {
+  constructor(
+    private auth: AuthGuard,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private notificationService: NotificationService  // <-- Inject NotificationService
+  ) {
     this.editForm = this.fb.group({
       name: ['', Validators.required],
       category: ['Non veg', Validators.required],
@@ -132,7 +138,7 @@ export class Menu implements OnInit {
   onAddSave(): void {
     this.formSubmitted = true;
     if (this.addForm.invalid || this.restId === null) {
-      alert('Please fill all required fields correctly.');
+      this.notificationService.show('Please fill all required fields correctly.', 3000);
       return;
     }
 
@@ -147,11 +153,11 @@ export class Menu implements OnInit {
       next: (res: any) => {
         this.menuItems.push(res);
         this.closePopup();
-        alert('Food item added successfully');
+        this.notificationService.show('Food item added successfully', 3000);
       },
       error: (err) => {
         console.error('Failed to add food', err);
-        alert('Add failed: ' + JSON.stringify(err.error?.errors || err.message));
+        this.notificationService.show('Add failed: ' + (err.error?.errors || err.message), 3000);
       }
     });
   }
@@ -174,7 +180,7 @@ export class Menu implements OnInit {
   onSave(): void {
     this.formSubmitted = true;
     if (this.editForm.invalid || !this.currentItem) {
-      alert('Please fill all required fields correctly.');
+      this.notificationService.show('Please fill all required fields correctly.', 3000);
       return;
     }
 
@@ -194,11 +200,11 @@ export class Menu implements OnInit {
           this.menuItems[index] = { ...this.menuItems[index], ...updatedItem };
         }
         this.closePopup();
-        alert('Food item updated successfully');
+        this.notificationService.show('Food item updated successfully', 3000);
       },
       error: (err) => {
         console.error('Failed to update food', err);
-        alert('Update failed: ' + JSON.stringify(err.error?.errors || err.message));
+        this.notificationService.show('Update failed: ' + (err.error?.errors || err.message), 3000);
       }
     });
   }
@@ -210,11 +216,11 @@ export class Menu implements OnInit {
       this.http.delete(`https://localhost:7265/api/Foods/DeleteFood/${foodId}`).subscribe({
         next: () => {
           this.menuItems = this.menuItems.filter(m => m.foodId !== foodId);
-          alert('Food item deleted');
+          this.notificationService.show('Food item deleted', 3000);
         },
         error: (err) => {
           console.error('Failed to delete food', err);
-          alert('Delete failed');
+          this.notificationService.show('Delete failed', 3000);
         }
       });
     }

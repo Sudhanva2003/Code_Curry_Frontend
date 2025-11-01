@@ -5,11 +5,18 @@
   <div *ngIf="error">{{ error }}</div>
 
   <!-- Month navigation -->
-  <div class="month-navigation">
-    <button class="btn prev-month" (click)="changeToPrevMonth()">&lt; Prev Month</button>
-    <span class="month-label">{{ selectedMonth }}</span>
-    <button class="btn next-month" (click)="changeToNextMonth()">Next Month &gt;</button>
-  </div>
+ 
+<div class="month-navigation">
+  <button class="btn prev-month" (click)="changeToPrevMonth()">&lt; Prev Month</button>
+  <span class="month-label">{{ selectedMonth }}</span>
+  <button 
+    class="btn next-month" 
+    (click)="changeToNextMonth()" 
+    [disabled]="isCurrentMonth()">
+    Next Month &gt;
+  </button>
+</div>
+
 
   <div *ngIf="!loading && filteredPastOrders.length === 0" class="empty-msg">
     No past orders for {{ selectedMonth }}

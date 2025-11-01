@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
+import { NotificationService } from '../notification.service';  // <-- Import NotificationService
 
 @Component({
   selector: 'live-orders',
@@ -14,7 +15,12 @@ export class LiveOrders implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private api: ApiService, private auth: AuthGuard,private router:Router) {}
+  constructor(
+    private api: ApiService,
+    private auth: AuthGuard,
+    private router: Router,
+    private notificationService: NotificationService  // <-- Inject NotificationService
+  ) {}
 
   ngOnInit() {
     this.loadOrders();
@@ -32,6 +38,7 @@ export class LiveOrders implements OnInit {
         console.error("API Error:", err);
         this.error = 'Failed to load live orders';
         this.loading = false;
+        this.notificationService.show('Failed to load live orders', 3000);  // <-- Show notification
       }
     });
   }
@@ -41,7 +48,7 @@ export class LiveOrders implements OnInit {
 
     // Null / undefined check
     if (!delivererId) {
-      alert('Deliverer ID not found. Please log in again.');
+      this.notificationService.show('Deliverer ID not found. Please log in again.', 3000);  // <-- Show notification
       return;
     }
 
@@ -51,16 +58,16 @@ export class LiveOrders implements OnInit {
       const body = { delivererId }; // wrap in object
       this.api.put(`Deliverer/AssignOrder/${orderId}`, body).subscribe({
         next: (res) => {
-          alert('Order assigned for delivery!');
+          this.notificationService.show('Order assigned for delivery!', 3000);  // <-- Show notification
           // Save delivererId and orderId to localStorage
           localStorage.setItem('currentOrderId', orderId.toString());
           localStorage.setItem('currentDelivererId', delivererId.toString());
           this.loadOrders();
-           this.router.navigate(['deliverer/delivery']);
+          this.router.navigate(['deliverer/delivery']);
         },
         error: (err) => {
           console.error("Error assigning delivery:", err);
-          alert('Failed to assign delivery.');
+          this.notificationService.show('Failed to assign delivery.', 3000);  // <-- Show notification
         }
       });
     }

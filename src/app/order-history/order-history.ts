@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
+import { NotificationService } from '../notification.service'; // <-- Import NotificationService
 
 interface OrderItem {
   name: string;
@@ -43,7 +44,7 @@ export class OrderHistory implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private api: ApiService, private auth: AuthGuard) {}
+  constructor(private api: ApiService, private auth: AuthGuard, private notificationService: NotificationService) {}
 
   ngOnInit() {
     const restId = this.auth.getId();
@@ -119,6 +120,12 @@ export class OrderHistory implements OnInit {
     this.currentPage = 1;
     this.getFilteredOrders();
   }
+  
+  isCurrentMonth(): boolean {
+  const currentDate = new Date();
+  const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
+  return this.selectedMonth === currentMonth;
+}
 
   // Reload orders after cancel or rating
   loadOrders(): void {
@@ -141,12 +148,12 @@ export class OrderHistory implements OnInit {
   submitRatingRestaurant(orderId: number, rating: number): void {
     this.api.post(`Restaurant/RateRestaurant/${orderId}`, { rating }).subscribe({
       next: () => {
-        alert('Restaurant rated successfully!');
+        this.notificationService.show('Restaurant rated successfully!', 3000); // <-- Success Notification
         this.loadOrders();
       },
       error: (err) => {
         console.error('Error rating restaurant:', err);
-        alert('Failed to rate restaurant.');
+        this.notificationService.show('Failed to rate restaurant.', 3000); // <-- Error Notification
       }
     });
   }
@@ -154,12 +161,12 @@ export class OrderHistory implements OnInit {
   submitRatingDeliverer(orderId: number, rating: number): void {
     this.api.post(`Deliverer/RateDeliverer/${orderId}`, { rating }).subscribe({
       next: () => {
-        alert('Deliverer rated successfully!');
+        this.notificationService.show('Deliverer rated successfully!', 3000); // <-- Success Notification
         this.loadOrders();
       },
       error: (err) => {
         console.error('Error rating deliverer:', err);
-        alert('Failed to rate deliverer.');
+        this.notificationService.show('Failed to rate deliverer.', 3000); // <-- Error Notification
       }
     });
   }
@@ -168,12 +175,12 @@ export class OrderHistory implements OnInit {
     if (confirm('Are you sure you want to cancel this order?')) {
       this.api.delete(`Restaurant/CancelOrder/${orderId}`).subscribe({
         next: () => {
-          alert('Order canceled successfully.');
+          this.notificationService.show('Order canceled successfully.', 3000); // <-- Success Notification
           this.loadOrders();
         },
         error: (err) => {
           console.error('Error canceling order:', err);
-          alert('Failed to cancel order.');
+          this.notificationService.show('Failed to cancel order.', 3000); // <-- Error Notification
         }
       });
     }

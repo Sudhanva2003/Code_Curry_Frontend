@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../auth.guard';
 import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../notification.service';  // <-- Import NotificationService
 
 @Component({
   selector: 'register-customer',
@@ -17,7 +18,8 @@ export class RegisterCustomer {
     private fb: FormBuilder,
     private router: Router,
     private auth: AuthGuard,
-    private http: HttpClient
+    private http: HttpClient,
+    private notificationService: NotificationService  // <-- Inject NotificationService
   ) {
     this.form = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(3)]],
@@ -39,7 +41,7 @@ export class RegisterCustomer {
 
   submit() {
     if (!this.form.valid) {
-      alert('Please fill all fields correctly.');
+      this.notificationService.show('Please fill all fields correctly.', 3000);  // <-- Error Notification
       return;
     }
 
@@ -70,17 +72,18 @@ export class RegisterCustomer {
             } else if (res.role === 'admin') {
               this.router.navigate(['/admin']);
             }
+            this.notificationService.show('Login successful, welcome!', 3000);  // <-- Success Notification
           },
           error: () => {
-            alert('Login failed after registration.');
+            this.notificationService.show('Login failed after registration.', 3000);  // <-- Error Notification
           }
         });
       },
       error: (err) => {
         if (err.status === 409) {
-          alert('Email already exists.');
+          this.notificationService.show('Email already exists.', 3000);  // <-- Error Notification
         } else {
-          alert('Registration failed.');
+          this.notificationService.show('Registration failed.', 3000);  // <-- Error Notification
         }
       }
     });

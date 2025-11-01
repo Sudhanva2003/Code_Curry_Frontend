@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../api-service';
 import { AuthGuard } from '../auth.guard';
+import { NotificationService } from '../notification.service';  // <-- import NotificationService
 
 @Component({
   selector: 'cart',
@@ -14,7 +15,12 @@ export class Cart implements OnInit {
   totalAmount: number = 0;
   showPayPopup: boolean = false;
 
-  constructor(private router: Router, private api: ApiService, private auth: AuthGuard) {}
+  constructor(
+    private router: Router, 
+    private api: ApiService, 
+    private auth: AuthGuard,
+    private notificationService: NotificationService  // <-- inject NotificationService
+  ) {}
 
   ngOnInit() {
     const stored = localStorage.getItem('cart');
@@ -98,7 +104,7 @@ export class Cart implements OnInit {
   confirmPay() {
     const user = this.auth.getUser();
     if (!user) {
-      alert('Please login first');
+      this.notificationService.show('Please login first', 3000); // <-- use NotificationService instead of alert
       return;
     }
 
@@ -112,7 +118,7 @@ export class Cart implements OnInit {
 
     this.api.post('Orders/PlaceOrder', payload).subscribe({
       next: (res) => {
-        alert('Order placed successfully!');
+        this.notificationService.show('Order placed successfully!', 3000); // <-- use NotificationService instead of alert
         this.showPayPopup = false;
         this.cartItems = [];
         this.totalAmount = 0;
@@ -121,7 +127,7 @@ export class Cart implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        alert('Failed to place order.');
+        this.notificationService.show('Failed to place order.', 3000); // <-- use NotificationService instead of alert
       }
     });
   }

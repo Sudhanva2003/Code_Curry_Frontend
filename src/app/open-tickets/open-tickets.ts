@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../notification.service';  // <-- Import NotificationService
 
 @Component({
   selector: 'app-open-tickets',
@@ -13,7 +14,7 @@ export class OpenTickets implements OnInit {
   error = '';
   adminId = 1; // Replace with actual admin ID from auth service
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private notificationService: NotificationService) {}  // <-- Inject NotificationService
 
   ngOnInit(): void {
     this.loadOpenTickets();
@@ -36,6 +37,7 @@ export class OpenTickets implements OnInit {
         console.error('Error loading open tickets', err);
         this.error = 'Failed to load open tickets';
         this.loading = false;
+        this.notificationService.show('Failed to load open tickets', 3000); // <-- Notification on error
       }
     });
   }
@@ -43,26 +45,25 @@ export class OpenTickets implements OnInit {
   assignToMe(ticket: any): void {
     this.http.post(`https://localhost:7265/api/Support/assignToMe?ticketId=${ticket.ticketId}&adminId=${this.adminId}`, {}).subscribe({
       next: (response: any) => {
-        alert('Ticket assigned to you successfully!');
-        
+        this.notificationService.show('Ticket assigned to you successfully!', 3000); // <-- Success Notification
         // REMOVE THE CARD FROM OPEN TICKETS IMMEDIATELY
         this.tickets = this.tickets.filter(t => t.ticketId !== ticket.ticketId);
       },
       error: (err) => {
         console.error('Failed to assign ticket', err);
-        alert('Failed to assign ticket');
+        this.notificationService.show('Failed to assign ticket', 3000); // <-- Error Notification
       }
     });
   }
 
   markAsComplete(ticket: any): void {
     if (!ticket.assignedAdminId) {
-      alert('Please assign the ticket to yourself first before marking it complete.');
+      this.notificationService.show('Please assign the ticket to yourself first before marking it complete.', 3000);
       return;
     }
 
     if (ticket.assignedAdminId !== this.adminId) {
-      alert('This ticket is assigned to another admin.');
+      this.notificationService.show('This ticket is assigned to another admin.', 3000);
       return;
     }
 
@@ -75,14 +76,13 @@ export class OpenTickets implements OnInit {
 
       this.http.post('https://localhost:7265/api/Support/resolveTicket', resolveData).subscribe({
         next: () => {
-          alert('Ticket marked as complete!');
-          
+          this.notificationService.show('Ticket marked as complete!', 3000); // <-- Success Notification
           // REMOVE THE CARD FROM OPEN TICKETS IMMEDIATELY
           this.tickets = this.tickets.filter(t => t.ticketId !== ticket.ticketId);
         },
         error: (err) => {
           console.error('Failed to resolve ticket', err);
-          alert('Failed to mark ticket as complete');
+          this.notificationService.show('Failed to mark ticket as complete', 3000); // <-- Error Notification
         }
       });
     }

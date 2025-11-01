@@ -134,9 +134,9 @@
 }
 
 .month-btn {
-  background-color: #f1f1f1;
+  background-color: #0d6efd; /* Blue color */
   border: none;
-  color: #333;
+  color: white;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -145,14 +145,20 @@
 }
 
 .month-btn:hover {
-  background-color: #e2e2e2;
-  color: #0d6efd;
+  background-color: #0056b3; /* Darker blue for hover */
+}
+
+.month-btn:disabled {
+  background-color: #c6d4e1; /* Light gray when disabled */
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .month-label {
   font-weight: 600;
   font-size: 18px;
 }
+
 
 /* ======== Rating Section ======== */
 .rating-section {

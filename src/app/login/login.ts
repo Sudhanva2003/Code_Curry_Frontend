@@ -3,12 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthGuard } from '../auth.guard';
 import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../notification.service';  // <-- Import NotificationService
 
 @Component({
   selector: 'login',
   standalone: false,
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrls: ['./login.css']
 })
 export class Login {
   loginForm: FormGroup;
@@ -17,7 +18,8 @@ export class Login {
     private fb: FormBuilder,
     private router: Router,
     private auth: AuthGuard,
-    private http: HttpClient
+    private http: HttpClient,
+    private notificationService: NotificationService  // <-- Inject NotificationService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -26,9 +28,9 @@ export class Login {
   }
 
   submit() {
-   // alert("submitted");
+    // Show notification instead of alert for invalid form
     if (this.loginForm.invalid) {
-      alert('Please enter valid credentials');
+      this.notificationService.show('Please enter valid credentials', 3000);
       return;
     }
 
@@ -39,15 +41,14 @@ export class Login {
         next: (res) => {
           // Expected response: { id, name, role }
           this.auth.setUser(res);
-          console.log('Login Response:', res); 
-          //alert("2");
+          console.log('Login Response:', res);
+          
           switch (res.role?.toLowerCase()) {
             case 'restaurant':
               this.router.navigate(['/restaurant']);
               break;
 
             case 'customer':
-             
               this.router.navigate(['/customer']);
               break;
 
@@ -60,11 +61,11 @@ export class Login {
               break;
 
             default:
-              alert('Unknown user role');
+              this.notificationService.show('Unknown user role', 3000);
           }
         },
         error: () => {
-          alert('Invalid credentials');
+          this.notificationService.show('Invalid credentials', 3000);  // <-- Show notification for error
         }
       });
   }

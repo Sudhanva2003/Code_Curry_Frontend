@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { AuthGuard } from '../auth.guard';
+import { NotificationService } from '../notification.service';  // <-- Import NotificationService
 
 @Component({
   selector: 'app-register-deliverer',
@@ -17,7 +18,8 @@ export class RegisterDeliverer {
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private auth: AuthGuard
+    private auth: AuthGuard,
+    private notificationService: NotificationService  // <-- Inject NotificationService
   ) {
     this.form = fb.group({
       fullName: ['', Validators.required],
@@ -33,7 +35,7 @@ export class RegisterDeliverer {
 
   submit() {
     if (this.form.invalid) {
-      alert("Please fill all fields correctly.");
+      this.notificationService.show('Please fill all fields correctly.', 3000);  // <-- Error Notification
       return;
     }
 
@@ -45,7 +47,7 @@ export class RegisterDeliverer {
       licenseNumber: this.form.value.licenseNumber,
       vehicleNumber: this.form.value.vehicleNumber,
       password: this.form.value.password,
-      role:this.form.value.role
+      role: this.form.value.role
     };
 
     this.http.post('https://localhost:7265/api/Deliverer/DelivererRegister', delivererData).subscribe({
@@ -57,15 +59,18 @@ export class RegisterDeliverer {
           next: (res) => {
             this.auth.setUser(res);
             this.router.navigate(['/deliverer']);
+            this.notificationService.show('Login successful, welcome!', 3000);  // <-- Success Notification
           },
-          error: () => alert('Login failed after registration.')
+          error: () => {
+            this.notificationService.show('Login failed after registration.', 3000);  // <-- Error Notification
+          }
         });
       },
       error: (err) => {
         if (err.status === 409) {
-          alert('Email already exists.');
+          this.notificationService.show('Email already exists.', 3000);  // <-- Error Notification
         } else {
-          alert('Deliverer registration failed.');
+          this.notificationService.show('Deliverer registration failed.', 3000);  // <-- Error Notification
         }
       }
     });
