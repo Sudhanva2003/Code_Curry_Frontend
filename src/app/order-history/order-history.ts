@@ -36,7 +36,8 @@ export class OrderHistory implements OnInit {
   filteredPastOrders: Order[] = [];
   currentPage = 1;
   pageSize = 5;
-  selectedMonth = 'October';
+  selectedMonth = new Date().toLocaleString('default', { month: 'long' });
+
   months: string[] = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
